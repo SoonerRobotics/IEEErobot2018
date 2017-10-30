@@ -6,32 +6,32 @@ int duration;//the number of the pulses
 boolean Direction;//the rotation direction 
 
 void setup() {
-   pinMode(9, OUTPUT);
-   pinMode(10, OUTPUT);
-   pinMode(5, OUTPUT);
-   pinMode(6, OUTPUT);
+	pinMode(9, OUTPUT);
+	pinMode(10, OUTPUT);
+	pinMode(5, OUTPUT);
+	pinMode(6, OUTPUT);
     Serial.begin(57600);//Initialize the serial port
-  EncoderInit();//Initialize the module
+	EncoderInit();//Initialize the module
 }
 
 void loop() {
   
-  digitalWrite(10, LOW);
+	digitalWrite(10, LOW);
 
-  //for(int i = 0; i < 250; i = i + 10){
+	//for(int i = 0; i < 250; i = i + 10){
     analogWrite(9, 100);
-  //delay(200);}
+	//delay(200);}
+	
+	digitalWrite(5, LOW);
 
-  digitalWrite(5, LOW);
-
-  //for(int i = 0; i < 250; i = i + 10){
+	//for(int i = 0; i < 250; i = i + 10){
     analogWrite(6, 100);
-  //delay(200);}
+	//delay(200);}
 
-  Serial.print("Pulse:");
-  Serial.println(duration);
-  duration = 0;
-  delay(100);
+	Serial.print("Pulse:");
+	Serial.println(duration);
+	duration = 0;
+	delay(100);
 }
 
 void EncoderInit()
