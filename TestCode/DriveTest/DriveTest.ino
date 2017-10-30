@@ -44,7 +44,7 @@ void EncoderInit()
 void wheelSpeed()
 {
   int Lstate = digitalRead(encoder0pinA);
-  if((encoder0PinALast == LOW) && Lstate==HIGH)
+  if((encoder0PinALast == LOW) && (Lstate==HIGH))
   {
     int val = digitalRead(encoder0pinB);
     if(val == LOW && Direction)
