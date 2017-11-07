@@ -1,3 +1,6 @@
 [submodule "RobotLib"]
 	path = RobotLib
 	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
+[submodule "Code/RobotBase/RobotLib"]
+	path = Code/RobotBase/RobotLib
+	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
