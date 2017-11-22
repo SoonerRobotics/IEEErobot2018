@@ -7,10 +7,10 @@ Encoder encoder(PIN_A, PIN_B);
 
 void setup() 
 {
-
+	
 }
 
 void loop() 
 {
-
+	
 }
