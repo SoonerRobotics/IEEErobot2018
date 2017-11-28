@@ -1,18 +1,24 @@
-#include "lib/MotorController.h"
-//#include "lib/Sensor.h"
+#include "RobotLib/Collection.h"
+#include "RobotLib/BasicDrive.h"
 
+DriveTrain drivetrain;
 
-
-void setup() {
-  // put your setup code here, to run once:
-
+void setup()
+{
+	Collection leftM, leftE, rightM, rightE;
+	
+	//Left Encoder
+	
+	//Left Motor
+	
+	//Right Encoder
+	
+	//Right Motor
+	
+	drivetrain.begin(leftM, leftE, rightM, rightE);
 }
 
-
-void loop() {
-  // put your main code here, to run repeatedly:
-
+void loop()
+{
+	drivetrain.setOutput(0.5, 0.5);
 }
-
-//hi
-
