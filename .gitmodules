@@ -1,15 +1,2 @@
-[submodule "RobotLib"]
-	path = RobotLib
-	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
-[submodule "Code/RobotBase/RobotLib"]
-	path = Code/RobotBase/RobotLib
-	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
-[submodule "Code/Round 1/RobotLib"]
-	path = Code/Round 1/RobotLib
-	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
-[submodule "Code/Round 2/RobotLib"]
-	path = Code/Round 2/RobotLib
-	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
-[submodule "Code/Round 3/RobotLib"]
-	path = Code/Round 3/RobotLib
-	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
+
+
