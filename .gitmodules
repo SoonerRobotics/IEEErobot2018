@@ -1,5 +1,0 @@
-[submodule "src/RobotLib"]
-	
-	path = src/RobotLib
-	
-	url = https://github.com/Sooner-Competitive-Robotics/RobotLib.git
