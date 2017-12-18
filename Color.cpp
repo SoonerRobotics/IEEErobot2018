@@ -43,7 +43,7 @@ Color::Color(String color) {
 	else if (color.equals("gray"))
 	{
 		angle = (360/8)*(7);
-	
+	}
 	else
 	{
 		angle = 0;
@@ -55,7 +55,12 @@ Color::Color(String color) {
  *  
  * @returns angle : the angle associated with the color
  */
+ 
+ /*
+ TODO: Fix this to match with header file
+ 
 double Color::getAngle() {
 	
 	return angle;
 }
+*/
