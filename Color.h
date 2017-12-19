@@ -15,6 +15,7 @@ class Color {
 public:
 
 	Color();
+	Color(String color);
 	
 	void setColor();
 	
