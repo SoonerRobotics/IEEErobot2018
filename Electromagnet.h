@@ -15,7 +15,12 @@ class Electromagnet : public DigitalDevice
 		
 		void pickUp();
 		
-		void drop();	
+		void drop();
+		
+		bool hasCoin();
+		
+	private:
+		bool status;
 };
 
 
