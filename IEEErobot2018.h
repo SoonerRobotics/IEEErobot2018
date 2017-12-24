@@ -6,9 +6,9 @@
  * with one include statement.
  */
 
-#include "Adafruit_BNO055.h"
-#include "Adafruit_Sensor.h"
-#include "Adafruit_TCS34725.h"
+#include "Adafruit_Sensors/Adafruit_BNO055.h"
+#include "Adafruit_Sensors/Adafruit_Sensor.h"
+#include "Adafruit_Sensors/Adafruit_TCS34725.h"
 #include "Color.h"
 #include "ColorSensor.h"
 #include "Electromagnet.h"

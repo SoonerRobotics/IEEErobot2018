@@ -3,9 +3,9 @@
 
 #include <Arduino.h>
 #include <Wire.h>
-#include "Adafruit_Sensor.h"
-#include "Adafruit_BNO055.h"
-#include "utility/imumaths.h"
+#include "Adafruit_Sensors/Adafruit_Sensor.h"
+#include "Adafruit_Sensors/Adafruit_BNO055.h"
+#include "Adafruit_Sensors/utility/imumaths.h"
 
 class Gyro {
  
