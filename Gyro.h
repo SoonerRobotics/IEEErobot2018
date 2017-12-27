@@ -1,5 +1,5 @@
-#ifndef GYRO_H_
-#define GYRO_H__H
+#ifndef GYRO_H
+#define GYRO_H
 
 #include <Arduino.h>
 #include <Wire.h>
@@ -7,15 +7,22 @@
 #include "Adafruit_Sensors/Adafruit_BNO055.h"
 #include "Adafruit_Sensors/utility/imumaths.h"
 
-class Gyro {
- 
-public:
-
-	Gyro();
+class Gyro
+{
+	public:
+		Gyro();
+		
+		void operator=(const Gyro& gyro);
+		
+		float getAngle();
+		
+		void process();
+		
+		void reset();
 	
-	void getAngle();
-
+	private:
+		
+		
 };
 
-#endif /* GYRO_H_ */
- 
+#endif
