@@ -1,26 +1,36 @@
 #include "Gyro.h"
 
-Adafruit_BNO055 thisGyro = Adafruit_BNO055();
-
-Gyro::Gyro() {
-	
-	thisGyro.begin();
-
+Gyro::Gyro() 
+{	
+	this->gyro.begin();
 }
 
-
-void Gyro::getAngle() {
-	
+void updateData()
+{
 	delay(60);  // takes 50ms to read 
 	
-	imu::Vector<3> euler = thisGyro.getVector(Adafruit_BNO055::VECTOR_EULER);
+	//Get the data from the gyro
+	imu::Vector<3> euler = this->gyro.getVector(Adafruit_BNO055::VECTOR_EULER);
+	
+	this->pitch = euler.x();
+	this>roll = euler.y();
+	this->yaw = euler.z();
+}
 
-	Serial.print("X: ");
-	Serial.print(euler.x());
-	Serial.print(" Y: ");
-	Serial.print(euler.y());
-	Serial.print(" Z: ");
-	Serial.print(euler.z());
-	Serial.println("\t\t");
+float Gyro::getPitch() 
+{	
+	//Return the pitch
+	return this->pitch;
+}
 
+float Gyro::getRoll() 
+{	
+	//Return the roll
+	return this->roll;
+}
+
+float Gyro::getYaw() 
+{
+	//Return the yaw
+	return this->yaw;
 }

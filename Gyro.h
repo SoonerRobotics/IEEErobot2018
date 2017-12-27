@@ -14,14 +14,19 @@ class Gyro
 		
 		void operator=(const Gyro& gyro);
 		
-		float getAngle();
-		
-		void process();
+		void updateData();
+		float getPitch();
+		float getRoll();
+		float getYaw();
 		
 		void reset();
 	
 	private:
+		Adafruit_BNO055 gyro;
 		
+		float pitch;
+		float roll;
+		float yaw;
 		
 };
 
