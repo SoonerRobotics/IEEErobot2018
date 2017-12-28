@@ -33,3 +33,20 @@ float ColorSensor::getBlue() {
 	//returns raw blue value of color
 	return this->blueRaw;
 }
+
+Color ColorSensor::returnColorObject() {
+	
+	float _R = getRed();
+	float _G = getGreen();
+	float _B = getBlue();
+	
+	//Use RGB values to match color to each color 
+	
+	if (_R>200 && _G<50 && _B<50) {
+		return color("red");
+	} 
+	/*else if ( ) {
+		//"if" statements for each of the other colors...
+	}*/
+	
+}

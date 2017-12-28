@@ -6,6 +6,7 @@
 #include "Adafruit_Sensors/Adafruit_Sensor.h"
 #include "Adafruit_Sensors/Adafruit_TCS34725.h"
 #include "Adafruit_Sensors/utility/imumaths.h"
+#include "Color.h"
 
 class ColorSensor {
  
@@ -21,11 +22,15 @@ public:
 	float getGreen();
 	float getBlue();
 	
+	Color returnColorObject();
+	
 	//void reset();
 	
 private:
 
 	Adafruit_TCS34725 colorSensor;
+	
+	Color color;
 	
 	float redRaw;
 	float greenRaw;
