@@ -13,8 +13,24 @@ public:
 
 	ColorSensor();
 	
-	void getColor();
+	void operator=(const ColorSensor& colorSensor);
+	
+	void updateData();
+	
+	float getRed();
+	float getGreen();
+	float getBlue();
+	
+	//void reset();
+	
+private:
 
+	Adafruit_TCS34725 colorSensor;
+	
+	float redRaw;
+	float greenRaw;
+	float blueRaw;
+	
 };
 
 #endif /* COLORSENSOR_H_ */

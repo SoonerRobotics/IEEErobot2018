@@ -13,7 +13,7 @@ void updateData()
 	imu::Vector<3> euler = this->gyro.getVector(Adafruit_BNO055::VECTOR_EULER);
 	
 	this->pitch = euler.x();
-	this>roll = euler.y();
+	this->roll = euler.y();
 	this->yaw = euler.z();
 }
 
