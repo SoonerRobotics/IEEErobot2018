@@ -1,6 +1,6 @@
 #include "ColorSensor.h"
 
-ColorSensor::ColorSensor(void) {
+ColorSensor::ColorSensor() {
 	
 	this->colorSensor.begin();
 
@@ -41,12 +41,6 @@ Color ColorSensor::returnColorObject() {
 	float _B = getBlue();
 	
 	//Use RGB values to match color to each color 
-	
-	if (_R>200 && _G<50 && _B<50) {
-		return color("red");
-	} 
-	/*else if ( ) {
-		//"if" statements for each of the other colors...
-	}*/
-	
+	return color(_R,_G,_B);
+
 }

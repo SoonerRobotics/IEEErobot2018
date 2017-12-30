@@ -15,15 +15,24 @@ class Color {
 public:
 
 	Color();
+	
 	Color(String color);
 	
-	void setColor();
+	Color::Color(float r, float g, float b);
 	
-	double getAngle(String color);
+	//void setColor();
+	
+	//double getAngle(String color);
+	
+	bool isBetween(float x, float low, float high)
+	
+	String getColorName();
 	
 private:
 
 	double angle;
+	
+	String colorName;
 
 };
 
