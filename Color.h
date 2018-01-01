@@ -15,11 +15,12 @@ class Color {
 public:
 
 	Color();
+	
 	Color(String color);
 	
 	void setColor();
 	
-	double getAngle(String color);
+	double getAngle();
 	
 private:
 

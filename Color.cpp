@@ -7,6 +7,11 @@
 
 #include "Color.h"
 
+/**
+ * Color constructor
+ * 
+ * @param color : name of color 
+ */
 Color::Color(String color) {
 	
 	if (color.equals("blue"))
@@ -44,6 +49,7 @@ Color::Color(String color) {
 	{
 		angle = (360/8)*(7);
 	}
+
 	else
 	{
 		angle = 0;
@@ -51,16 +57,59 @@ Color::Color(String color) {
 }
 
 /**
+ * setColor method
+ * 
+ * sets a new color for this object
+ */
+void Color::setColor(String color) {
+	
+	if (color.equals("blue"))
+	{
+		angle = (360/8)*(1);
+	}
+	else if (color.equals("green"))
+	{
+		angle = (360/8)*(2);
+	}
+	
+	else if (color.equals("red"))
+	{
+		angle = (360/8)*(3);
+	}
+	
+	else if (color.equals("cyan"))
+	{
+		angle = (360/8)*(4);
+	}
+	
+	else if (color.equals("magenta"))
+	{
+		angle = (360/8)*(5);
+	}
+	
+	else if (color.equals("yellow"))
+	{
+		angle = (360/8)*(6);
+	}
+	
+	else if (color.equals("gray"))
+	{
+		angle = (360/8)*(7);
+	}
+
+	else
+	{
+		angle = 0;
+	}
+	
+}
+
+/**
  * getAngle method
  *  
  * @returns angle : the angle associated with the color
- */
- 
- /*
- TODO: Fix this to match with header file
- 
+ */ 
 double Color::getAngle() {
 	
 	return angle;
 }
-*/
