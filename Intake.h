@@ -20,6 +20,8 @@ class Intake
 		
 		void pickUpSequence();
 		
+		bool coinDetected();
+		
 		void setConstants(IntakeConstants K);
 		
 	private:

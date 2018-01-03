@@ -172,6 +172,11 @@ bool Intake::pickUpSequence()
 	}
 }
 
+bool Intake::coinDetected()
+{
+	return this->metalDetector.read() == HIGH;
+}
+
 void Intake::setConstants(IntakeConstants K)
 {
 	this->constants = K;
