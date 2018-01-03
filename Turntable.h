@@ -11,11 +11,16 @@
 #include <Arduino.h>
 #include <Servo.h>
 
+#define IDLE_ANGLE 0
+
 class Turntable {
 
 public:
-	
 	Turntable();
+	
+	void setPosition(Color color);
+	void setPosition(int angle);
+	void setPosition();
 
 private:
 	

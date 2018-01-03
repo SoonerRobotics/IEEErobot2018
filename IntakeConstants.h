@@ -9,6 +9,10 @@ struct IntakeConstants
 	float topHeight;
 	float scanHeight;
 	
+	//Angles for the color sensor
+	int colorServoIdleAngle;
+	int colorServoDeployAngle;
+	
 	//Speeds for the motor to move at during the pickup sequence
 	float motorSpeed;
 	float stallSpeed;
@@ -16,6 +20,8 @@ struct IntakeConstants
 	
 	//Time delays in the pickup sequence
 	long magnetWaitTime;
+	long turnTableWaitMax;
+	long colorServoDelay;
 };
 
 #endif

@@ -6,7 +6,8 @@ ColorSensor::ColorSensor() {
 
 }
 
-void updateData()	{
+void ColorSensor::updateData()
+{
 	uint16_t clear, red, green, blue;
 
 	delay(60);  // takes 50ms to read 
@@ -34,7 +35,7 @@ float ColorSensor::getBlue() {
 	return this->blueRaw;
 }
 
-Color ColorSensor::returnColorObject() {
+Color ColorSensor::getColor() {
 	
 	float _R = getRed();
 	float _G = getGreen();
@@ -42,5 +43,4 @@ Color ColorSensor::returnColorObject() {
 	
 	//Use RGB values to match color to each color 
 	return color(_R,_G,_B);
-
 }

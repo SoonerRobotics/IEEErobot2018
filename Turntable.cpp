@@ -11,3 +11,20 @@ Turntable::Turntable() {
 	// TODO Auto-generated constructor stub
 
 }
+
+void Turntable::setPosition(Color color)
+{
+	int angle = color.getAngle();
+	
+	servo.write(angle);
+}
+
+void Turntable::setPosition(int angle)
+{
+	servo.write(angle);
+}
+
+void Turntable::setPosition()
+{
+	servo.write(IDLE_ANGLE);
+}

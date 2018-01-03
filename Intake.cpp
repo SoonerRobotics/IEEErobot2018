@@ -21,15 +21,21 @@ Intake::Intake()
 	this->pickUpState = IDLE;
 }
 
-Intake::Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet)
+Intake::Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, ColorSensor colorSensor, int colorServoPin)
 {
 	this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
 	this->metalDetector = metalDetector;
 	this->limitSwitch = limitSwitch;
 	this->electromagnet = electromagnet;
+	this->turnTable = turnTable;
+	this->colorSensor = colorSensor;
 	
 	this->pickUpState = IDLE;
+	
+	this->lastColor = NULL;
+	
+	this->colorServo.attach(colorServoPin);
 }
 
 
@@ -78,9 +84,17 @@ bool Intake::pickUpSequence()
 				//Stop the motor so we can scan the coin
 				this->intakeMotor.output(this->constants.stallSpeed);
 				
-				//TODO: Deploy the RGB color sensor!
+				//Deploy the RGB color sensor! (servo)
+				this->colorServo.write(this->constants.colorServoDeployAngle);
+				delay(this->constants.colorServoDelay);
 				
-				//TODO: Detect and save the color
+				//Detect and save the color
+				this->colorSensor.updateData();
+				this->lastColor = this->colorSensor.getColor();
+				
+				//Retract color sensor
+				this->colorServo.write(this->constants.colorServoIdleAngle);
+				delay(this->constants.colorServoDelay);
 				
 				//Move to the full raise state
 				this->pickUpState = RAISE;
@@ -107,9 +121,13 @@ bool Intake::pickUpSequence()
 			return false;
 			
 		case STORE:
-			//Check to see if turntable is ready to receive the coin
-			if(this->turnTable.inPosition() && this->electromagnet.hasCoin())
+			
+			if(this->electromagnet.hasCoin())
 			{
+				//Turn the turntable so it is ready to receive the coin
+				this->turnTable.setPosition(this->lastColor);
+				delay(this->constants.turnTableWaitMax);
+				
 				//Once the turntable is ready, drop the coin
 				this->electromagnet.drop();
 				
@@ -117,12 +135,14 @@ bool Intake::pickUpSequence()
 				delay(this->constants.magnetWaitTime);
 				
 				//Tell the turntable to go back to its idle state
+				this->turnTable.setPosition();
+				delay(this->constants.turnTableWaitMax);
 				
 				//Process unfinished
 				return false;
 			}
 			//Check to see if the turntable is ready to let the intake drop
-			else if(this->turnTable.inPosition() && !this->electromagnet.hasCoin())
+			else if(!this->electromagnet.hasCoin())
 			{
 				//Drive the intake down to the idle height
 				if(this->intakeEncoder.getValue() > this->constants.idleHeight)
@@ -138,14 +158,12 @@ bool Intake::pickUpSequence()
 					//Stop driving the motor downwards
 					this->intakeMotor.output(this->constants.stallSpeed);
 					
+					//set the sequence to idle
+					this->pickUpState = IDLE;
+					
 					//Pickup complete!
 					return true;
 				}
-			}
-			else
-			{
-				//Keep waiting for whatever process to happen
-				return false;
 			}
 			
 		default:

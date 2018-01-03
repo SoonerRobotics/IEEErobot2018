@@ -22,7 +22,7 @@ public:
 	float getGreen();
 	float getBlue();
 	
-	Color returnColorObject();
+	Color getColor();
 	
 	//void reset();
 	
