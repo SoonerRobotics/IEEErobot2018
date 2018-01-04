@@ -5,10 +5,11 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro)
+void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro, IRMatrix matrix)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	this->gyro = gyro;
+	this->irMatrix = matrix;
 }
 
 void Drivetrain::initializeTurnPID(Collection<float> turnK)
@@ -26,6 +27,10 @@ void Drivetrain::setConstants(DriveConstants k)
 	this->constants = k;
 }
 
+void Drivetrain::setDecisions(LineDecisions lineDecisions)
+{
+	this->decisions = lineDecisions;
+}
 
 void Drivetrain::drive(float targetDistance, float targetAngle)
 {
@@ -142,6 +147,25 @@ void Drivetrain::drive(float targetDistance, float targetAngle)
 	}
 }
 
+
+void Drivetrain::followLine()
+{
+	int irMatrixValue = this->irMatrix.readToBinary();
+	
+	float driveSpeed = this->constants.lineFollowSpeed;
+	float turnSpeed = 0;
+	//float turnSpeed = this->constants.lineTurnSpeed;
+	
+	//Check for special case situations before setting output
+	if(irMatrixValue == 0)
+	{
+		
+	}
+	
+	//Set the output to drive along the line
+	arcadeDrive(driveSpeed, turnSpeed);
+}
+
 /**
  * Private Functions Below
  */
@@ -180,4 +204,9 @@ void arcadeDrive(float Y, float X)
 	
 	//Output to the motors
 	BasicDrive::setOutput(left, right);
+}
+
+void Drivetrain::makeDecision()
+{
+	
 }

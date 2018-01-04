@@ -10,6 +10,9 @@ struct DriveConstants
 	
 	float distanceThreshold; //Window for robot to be in range of distance setpoint.
 	float angleThreshold; //Window for robot to be in range of angle setpoint.
+	
+	float lineFollowSpeed; //Speed to drive when line following
+	float lineTurnSpeed; //Speed to turn when correcting for line following errors
 };
 
 #endif
