@@ -60,6 +60,13 @@
 #define _GrayBMax 0
 #define _GrayBMin 0
 
+#define _BlueAngle 45
+#define _GreenAngle 90
+#define _RedAngle 135
+#define _CyanAngle 180
+#define _MagentaAngle 225
+#define _YellowAngle 270
+#define _GrayAngle 315
 
 class Color {
  

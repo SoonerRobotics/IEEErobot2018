@@ -12,37 +12,37 @@ Color::Color(float r, float g, float b) {
 		
 	//BLUE
 	if (isBetween(r,_BlueRMax,_BlueRMin) && isBetween(g,_BlueGMax,_BlueGMin) && isBetween(b,_BlueBMax,_BlueBMin)) {
-		angle = (360/8)*(1);
+		angle = _BlueAngle;
 		colorName = "blue";
 	}
 	//GREEN
 	else if (isBetween(r,_GreenRMax,_GreenRMin) && isBetween(g,_GreenGMax,_GreenGMin) && isBetween(b,_GreenBMax,_GreenBMin)) {
-		angle = (360/8)*(2);
+		angle = _GreenAngle;
 		colorName = "green";
 	}
 	//RED
 	else if (isBetween(r,_RedRMax,_RedRMin) && isBetween(g,_RedGMax,_RedGMin) && isBetween(b,_RedBMax,_RedBMin)) {
-		angle = (360/8)*(3);
+		angle = _RedAngle;
 		colorName = "red";
 	}
 	//CYAN
 	else if (isBetween(r,_CyanRMax,_CyanRMin) && isBetween(g,_CyanGMax,_CyanGMin) && isBetween(b,_CyanBMax,_CyanBMin)) {
-		angle = (360/8)*(4);
+		angle = _CyanAngle;
 		colorName = "cyan";
 	}
 	//MAGENTA
 	else if (isBetween(r,_MagentaRMax,_MagentaRMin) && isBetween(g,_MagentaGMax,_MagentaGMin) && isBetween(b,_MagentaBMax,_MagentaBMin)) {
-		angle = (360/8)*(5);
+		angle = _MagentaAngle;
 		colorName = "magenta";
 	}
 	//YELLOW
 	else if (isBetween(r,_YellowRMax,_YellowRMin) && isBetween(g,_YellowGMax,_YellowGMin) && isBetween(b,_YellowBMax,_YellowBMin)) {
-		angle = (360/8)*(6);
+		angle = _YellowAngle;
 		colorName = "yellow";
 	}
 	//GRAY
 	else if (isBetween(r,_GrayRMax,_GrayRMin) && isBetween(g,_GrayGMax,_GrayGMin) && isBetween(b,_GrayBMax,_GrayBMin)) {
-		angle = (360/8)*(7);
+		angle = _GrayAngle;
 		colorName = "gray";
 	}
 	else

@@ -37,10 +37,11 @@ float ColorSensor::getBlue() {
 
 Color ColorSensor::getColor() {
 	
-	float _R = getRed();
-	float _G = getGreen();
-	float _B = getBlue();
+	float _R = redRaw;
+	float _G = greenRaw;
+	float _B = blueRaw;
 	
 	//Use RGB values to match color to each color 
-	return color(_R,_G,_B);
+	Color c(_R,_G,_B);
+	return c;
 }
