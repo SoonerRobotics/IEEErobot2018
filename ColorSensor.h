@@ -30,7 +30,7 @@ private:
 
 	Adafruit_TCS34725 colorSensor;
 	
-	Color color;
+	Color c;
 	
 	float redRaw;
 	float greenRaw;
