@@ -68,32 +68,27 @@
 #define _YellowAngle 270
 #define _GrayAngle 315
 
+
 class Color {
  
-public:
-
-	Color();
+	public:
+		Color();
+		Color(String color);
+		Color(float r, float g, float b);
+		
+		void operator=(const Color& c);
+		
+		String getColorName();
+		void setColor();
+		
+		double getAngle();
 	
-	Color(String color);
-	
-	Color(float r, float g, float b);
-	
-	bool isBetween(float x, float low, float high)
-	
-	String getColorName();
-	
-	void setColor();
-	
-	double getAngle();
-
-	
-private:
-
-	double angle;
-	
-	String colorName;
+	private:
+		double angle;
+		
+		String colorName;
+		bool isBetween(float x, float low, float high);
 
 };
 
 #endif
- 

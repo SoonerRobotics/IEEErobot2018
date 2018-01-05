@@ -3,6 +3,7 @@
 
 #include <Arduino.h>
 #include <DigitalDevice.h>
+#include "Collection.h"
 
 class IRMatrix
 {

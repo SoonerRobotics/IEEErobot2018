@@ -7,47 +7,52 @@
 
 #include "Color.h"
 
+Color::Color()
+{
+	
+}
 
 Color::Color(float r, float g, float b) {
 		
 	//BLUE
 	if (isBetween(r,_BlueRMax,_BlueRMin) && isBetween(g,_BlueGMax,_BlueGMin) && isBetween(b,_BlueBMax,_BlueBMin)) {
-		angle = _BlueAngle;
-		colorName = "blue";
+		this->angle = _BlueAngle;
+		this->colorName = "blue";
 	}
 	//GREEN
 	else if (isBetween(r,_GreenRMax,_GreenRMin) && isBetween(g,_GreenGMax,_GreenGMin) && isBetween(b,_GreenBMax,_GreenBMin)) {
-		angle = _GreenAngle;
-		colorName = "green";
+		this->angle = _GreenAngle;
+		this->colorName = "green";
 	}
 	//RED
 	else if (isBetween(r,_RedRMax,_RedRMin) && isBetween(g,_RedGMax,_RedGMin) && isBetween(b,_RedBMax,_RedBMin)) {
-		angle = _RedAngle;
-		colorName = "red";
+		this->angle = _RedAngle;
+		this->colorName = "red";
 	}
 	//CYAN
 	else if (isBetween(r,_CyanRMax,_CyanRMin) && isBetween(g,_CyanGMax,_CyanGMin) && isBetween(b,_CyanBMax,_CyanBMin)) {
-		angle = _CyanAngle;
-		colorName = "cyan";
+		this->angle = _CyanAngle;
+		this->colorName = "cyan";
 	}
 	//MAGENTA
 	else if (isBetween(r,_MagentaRMax,_MagentaRMin) && isBetween(g,_MagentaGMax,_MagentaGMin) && isBetween(b,_MagentaBMax,_MagentaBMin)) {
-		angle = _MagentaAngle;
-		colorName = "magenta";
+		this->angle = _MagentaAngle;
+		this->colorName = "magenta";
 	}
 	//YELLOW
 	else if (isBetween(r,_YellowRMax,_YellowRMin) && isBetween(g,_YellowGMax,_YellowGMin) && isBetween(b,_YellowBMax,_YellowBMin)) {
-		angle = _YellowAngle;
-		colorName = "yellow";
+		this->angle = _YellowAngle;
+		this->colorName = "yellow";
 	}
 	//GRAY
 	else if (isBetween(r,_GrayRMax,_GrayRMin) && isBetween(g,_GrayGMax,_GrayGMin) && isBetween(b,_GrayBMax,_GrayBMin)) {
-		angle = _GrayAngle;
-		colorName = "gray";
+		this->angle = _GrayAngle;
+		this->colorName = "gray";
 	}
 	else
 	{
-		angle = 0;
+		this->angle = 0;
+		this->color = "n/a";
 	}
 }
 
@@ -61,44 +66,45 @@ Color::Color(String color) {
 	
 	if (color.equals("blue"))
 	{
-		//360/7 divides up 360 angles in circle for 7 color
-		//multiplied by the order of the color (blue is the first color, but order can change)
-		angle = (360/8)*(1);
+		this->angle = _BlueAngle;
 	}
 	else if (color.equals("green"))
 	{
-		angle = (360/8)*(2);
+		this->angle = _GreenAngle;
 	}
-	
 	else if (color.equals("red"))
 	{
-		angle = (360/8)*(3);
+		this->angle = _RedAngle;
 	}
-	
 	else if (color.equals("cyan"))
 	{
-		angle = (360/8)*(4);
+		this->angle = _CyanAngle;
 	}
-	
 	else if (color.equals("magenta"))
 	{
-		angle = (360/8)*(5);
+		this->angle = _MagentaAngle;
 	}
-	
 	else if (color.equals("yellow"))
 	{
-		angle = (360/8)*(6);
+		this->angle = _YellowAngle;
 	}
-	
 	else if (color.equals("gray"))
 	{
-		angle = (360/8)*(7);
+		this->angle = _GrayAngle;
 	}
-
 	else
 	{
-		angle = 0;
+		this->angle = 0;
 	}
+	
+	this->color = color;
+}
+
+
+void Color::operator=(const Color& c)
+{
+	this->angle = c.angle;
+	this->color = c.color;
 }
 
 /**
@@ -110,42 +116,38 @@ void Color::setColor(String color) {
 	
 	if (color.equals("blue"))
 	{
-		angle = (360/8)*(1);
+		this->angle = _BlueAngle;
 	}
 	else if (color.equals("green"))
 	{
-		angle = (360/8)*(2);
+		this->angle = _GreenAngle;
 	}
-	
 	else if (color.equals("red"))
 	{
-		angle = (360/8)*(3);
+		this->angle = _RedAngle;
 	}
-	
 	else if (color.equals("cyan"))
 	{
-		angle = (360/8)*(4);
+		this->angle = _CyanAngle;
 	}
-	
 	else if (color.equals("magenta"))
 	{
-		angle = (360/8)*(5);
+		this->angle = _MagentaAngle;
 	}
-	
 	else if (color.equals("yellow"))
 	{
-		angle = (360/8)*(6);
+		this->angle = _YellowAngle;
 	}
-	
 	else if (color.equals("gray"))
 	{
-		angle = (360/8)*(7);
+		this->angle = _GrayAngle;
 	}
-
 	else
 	{
-		angle = 0;
+		this->angle = 0;
 	}
+	
+	this->color = color;
 	
 }
 
