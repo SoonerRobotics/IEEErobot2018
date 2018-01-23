@@ -215,7 +215,7 @@ void Drivetrain::searchForward()
 {
 	while (irMatrix.readToBinary()>>3&0) 
 	{
-		drive(0.25);
+		drive(0.25,0.0);
 		delay(50);
 	}
 	
