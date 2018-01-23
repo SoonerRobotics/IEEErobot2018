@@ -210,3 +210,13 @@ void Drivetrain::makeDecision()
 {
 	
 }
+
+void Drivetrain::searchForward()
+{
+	while (irMatrix.readToBinary()>>3&0) 
+	{
+		drive(0.25);
+		delay(50);
+	}
+	
+}

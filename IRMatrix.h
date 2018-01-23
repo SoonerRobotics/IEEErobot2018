@@ -2,7 +2,7 @@
 #define IR_MATRIX_H
 
 #include <Arduino.h>
-#include <DigitalDevice.h>
+#include <AnalogDevice.h>
 #include "Collection.h"
 
 class IRMatrix
@@ -18,11 +18,11 @@ class IRMatrix
 		unsigned int readToBinary();
 		
 	private:
-		DigitalDevice ir1;
-		DigitalDevice ir2;
-		DigitalDevice ir3;
-		DigitalDevice ir4;
-		DigitalDevice ir5;
+		AnalogDevice ir1;
+		AnalogDevice ir2;
+		AnalogDevice ir3;
+		AnalogDevice ir4;
+		AnalogDevice ir5;
 		
 		Collection<bool> values(5);
 		

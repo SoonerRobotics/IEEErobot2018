@@ -26,6 +26,8 @@ class Drivetrain : public BasicDrive
 		
 		void followLine();
 		
+		void searchForward();
+		
 
 	private:
 		Gyro gyro;
