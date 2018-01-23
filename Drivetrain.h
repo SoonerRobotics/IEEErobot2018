@@ -5,6 +5,7 @@
 #include <Collection.h>
 #include <BasicDrive.h>
 #include <PIDController.h>
+#include <DigitalDevice.h>
 #include "Gyro.h"
 #include "DriveConstants.h"
 #include "LineDecisions.h"
@@ -15,7 +16,7 @@ class Drivetrain : public BasicDrive
 	public:
 		Drivetrain();
 		
-		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro, IRMatrix matrix);
+		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro, IRMatrix matrix, DigitalDevice mDetector);
 		void initializeTurnPID(Collection<float> turnK);
 		void initializeDistancePID(Collection<float> distanceK);
 		void setConstants(DriveConstants k);
@@ -25,6 +26,8 @@ class Drivetrain : public BasicDrive
 		void turnToAngle(float angle);
 		
 		void followLine();
+		
+		void followLineUntilCoin();
 		
 		void searchForward();
 		

@@ -5,7 +5,7 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro, IRMatrix matrix)
+void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro, IRMatrix matrix, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	this->gyro = gyro;
@@ -164,6 +164,24 @@ void Drivetrain::followLine()
 	
 	//Set the output to drive along the line
 	arcadeDrive(driveSpeed, turnSpeed);
+}
+
+void Drivetrain::followLineUntilCoin() 
+{
+	while(mDetector.read() == LOW)
+	{
+		int irMatrixValue = this->irMatrix.readToBinary();
+		
+		float driveSpeed = this->constants.lineFollowSpeed;
+		float turnSpeed = 0;
+		
+		if(irMatrixValue == 0)
+		{
+			
+		}
+		
+		arcadeDrive(driveSpeed, turnSpeed);
+	}
 }
 
 /**
