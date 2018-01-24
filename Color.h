@@ -60,6 +60,7 @@
 #define _GrayBMax 0
 #define _GrayBMin 0
 
+#define _StartingAngle 0
 #define _BlueAngle 45
 #define _GreenAngle 90
 #define _RedAngle 135

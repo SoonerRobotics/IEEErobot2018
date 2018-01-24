@@ -9,6 +9,12 @@ struct IntakeConstants
 	float topHeight;
 	float scanHeight;
 	
+	//Important heights in the dropoff sequence
+	//Use idleHeight
+	float storageHeight;
+	//Use topHeight
+	float dropHeight;
+	
 	//Angles for the color sensor
 	int colorServoIdleAngle;
 	int colorServoDeployAngle;

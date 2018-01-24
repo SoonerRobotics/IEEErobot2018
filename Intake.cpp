@@ -294,6 +294,108 @@ void Intake::pickUpSequenceA()
 	}
 }
 
+void Intake::dropOffSequence(Color color)
+{
+	switch(this->pickUpState)
+	{
+		case IDLE:
+			//If the intake is above the grab height, drop the magnet to that height
+			if(this->intakeEncoder.getValue() > this->constants.storageHeight)
+			{
+				//Output <0 to go down
+				this->intakeMotor.output((-1) * this->constants.motorSpeed);
+			}
+			else //Otherwise it is time to grab the coin from storage
+			{
+				this->pickUpState = GRAB;
+			}
+			
+		case GRAB:
+			//Turn the turntable to the coin storage of given color
+			this->turnTable.setPosition(color);
+			delay(this->constants.turnTableWaitMax);
+			
+			//Stop the motor so we can do a pickup
+			this->intakeMotor.output(this->constants.stallSpeed);
+			
+			//Pick up the coins from storage
+			this->electromagnet.pickUp();
+			
+			//Wait to make sure it is picked up
+			delay(this->constants.magnetWaitTime);
+			
+			//Begin the process of RAISE
+			this->pickUpState = RAISE;
+			
+		case RAISE:
+			//While the intake is below the max height and the limit switch is not pressed
+			if(this->intakeEncoder.getValue() < this->constants.topHeight && this->limitSwitch.read() == LOW)
+			{
+				//Output >0 to go up
+				this->intakeMotor.output(this->constants.motorSpeed);
+			}
+			else
+			{
+				//Stop driving the motor upwards
+				this->intakeMotor.output(this->constants.stallSpeed);
+				
+				//We have reached the height, so time to drop off the coins.
+				this->pickUpState = DROP;
+			}
+			
+		case DROP:
+			
+			if(this->electromagnet.hasCoin())
+			{
+				//Turn the turntable so the coins can pass through
+				this->turnTable.setPosition(0);
+				delay(this->constants.turnTableWaitMax);
+				
+				//Once the turntable is ready, drop the magnet to drop height
+				if(this->intakeEncoder.getValue() > this->constants.dropHeight)
+				{
+					//Output <0 to go down
+					this->intakeMotor.output((-1) * (this->constants.motorSpeed);
+				}
+				else if(this->intakeEncoder.getValue() < this->constants.dropHeight)
+				{
+					//Once the turntable is ready, drop the coin
+					this->electromagnet.drop();
+				
+					//Wait for the coin to drop
+					delay(this->constants.magnetWaitTime);
+				}
+				
+				this->turnTable.setPosition();
+				delay(this->constants.turnTableWaitMax);
+			}
+			//Check to see if the turntable is ready to let the intake drop
+			else if(!this->electromagnet.hasCoin())
+			{
+				//Return the magnet to above the turntable
+				if(this->intakeEncoder.getValue() < this->constants.idleHeight)
+				{
+					//Output >0 to go up
+					this->intakeMotor.output(this->constants.motorSpeed);
+				}
+				else
+				{
+					//Stop driving the motor downwards
+					this->intakeMotor.output(this->constants.stallSpeed);
+					
+					//set the sequence to idle
+					this->pickUpState = IDLE;
+					
+					//Pickup complete!
+					break;
+				}
+			}
+			
+		default:
+			this->pickUpState = IDLE;
+	}
+}
+
 bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;

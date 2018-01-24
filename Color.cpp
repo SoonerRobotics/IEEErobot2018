@@ -51,7 +51,7 @@ Color::Color(float r, float g, float b) {
 	}
 	else
 	{
-		this->angle = 0;
+		this->angle = _StartingAngle;
 		this->color = "n/a";
 	}
 }

@@ -18,7 +18,11 @@ class Intake
 		Intake();
 		Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, ColorSensor colorSensor, int colorServoPin);
 		
-		void pickUpSequence();
+		bool pickUpSequence();
+		
+		void pickUpSequenceA();
+		
+		void dropOffSequence(Color color);
 		
 		bool coinDetected();
 		
