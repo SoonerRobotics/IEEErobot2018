@@ -14,9 +14,7 @@ Turntable::Turntable() {
 
 void Turntable::setPosition(Color color)
 {
-	int angle = color.getAngle();
-	
-	servo.write(angle);
+	servo.write(color.getAngle());
 }
 
 void Turntable::setPosition(int angle)

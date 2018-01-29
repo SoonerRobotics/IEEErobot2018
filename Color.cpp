@@ -63,36 +63,36 @@ Color::Color(String color) {
 	{
 		//360/7 divides up 360 angles in circle for 7 color
 		//multiplied by the order of the color (blue is the first color, but order can change)
-		angle = (360/8)*(1);
+		angle = _BlueAngle;
 	}
 	else if (color.equals("green"))
 	{
-		angle = (360/8)*(2);
+		angle = _GreenAngle;
 	}
 	
 	else if (color.equals("red"))
 	{
-		angle = (360/8)*(3);
+		angle = _RedAngle;
 	}
 	
 	else if (color.equals("cyan"))
 	{
-		angle = (360/8)*(4);
+		angle = _CyanAngle;
 	}
 	
 	else if (color.equals("magenta"))
 	{
-		angle = (360/8)*(5);
+		angle = _MagentaAngle;
 	}
 	
 	else if (color.equals("yellow"))
 	{
-		angle = (360/8)*(6);
+		angle = _YellowAngle;
 	}
 	
 	else if (color.equals("gray"))
 	{
-		angle = (360/8)*(7);
+		angle = _GrayAngle;
 	}
 
 	else
@@ -110,43 +110,44 @@ void Color::setColor(String color) {
 	
 	if (color.equals("blue"))
 	{
-		angle = (360/8)*(1);
+		//360/7 divides up 360 angles in circle for 7 color
+		//multiplied by the order of the color (blue is the first color, but order can change)
+		angle = _BlueAngle;
 	}
 	else if (color.equals("green"))
 	{
-		angle = (360/8)*(2);
+		angle = _GreenAngle;
 	}
 	
 	else if (color.equals("red"))
 	{
-		angle = (360/8)*(3);
+		angle = _RedAngle;
 	}
 	
 	else if (color.equals("cyan"))
 	{
-		angle = (360/8)*(4);
+		angle = _CyanAngle;
 	}
 	
 	else if (color.equals("magenta"))
 	{
-		angle = (360/8)*(5);
+		angle = _MagentaAngle;
 	}
 	
 	else if (color.equals("yellow"))
 	{
-		angle = (360/8)*(6);
+		angle = _YellowAngle;
 	}
 	
 	else if (color.equals("gray"))
 	{
-		angle = (360/8)*(7);
+		angle = _GrayAngle;
 	}
 
 	else
 	{
 		angle = 0;
 	}
-	
 }
 
 bool Color::isBetween(float x,float low,float high) {
