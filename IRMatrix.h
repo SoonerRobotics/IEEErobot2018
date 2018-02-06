@@ -24,7 +24,7 @@ class IRMatrix
 		AnalogDevice ir4;
 		AnalogDevice ir5;
 		
-		Collection<bool> values(5);
+		//Collection<bool> values(5);
 		
 		int binaryValue;
 		

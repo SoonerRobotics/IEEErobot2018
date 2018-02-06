@@ -296,6 +296,7 @@ void Intake::pickUpSequenceA()
 
 void Intake::dropOffSequence(Color color)
 {
+	
 	switch(this->pickUpState)
 	{
 		case IDLE:

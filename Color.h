@@ -74,20 +74,27 @@ class Color {
  
 	public:
 		Color();
+		
 		Color(String color);
+		
 		Color(float r, float g, float b);
 		
 		void operator=(const Color& c);
 		
 		String getColorName();
-		void setColor();
+		
+		void setColor(String color);
 		
 		double getAngle();
 	
 	private:
+	
+		
+	
 		double angle;
 		
 		String colorName;
+		
 		bool isBetween(float x, float low, float high);
 
 };

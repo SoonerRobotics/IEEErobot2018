@@ -1,11 +1,12 @@
-#ifndef COLORSENSOR_H_
-#define COLORSENSOR_H__H
+#ifndef COLORSENSOR_H
+#define COLORSENSOR_H
 
 #include <Arduino.h>
 #include <Wire.h>
-#include "Adafruit_Sensors/Adafruit_Sensor.h"
-#include "Adafruit_Sensors/Adafruit_TCS34725.h"
-#include "Adafruit_Sensors/utility/imumaths.h"
+#include <Adafruit_BNO055.h>
+#include <Adafruit_Sensor.h>
+#include <Adafruit_TCS34725.h>
+#include <utility/imumaths.h>
 #include "Color.h"
 
 class ColorSensor {

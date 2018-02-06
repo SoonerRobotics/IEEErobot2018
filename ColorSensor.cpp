@@ -15,9 +15,9 @@ void ColorSensor::updateData()
 	//Get the data from the color sensor
 	colorSensor.getRawData(&red, &green, &blue, &clear);	
 	
-	this->redRaw = red();
-	this->greenRaw = green();
-	this->blueRaw = blue();
+	this->redRaw = red;
+	this->greenRaw = green;
+	this->blueRaw = blue;
 }
 
 float ColorSensor::getRed() {

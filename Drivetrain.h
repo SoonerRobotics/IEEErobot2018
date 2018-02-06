@@ -35,6 +35,7 @@ class Drivetrain : public BasicDrive
 	private:
 		Gyro gyro;
 		IRMatrix irMatrix;
+		DigitalDevice metDetector;
 		
 		PIDController turnPID;
 		PIDController distancePID; 
@@ -45,7 +46,8 @@ class Drivetrain : public BasicDrive
 		void arcadeDrive(float Y, float X);
 		
 		void makeDecision();
-}
+		
+};
 
 
 #endif

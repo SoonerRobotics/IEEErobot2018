@@ -52,7 +52,7 @@ Color::Color(float r, float g, float b) {
 	else
 	{
 		this->angle = _StartingAngle;
-		this->color = "n/a";
+		this->colorName = "n/a";
 	}
 }
 
@@ -67,44 +67,51 @@ Color::Color(String color) {
 	if (color.equals("blue"))
 	{
 		this->angle = _BlueAngle;
+		this->colorName = "blue";
 	}
 	else if (color.equals("green"))
 	{
 		this->angle = _GreenAngle;
+		this->colorName = "green";
 	}
 	else if (color.equals("red"))
 	{
 		this->angle = _RedAngle;
+		this->colorName = "red";
 	}
 	else if (color.equals("cyan"))
 	{
 		this->angle = _CyanAngle;
+		this->colorName = "cyan";
 	}
 	else if (color.equals("magenta"))
 	{
 		this->angle = _MagentaAngle;
+		this->colorName = "magenta";
 	}
 	else if (color.equals("yellow"))
 	{
 		this->angle = _YellowAngle;
+		this->colorName = "yellow";
 	}
 	else if (color.equals("gray"))
 	{
 		this->angle = _GrayAngle;
+		this->colorName = "gray";
 	}
 	else
 	{
 		this->angle = 0;
 	}
 	
-	this->color = color;
+	//this->color = color;
 }
 
 
 void Color::operator=(const Color& c)
 {
 	this->angle = c.angle;
-	this->color = c.color;
+	this->colorName = c.colorName;
 }
 
 /**
@@ -117,37 +124,44 @@ void Color::setColor(String color) {
 	if (color.equals("blue"))
 	{
 		this->angle = _BlueAngle;
+		this->colorName = "blue";
 	}
 	else if (color.equals("green"))
 	{
 		this->angle = _GreenAngle;
+		this->colorName = "green";
 	}
 	else if (color.equals("red"))
 	{
 		this->angle = _RedAngle;
+		this->colorName = "red";
 	}
 	else if (color.equals("cyan"))
 	{
 		this->angle = _CyanAngle;
+		this->colorName = "cyan";
 	}
 	else if (color.equals("magenta"))
 	{
 		this->angle = _MagentaAngle;
+		this->colorName = "magenta";
 	}
 	else if (color.equals("yellow"))
 	{
 		this->angle = _YellowAngle;
+		this->colorName = "yellow";
 	}
 	else if (color.equals("gray"))
 	{
 		this->angle = _GrayAngle;
+		this->colorName = "gray";
 	}
 	else
 	{
 		this->angle = 0;
 	}
 	
-	this->color = color;
+	//this->color = color;
 	
 }
 

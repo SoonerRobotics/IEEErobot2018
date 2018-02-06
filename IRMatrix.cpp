@@ -49,11 +49,13 @@ void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5)
 	this->ir5.update(pin5, INPUT);
 }
 
+/*
 Collection<bool> IRMatrix::getValues()
 {
 	readAll();
 	return this->values;
 }
+*/
 
 int IRMatrix::readToBinary()
 {

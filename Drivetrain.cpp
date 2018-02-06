@@ -10,6 +10,7 @@ void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder r
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	this->gyro = gyro;
 	this->irMatrix = matrix;
+	this->metDetector = mDetector;
 }
 
 void Drivetrain::initializeTurnPID(Collection<float> turnK)
@@ -37,8 +38,8 @@ void Drivetrain::drive(float targetDistance, float targetAngle)
 	float Y = 0.0, X = 0.0, distance = 0.0, yaw = 0.0, gyroError;
 	
 	//Reset Encoders
-	BasicDrive::leftEncoder.reset();
-	BasicDrive::rightEncoder.reset();
+	BasicDrive::getLeftEncoder().reset();
+	BasicDrive::getRightEncoder().reset();
 	
 	//Reset Gyro
 	this->gyro.reset();
@@ -60,10 +61,10 @@ void Drivetrain::drive(float targetDistance, float targetAngle)
 	while(!driveComplete || !turnComplete)
 	{
 		//Calculate Distance
-		distance = (BasicDrive::leftEncoder.getTicks() + BasicDrive::rightEncoder.getTicks()) / 2;
+		distance = (BasicDrive::getLeftEncoder().getTicks() + BasicDrive::getRightEncoder().getTicks()) / 2;
 		
 		//Calculate Gyro Error
-		yaw = this->gyro.getAngle();
+		yaw = this->gyro.getYaw();
 		gyroError = yaw - targetAngle;
 		
 		//Wrap the gyro error to [-180, 180]
@@ -73,7 +74,7 @@ void Drivetrain::drive(float targetDistance, float targetAngle)
 		}
 		
 		//Calculate Y and X values (straight vector and turn vector respectively)
-		Y = drivePID.getOutput(targetDistance, distance);
+		Y = distancePID.getOutput(targetDistance, distance);
 		X = turnPID.getOutput(0, gyroError);
 		
 		//Check to see if the distance is in range and if the drive is completed
@@ -93,7 +94,7 @@ void Drivetrain::drive(float targetDistance, float targetAngle)
 			distanceTimerElapsed = millis() - distanceTimer;
 			
 			//If we have been on target for a long enough amount of time, we have completed the drive
-			if(distanceTimerElapsed > this->constants.setpointTimerThreshold)
+			if(distanceTimerElapsed > this->constants.setpointTimeout)
 			{
 				driveComplete = true;
 			}
@@ -157,9 +158,14 @@ void Drivetrain::followLine()
 	//float turnSpeed = this->constants.lineTurnSpeed;
 	
 	//Check for special case situations before setting output
-	if(irMatrixValue == 0)
+	if(irMatrixValue&3 == 1)
 	{
+		turnSpeed = 0.25;
 		
+	} else if(irMatrixValue&3 == 1)
+		
+	{
+		turnSpeed = -0.25;
 	}
 	
 	//Set the output to drive along the line
@@ -168,16 +174,22 @@ void Drivetrain::followLine()
 
 void Drivetrain::followLineUntilCoin() 
 {
-	while(mDetector.read() == LOW)
+	while(metDetector.read() == LOW)
 	{
 		int irMatrixValue = this->irMatrix.readToBinary();
 		
 		float driveSpeed = this->constants.lineFollowSpeed;
 		float turnSpeed = 0;
 		
-		if(irMatrixValue == 0)
+		//Check for special case situations before setting output
+		if(irMatrixValue&3 == 1)
 		{
-			
+			turnSpeed = 0.25;
+		
+		} else if(irMatrixValue&3 == 1)
+		
+		{
+			turnSpeed = -0.25;
 		}
 		
 		arcadeDrive(driveSpeed, turnSpeed);
@@ -222,6 +234,7 @@ void arcadeDrive(float Y, float X)
 	
 	//Output to the motors
 	BasicDrive::setOutput(left, right);
+	//setOutput(left, right);
 }
 
 void Drivetrain::makeDecision()
@@ -238,3 +251,5 @@ void Drivetrain::searchForward()
 	}
 	
 }
+
+	
