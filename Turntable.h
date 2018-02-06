@@ -10,6 +10,7 @@
 
 #include <Arduino.h>
 #include <Servo.h>
+#include "Color.h"
 
 #define IDLE_ANGLE 0
 

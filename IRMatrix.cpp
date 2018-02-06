@@ -12,12 +12,12 @@
  */
 
 
-IRMatrix::IRMatrix()
+IRMatrix::IRMatrix()  : values(5)
 {
 	this->binaryValue = 0;
 }
 
-IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5)
+IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5)  : values(5)
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
@@ -57,7 +57,7 @@ Collection<bool> IRMatrix::getValues()
 }
 */
 
-int IRMatrix::readToBinary()
+unsigned int IRMatrix::readToBinary()
 {
 	this->binaryValue = 0;
 	

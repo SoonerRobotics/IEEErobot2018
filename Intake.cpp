@@ -33,7 +33,7 @@ Intake::Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, Digita
 	
 	this->pickUpState = IDLE;
 	
-	this->lastColor = NULL;
+	this->lastColor = Color("none");
 	
 	this->colorServo.attach(colorServoPin);
 }
@@ -356,7 +356,7 @@ void Intake::dropOffSequence(Color color)
 				if(this->intakeEncoder.getValue() > this->constants.dropHeight)
 				{
 					//Output <0 to go down
-					this->intakeMotor.output((-1) * (this->constants.motorSpeed);
+					this->intakeMotor.output((-1) * (this->constants.motorSpeed));
 				}
 				else if(this->intakeEncoder.getValue() < this->constants.dropHeight)
 				{

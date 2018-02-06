@@ -5,7 +5,12 @@ Gyro::Gyro()
 	this->gyro.begin();
 }
 
-void updateData()
+void Gyro::operator=(const Adafruit_BNO055& gyro)
+{
+	this->gyro = gyro;
+}
+
+void Gyro::updateData()
 {
 	delay(60);  // takes 50ms to read 
 	

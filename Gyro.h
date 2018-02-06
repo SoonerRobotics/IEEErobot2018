@@ -5,7 +5,6 @@
 #include <Wire.h>
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BNO055.h>
 #include <utility/imumaths.h>
 
 class Gyro
@@ -13,7 +12,7 @@ class Gyro
 	public:
 		Gyro();
 		
-		void operator=(const Gyro& gyro);
+		void operator=(const Adafruit_BNO055& gyro);
 		
 		void updateData();
 		float getPitch();

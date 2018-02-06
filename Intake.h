@@ -2,12 +2,9 @@
 #define INTAKE_H
 
 #include <Arduino.h>
-
-#include <DigitalDevice.h>
+#include <RobotLib.h>
 #include "Electromagnet.h"
 #include "IntakeConstants.h"
-#include <Motor.h>
-#include <MotorController.h>
 #include "Turntable.h"
 #include "ColorSensor.h"
 #include <Servo.h>
@@ -29,7 +26,7 @@ class Intake
 		void setConstants(IntakeConstants K);
 		
 	private:
-		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE};
+		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
 		
 		PickUpState pickUpState;
 		IntakeConstants constants;

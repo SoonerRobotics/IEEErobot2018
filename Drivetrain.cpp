@@ -5,7 +5,7 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Gyro gyro, IRMatrix matrix, DigitalDevice mDetector)
+void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix matrix, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	this->gyro = gyro;
@@ -200,7 +200,7 @@ void Drivetrain::followLineUntilCoin()
  * Private Functions Below
  */
 
-void arcadeDrive(float Y, float X)
+void Drivetrain::arcadeDrive(float Y, float X)
 {
 	float right, left;
 	
