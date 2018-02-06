@@ -13,7 +13,8 @@ class Intake
 {
 	public:
 		Intake();
-		Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, ColorSensor colorSensor, int colorServoPin);
+		
+		Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, Adafruit_TCS34725 colorSensor, int colorServoPin);
 		
 		bool pickUpSequence();
 		
@@ -27,8 +28,11 @@ class Intake
 		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
+		enum DropOffState{IDLEd, GRABd, RAISEd, DROPd};
 		
 		PickUpState pickUpState;
+		DropOffState dropOffState;
+		
 		IntakeConstants constants;
 		
 		Motor intakeMotor;

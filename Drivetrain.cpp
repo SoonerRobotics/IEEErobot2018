@@ -251,4 +251,9 @@ void Drivetrain::searchForward()
 	
 }
 
+Gyro& Drivetrain::getGyro()
+{
+	return this->gyro;
+}
+
 	

@@ -7,9 +7,14 @@
 
 #include "Turntable.h"
 
-Turntable::Turntable() {
+Turntable::Turntable()
+{
 	// TODO Auto-generated constructor stub
+}
 
+Turntable::Turntable(int pinServo) 
+{
+	servo.attach(pinServo);
 }
 
 void Turntable::setPosition(Color color)

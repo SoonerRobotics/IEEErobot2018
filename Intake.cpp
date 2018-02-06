@@ -19,9 +19,10 @@
 Intake::Intake()
 {
 	this->pickUpState = IDLE;
+	this->dropOffState = IDLEd;
 }
 
-Intake::Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, ColorSensor colorSensor, int colorServoPin)
+Intake::Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, Adafruit_TCS34725 colorSensor, int colorServoPin)
 {
 	this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
@@ -32,6 +33,7 @@ Intake::Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, Digita
 	this->colorSensor = colorSensor;
 	
 	this->pickUpState = IDLE;
+	this->dropOffState = IDLEd;
 	
 	this->lastColor = Color("none");
 	
@@ -297,9 +299,9 @@ void Intake::pickUpSequenceA()
 void Intake::dropOffSequence(Color color)
 {
 	
-	switch(this->pickUpState)
+	switch(this->dropOffState)
 	{
-		case IDLE:
+		case IDLEd:
 			//If the intake is above the grab height, drop the magnet to that height
 			if(this->intakeEncoder.getValue() > this->constants.storageHeight)
 			{
@@ -308,10 +310,10 @@ void Intake::dropOffSequence(Color color)
 			}
 			else //Otherwise it is time to grab the coin from storage
 			{
-				this->pickUpState = GRAB;
+				this->dropOffState = GRABd;
 			}
 			
-		case GRAB:
+		case GRABd:
 			//Turn the turntable to the coin storage of given color
 			this->turnTable.setPosition(color);
 			delay(this->constants.turnTableWaitMax);
@@ -326,9 +328,9 @@ void Intake::dropOffSequence(Color color)
 			delay(this->constants.magnetWaitTime);
 			
 			//Begin the process of RAISE
-			this->pickUpState = RAISE;
+			this->dropOffState = RAISEd;
 			
-		case RAISE:
+		case RAISEd:
 			//While the intake is below the max height and the limit switch is not pressed
 			if(this->intakeEncoder.getValue() < this->constants.topHeight && this->limitSwitch.read() == LOW)
 			{
@@ -341,10 +343,10 @@ void Intake::dropOffSequence(Color color)
 				this->intakeMotor.output(this->constants.stallSpeed);
 				
 				//We have reached the height, so time to drop off the coins.
-				this->pickUpState = DROP;
+				this->dropOffState = DROPd;
 			}
 			
-		case DROP:
+		case DROPd:
 			
 			if(this->electromagnet.hasCoin())
 			{
@@ -385,7 +387,7 @@ void Intake::dropOffSequence(Color color)
 					this->intakeMotor.output(this->constants.stallSpeed);
 					
 					//set the sequence to idle
-					this->pickUpState = IDLE;
+					this->dropOffState = IDLEd;
 					
 					//Pickup complete!
 					break;
@@ -393,7 +395,7 @@ void Intake::dropOffSequence(Color color)
 			}
 			
 		default:
-			this->pickUpState = IDLE;
+			this->dropOffState = IDLEd;
 	}
 }
 

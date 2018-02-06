@@ -6,6 +6,10 @@ ColorSensor::ColorSensor() {
 
 }
 
+void ColorSensor::operator=(const Adafruit_TCS34725& colorSensor) {
+	this->colorSensor = colorSensor;
+}
+
 void ColorSensor::updateData()
 {
 	uint16_t clear, red, green, blue;

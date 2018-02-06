@@ -18,6 +18,7 @@ class Turntable {
 
 public:
 	Turntable();
+	Turntable(int pinServo);
 	
 	void setPosition(Color color);
 	void setPosition(int angle);

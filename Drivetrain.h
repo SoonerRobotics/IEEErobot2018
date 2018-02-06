@@ -34,6 +34,8 @@ class Drivetrain : public BasicDrive
 		
 		void searchForward();
 		
+		Gyro& getGyro();
+		
 
 	private:
 		Gyro gyro;
