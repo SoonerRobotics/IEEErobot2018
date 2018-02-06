@@ -234,7 +234,6 @@ void arcadeDrive(float Y, float X)
 	
 	//Output to the motors
 	BasicDrive::setOutput(left, right);
-	//setOutput(left, right);
 }
 
 void Drivetrain::makeDecision()
