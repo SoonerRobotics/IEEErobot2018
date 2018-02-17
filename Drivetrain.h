@@ -20,7 +20,6 @@ class Drivetrain : public BasicDrive
 		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector);
 		void initializeTurnPID(Collection<float> turnK);
 		void initializeDistancePID(Collection<float> distanceK);
-		void setConstants(DriveConstants k);
 		
 		bool drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize);
 		void turnToAngle(float angle);
@@ -30,6 +29,8 @@ class Drivetrain : public BasicDrive
 		void followLineUntilCoin();
 		
 		void searchForward(float inputYaw);
+		
+		void followLineGyro(float angle){
 		
 
 	private:

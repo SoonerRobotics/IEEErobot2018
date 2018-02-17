@@ -25,12 +25,6 @@ void Drivetrain::initializeDistancePID(Collection<float> distanceK)
 	this->distancePID.initialize(0, distanceK);
 }
 
-void Drivetrain::setConstants(DriveConstants k)
-{
-	this->constants = k;
-}
-
-
 bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize)
 {
 	if(reinitialize)
@@ -246,5 +240,9 @@ void Drivetrain::searchForward(float inputYaw)
 		complete = drive(0.25, 0.0, inputYaw, complete);
 		delay(50);
 	}
-	
+}
+
+void Drivetrain::followLineGyro(float angle){
+	//IF all center IR senor arn't on line
+	//CHeck current angle against angle
 }
