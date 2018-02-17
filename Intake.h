@@ -6,7 +6,6 @@
 #include "Electromagnet.h"
 #include "IntakeConstants.h"
 #include "Turntable.h"
-#include "ColorSensor.h"
 #include <Servo.h>
 
 class Intake
@@ -14,12 +13,11 @@ class Intake
 	public:
 		Intake();
 		
-		//void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin);
-		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, Adafruit_TCS34725 colorSensor, int colorServoPin);
+		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin);
 		
-		bool pickUpSequence();
+		bool pickUpSequence(Color color);
 		
-		void pickUpSequenceA();
+		void pickUpSequenceA(Color color);
 		
 		void dropOffSequence(Color color);
 		
@@ -44,7 +42,6 @@ class Intake
 		Electromagnet electromagnet;
 		
 		Servo colorServo;
-		//ColorSensor colorSensor;
 		Turntable turnTable;
 		
 		//Most recent read from color sensor

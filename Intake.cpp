@@ -23,16 +23,14 @@ Intake::Intake()
 }
 
 
-void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, Adafruit_TCS34725 colorSensor, int colorServoPin)
-//void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin)
+void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin)
 {
-	////this->intakeMotor = motor;
+	//this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
 	this->metalDetector = metalDetector;
 	this->limitSwitch = limitSwitch;
 	this->electromagnet = electromagnet;
 	this->turnTable = turnTable;
-	//this->colorSensor = colorSensor;
 	
 	this->pickUpState = IDLE;
 	this->dropOffState = IDLEd;
@@ -43,7 +41,7 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 }
 
 
-bool Intake::pickUpSequence()
+bool Intake::pickUpSequence(Color color)
 {	
 	switch(this->pickUpState)
 	{
@@ -52,7 +50,7 @@ bool Intake::pickUpSequence()
 			if(this->intakeEncoder.getValue() > this->constants.pickUpHeight)
 			{
 				//Output <0 to go down
-				//this->intakeMotor.output((-1) * this->constants.motorSpeed);
+				this->intakeMotor.output((-1) * this->constants.motorSpeed);
 			}
 			else //Otherwise it is time to grab the coin
 			{
@@ -62,7 +60,7 @@ bool Intake::pickUpSequence()
 			
 		case GRAB:
 			//Stop the motor so we can do a pickup
-			//this->intakeMotor.output(this->constants.stallSpeed);
+			this->intakeMotor.output(this->constants.stallSpeed);
 			
 			//Pick up the coin
 			this->electromagnet.pickUp();
@@ -81,20 +79,19 @@ bool Intake::pickUpSequence()
 			if(this->intakeEncoder.getValue() < this->constants.scanHeight)
 			{
 				//Output >0 to go up
-				//this->intakeMotor.output(this->constants.motorSpeed);
+				this->intakeMotor.output(this->constants.motorSpeed);
 			}
 			else
 			{
 				//Stop the motor so we can scan the coin
-				//this->intakeMotor.output(this->constants.stallSpeed);
+				this->intakeMotor.output(this->constants.stallSpeed);
 				
 				//Deploy the RGB color sensor! (servo)
 				this->colorServo.write(this->constants.colorServoDeployAngle);
 				delay(this->constants.colorServoDelay);
 				
 				//Detect and save the color
-				//this->colorSensor.updateData();
-				this->lastColor = Color("red"); //this->colorSensor.getColor();
+				this->lastColor = color; 
 				
 				//Retract color sensor
 				this->colorServo.write(this->constants.colorServoIdleAngle);
@@ -110,12 +107,12 @@ bool Intake::pickUpSequence()
 			if(this->intakeEncoder.getValue() < this->constants.topHeight && this->limitSwitch.read() == LOW)
 			{
 				//Output >0 to go up
-				//this->intakeMotor.output(this->constants.motorSpeed);
+				this->intakeMotor.output(this->constants.motorSpeed);
 			}
 			else
 			{
 				//Stop driving the motor upwards
-				//this->intakeMotor.output(this->constants.stallSpeed);
+				this->intakeMotor.output(this->constants.stallSpeed);
 				
 				//We have reached the height, so time to store.
 				this->pickUpState = STORE;
@@ -152,7 +149,7 @@ bool Intake::pickUpSequence()
 				if(this->intakeEncoder.getValue() > this->constants.idleHeight)
 				{
 					//Output <0 to go down
-					//this->intakeMotor.output((-1) * this->constants.motorSpeed);
+					this->intakeMotor.output((-1) * this->constants.motorSpeed);
 					
 					//Almost done, but not quite.
 					return false;
@@ -160,7 +157,7 @@ bool Intake::pickUpSequence()
 				else
 				{
 					//Stop driving the motor downwards
-					//this->intakeMotor.output(this->constants.stallSpeed);
+					this->intakeMotor.output(this->constants.stallSpeed);
 					
 					//set the sequence to idle
 					this->pickUpState = IDLE;
@@ -177,9 +174,8 @@ bool Intake::pickUpSequence()
 	
 }
 
-void Intake::pickUpSequenceA()
+void Intake::pickUpSequenceA(Color color)
 {	
-	
 	switch(this->pickUpState)
 	{
 		case IDLE:
@@ -187,7 +183,7 @@ void Intake::pickUpSequenceA()
 			if(this->intakeEncoder.getValue() > this->constants.pickUpHeight)
 			{
 				//Output <0 to go down
-				//this->intakeMotor.output((-1) * this->constants.motorSpeed);
+				this->intakeMotor.output((-1) * this->constants.motorSpeed);
 			}
 			else //Otherwise it is time to grab the coin
 			{
@@ -196,7 +192,7 @@ void Intake::pickUpSequenceA()
 			
 		case GRAB:
 			//Stop the motor so we can do a pickup
-			//this->intakeMotor.output(this->constants.stallSpeed);
+			this->intakeMotor.output(this->constants.stallSpeed);
 			
 			//Pick up the coin
 			this->electromagnet.pickUp();
@@ -212,20 +208,19 @@ void Intake::pickUpSequenceA()
 			if(this->intakeEncoder.getValue() < this->constants.scanHeight)
 			{
 				//Output >0 to go up
-				//this->intakeMotor.output(this->constants.motorSpeed);
+				this->intakeMotor.output(this->constants.motorSpeed);
 			}
 			else
 			{
 				//Stop the motor so we can scan the coin
-				//this->intakeMotor.output(this->constants.stallSpeed);
+				this->intakeMotor.output(this->constants.stallSpeed);
 				
 				//Deploy the RGB color sensor! (servo)
 				this->colorServo.write(this->constants.colorServoDeployAngle);
 				delay(this->constants.colorServoDelay);
 				
 				//Detect and save the color
-				//this->colorSensor.updateData();
-				this->lastColor = Color("red");//this->colorSensor.getColor();
+				this->lastColor = color;
 				
 				//Retract color sensor
 				this->colorServo.write(this->constants.colorServoIdleAngle);
@@ -240,12 +235,12 @@ void Intake::pickUpSequenceA()
 			if(this->intakeEncoder.getValue() < this->constants.topHeight && this->limitSwitch.read() == LOW)
 			{
 				//Output >0 to go up
-				//this->intakeMotor.output(this->constants.motorSpeed);
+				this->intakeMotor.output(this->constants.motorSpeed);
 			}
 			else
 			{
 				//Stop driving the motor upwards
-				//this->intakeMotor.output(this->constants.stallSpeed);
+				this->intakeMotor.output(this->constants.stallSpeed);
 				
 				//We have reached the height, so time to store.
 				this->pickUpState = STORE;
@@ -277,7 +272,7 @@ void Intake::pickUpSequenceA()
 				if(this->intakeEncoder.getValue() > this->constants.idleHeight)
 				{
 					//Output <0 to go down
-					//this->intakeMotor.output((-1) * this->constants.motorSpeed);
+					this->intakeMotor.output((-1) * this->constants.motorSpeed);
 					
 					//Almost done, but not quite.
 					return false;
@@ -285,7 +280,7 @@ void Intake::pickUpSequenceA()
 				else
 				{
 					//Stop driving the motor downwards
-					//this->intakeMotor.output(this->constants.stallSpeed);
+					this->intakeMotor.output(this->constants.stallSpeed);
 					
 					//set the sequence to idle
 					this->pickUpState = IDLE;
@@ -311,7 +306,7 @@ void Intake::dropOffSequence(Color color)
 			if(this->intakeEncoder.getValue() > this->constants.storageHeight)
 			{
 				//Output <0 to go down
-				//this->intakeMotor.output((-1) * this->constants.motorSpeed);
+				this->intakeMotor.output((-1) * this->constants.motorSpeed);
 			}
 			else //Otherwise it is time to grab the coin from storage
 			{
@@ -324,7 +319,7 @@ void Intake::dropOffSequence(Color color)
 			delay(this->constants.turnTableWaitMax);
 			
 			//Stop the motor so we can do a pickup
-			//this->intakeMotor.output(this->constants.stallSpeed);
+			this->intakeMotor.output(this->constants.stallSpeed);
 			
 			//Pick up the coins from storage
 			this->electromagnet.pickUp();
@@ -340,12 +335,12 @@ void Intake::dropOffSequence(Color color)
 			if(this->intakeEncoder.getValue() < this->constants.topHeight && this->limitSwitch.read() == LOW)
 			{
 				//Output >0 to go up
-				//this->intakeMotor.output(this->constants.motorSpeed);
+				this->intakeMotor.output(this->constants.motorSpeed);
 			}
 			else
 			{
 				//Stop driving the motor upwards
-				//this->intakeMotor.output(this->constants.stallSpeed);
+				this->intakeMotor.output(this->constants.stallSpeed);
 				
 				//We have reached the height, so time to drop off the coins.
 				this->dropOffState = DROPd;
@@ -363,7 +358,7 @@ void Intake::dropOffSequence(Color color)
 				if(this->intakeEncoder.getValue() > this->constants.dropHeight)
 				{
 					//Output <0 to go down
-					//this->intakeMotor.output((-1) * (this->constants.motorSpeed));
+					this->intakeMotor.output((-1) * (this->constants.motorSpeed));
 				}
 				else if(this->intakeEncoder.getValue() < this->constants.dropHeight)
 				{
@@ -384,12 +379,12 @@ void Intake::dropOffSequence(Color color)
 				if(this->intakeEncoder.getValue() < this->constants.idleHeight)
 				{
 					//Output >0 to go up
-					//this->intakeMotor.output(this->constants.motorSpeed);
+					this->intakeMotor.output(this->constants.motorSpeed);
 				}
 				else
 				{
 					//Stop driving the motor downwards
-					//this->intakeMotor.output(this->constants.stallSpeed);
+					this->intakeMotor.output(this->constants.stallSpeed);
 					
 					//set the sequence to idle
 					this->dropOffState = IDLEd;

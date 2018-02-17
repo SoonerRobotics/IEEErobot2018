@@ -9,9 +9,7 @@
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
 
-#include "Gyro.h"
 #include "DriveConstants.h"
-#include "LineDecisions.h"
 #include "IRMatrix.h"
 
 class Drivetrain : public BasicDrive
@@ -19,23 +17,19 @@ class Drivetrain : public BasicDrive
 	public:
 		Drivetrain();
 		
-		//void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector);
-		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix matrix, DigitalDevice mDetector);
+		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector);
 		void initializeTurnPID(Collection<float> turnK);
 		void initializeDistancePID(Collection<float> distanceK);
 		void setConstants(DriveConstants k);
-		//void setDecisions(LineDecisions lineDecisions);
 		
-		void drive(float distance, float angle);
+		bool drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize);
 		void turnToAngle(float angle);
 		
 		void followLine();
 		
 		void followLineUntilCoin();
 		
-		void searchForward();
-		
-		void setYaw(double newYaw);
+		void searchForward(float inputYaw);
 		
 
 	private:
@@ -53,7 +47,26 @@ class Drivetrain : public BasicDrive
 		
 		void makeDecision();
 		
-		float yaw;
+		//drive() specific private vars
+		float Y;
+		float X;
+		float distance;
+		float gyroError;
+		
+		bool distanceInRange;
+		bool angleInRange;
+		bool driveComplete;
+		bool turnComplete;
+		
+		long timer;
+		long timeoutClock;
+		long angleTimer;
+		long distanceTimer;
+		long angleTimerElapsed;
+		long distanceTimerElapsed;
+		
+		bool movementComplete;
+		
 };
 
 

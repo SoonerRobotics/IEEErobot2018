@@ -6,8 +6,6 @@ Drivetrain::Drivetrain()
 	
 }
 
-
-//void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix mat, DigitalDevice mDetector)
 void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
@@ -31,48 +29,39 @@ void Drivetrain::setConstants(DriveConstants k)
 {
 	this->constants = k;
 }
-/*
-void Drivetrain::setDecisions(LineDecisions lineDecisions)
-{
-	this->decisions = lineDecisions;
-}
-*/
 
-void Drivetrain::drive(float targetDistance, float targetAngle)
+
+bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize)
 {
+	if(reinitialize)
+	{
+		Y = 0.0;
+		X = 0.0; 
+		distance = 0.0;
+		
+		//Reset Encoders
+		BasicDrive::getLeftEncoder().reset();
+		BasicDrive::getRightEncoder().reset();
+		
+		//Set the 'in-range' and 'complete' flags to false
+		distanceInRange = false;
+		angleInRange = false;
+		driveComplete = false;
+		turnComplete = false;
+		movementComplete = false;
+		
+		//Start a timer
+		timer = millis();
+		timeoutClock = 0;
+	}
 	
-	//float Y = 0.0, X = 0.0, distance = 0.0, yaw = 0.0, gyroError;
-	float Y = 0.0, X = 0.0, distance = 0.0, gyroError;
-	
-	//Reset Encoders
-	BasicDrive::getLeftEncoder().reset();
-	BasicDrive::getRightEncoder().reset();
-	
-	//Reset Gyro
-	//this->gyro.reset();
-	
-	//Set the 'in-range' and 'complete' flags to false
-	bool distanceInRange = false, angleInRange = false;
-	bool driveComplete = false, turnComplete = false;
-	
-	//Start a timer
-	long timer = millis();
-	long timeoutClock = 0;
-	
-	//Setup angle and distance timers
-	long angleTimer, distanceTimer;
-	
-	//Setup variables to track elapsed time
-	long angleTimerElapsed, distanceTimerElapsed;
-	
-	while(!driveComplete || !turnComplete)
+	if(!movementComplete)
 	{
 		//Calculate Distance
 		distance = (BasicDrive::getLeftEncoder().getTicks() + BasicDrive::getRightEncoder().getTicks()) / 2;
 		
 		//Calculate Gyro Error
-		this->yaw = 0;//this->gyro.getYaw();
-		gyroError = this->yaw - targetAngle;
+		gyroError = inputYaw - targetAngle;
 		
 		//Wrap the gyro error to [-180, 180]
 		if(gyroError > 180)
@@ -154,6 +143,11 @@ void Drivetrain::drive(float targetDistance, float targetAngle)
 		}
 	}
 	
+	//Is the move complete or not?
+	movementComplete = driveComplete && turnComplete; 
+	
+	return movementComplete;
+	
 }
 
 
@@ -163,15 +157,14 @@ void Drivetrain::followLine()
 	
 	float driveSpeed = this->constants.lineFollowSpeed;
 	float turnSpeed = 0;
-	//float turnSpeed = this->constants.lineTurnSpeed;
 	
 	//Check for special case situations before setting output
 	if(irMatrixValue&3 == 1)
 	{
 		turnSpeed = 0.25;
 		
-	} else if(irMatrixValue&3 == 1)
-		
+	} 
+	else if(irMatrixValue&3 == 1)	
 	{
 		turnSpeed = -0.25;
 	}
@@ -245,17 +238,13 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	BasicDrive::setOutput(left, right);
 }
 
-void Drivetrain::searchForward()
+void Drivetrain::searchForward(float inputYaw)
 {
+	bool complete = true;
 	while (this->irMatrix.readToBinary()>>3&0) 
 	{
-		drive(0.25,0.0);
+		complete = drive(0.25, 0.0, inputYaw, complete);
 		delay(50);
 	}
 	
 }
-
-void Drivetrain::setYaw(double newYaw)
-{
-	this->yaw = newYaw;
-}	
