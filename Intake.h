@@ -30,8 +30,6 @@ class Intake
 		PickUpState pickUpState;
 		DropOffState dropOffState;
 		
-		IntakeConstants constants;
-		
 		Motor intakeMotor;
 		Encoder intakeEncoder;
 		

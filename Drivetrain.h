@@ -30,7 +30,7 @@ class Drivetrain : public BasicDrive
 		
 		void searchForward(float inputYaw);
 		
-		void followLineGyro(float angle){
+		void followLineGyro(float targetAngle, float inputAngle);
 		
 
 	private:
@@ -39,10 +39,7 @@ class Drivetrain : public BasicDrive
 		DigitalDevice metDetector;
 		
 		PIDController turnPID;
-		PIDController distancePID; 
-		
-		DriveConstants constants;
-		LineDecisions decisions;
+		PIDController distancePID;
 		
 		void arcadeDrive(float Y, float X);
 		

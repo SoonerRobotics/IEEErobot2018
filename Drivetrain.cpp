@@ -68,7 +68,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		X = turnPID.getOutput(0, gyroError);
 		
 		//Check to see if the distance is in range and if the drive is completed
-		if(abs(distance - targetDistance) < this->constants.distanceThreshold && abs(Y) < this->constants.stopSpeedThreshold)
+		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
 		{
 			//If this is the first time being in range
 			if(!distanceInRange)
@@ -84,7 +84,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			distanceTimerElapsed = millis() - distanceTimer;
 			
 			//If we have been on target for a long enough amount of time, we have completed the drive
-			if(distanceTimerElapsed > this->constants.setpointTimeout)
+			if(distanceTimerElapsed > setpointTimeout)
 			{
 				driveComplete = true;
 			}
@@ -97,7 +97,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 		
 		//Check to see if the angle is 'in-range' and if the turn is completed
-		if(abs(gyroError) < constants.angleThreshold && abs(X) < this->constants.stopSpeedThreshold)
+		if(abs(gyroError) < angleThreshold && abs(X) < stopSpeedThreshold)
 		{
 			//If this is the first time we have been at the angle goal, reset the timer
 			if(!angleInRange)
@@ -110,7 +110,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			angleTimerElapsed = angleTimer - millis();
 			
 			//If we have been at the target long enough, the turn is complete
-			if(angleTimerElapsed > this->constants.setpointTimeout)
+			if(angleTimerElapsed > setpointTimeout)
 			{
 				turnComplete = true;
 			}
@@ -129,7 +129,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		timeoutClock = millis() - timer;
 		
 		//Check to make sure the timeout has not been exceeded. A timeout of -1 implies infinite time to reach setpoint
-		if(timeoutClock > this->constants.timeout && this->constants.timeout != -1)
+		if(timeoutClock > timeout && timeout != -1)
 		{
 			//Timeout has been exceeded, so the drive is finished
 			driveComplete = true;
@@ -149,7 +149,7 @@ void Drivetrain::followLine()
 {
 	int irMatrixValue = this->irMatrix.readToBinary();
 	
-	float driveSpeed = this->constants.lineFollowSpeed;
+	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
 	//Check for special case situations before setting output
@@ -173,7 +173,7 @@ void Drivetrain::followLineUntilCoin()
 	{
 		int irMatrixValue = this->irMatrix.readToBinary();
 		
-		float driveSpeed = this->constants.lineFollowSpeed;
+		float driveSpeed = lineFollowSpeed;
 		float turnSpeed = 0;
 		
 		//Check for special case situations before setting output
@@ -242,7 +242,7 @@ void Drivetrain::searchForward(float inputYaw)
 	}
 }
 
-void Drivetrain::followLineGyro(float angle){
+void Drivetrain::followLineGyro(float targetAngle, float inputAngle){
 	//IF all center IR senor arn't on line
 	//CHeck current angle against angle
 }
