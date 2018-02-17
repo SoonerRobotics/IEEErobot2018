@@ -19,11 +19,12 @@ class Drivetrain : public BasicDrive
 	public:
 		Drivetrain();
 		
+		//void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector);
 		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix matrix, DigitalDevice mDetector);
 		void initializeTurnPID(Collection<float> turnK);
 		void initializeDistancePID(Collection<float> distanceK);
 		void setConstants(DriveConstants k);
-		void setDecisions(LineDecisions lineDecisions);
+		//void setDecisions(LineDecisions lineDecisions);
 		
 		void drive(float distance, float angle);
 		void turnToAngle(float angle);
@@ -34,11 +35,11 @@ class Drivetrain : public BasicDrive
 		
 		void searchForward();
 		
-		Gyro& getGyro();
+		void setYaw(double newYaw);
 		
 
 	private:
-		Gyro gyro;
+		//Gyro gyro;
 		IRMatrix irMatrix;
 		DigitalDevice metDetector;
 		
@@ -52,6 +53,7 @@ class Drivetrain : public BasicDrive
 		
 		void makeDecision();
 		
+		float yaw;
 };
 
 

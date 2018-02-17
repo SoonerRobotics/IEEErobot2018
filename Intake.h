@@ -14,7 +14,8 @@ class Intake
 	public:
 		Intake();
 		
-		Intake(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, Adafruit_TCS34725 colorSensor, int colorServoPin);
+		//void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin);
+		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, Adafruit_TCS34725 colorSensor, int colorServoPin);
 		
 		bool pickUpSequence();
 		
@@ -43,7 +44,7 @@ class Intake
 		Electromagnet electromagnet;
 		
 		Servo colorServo;
-		ColorSensor colorSensor;
+		//ColorSensor colorSensor;
 		Turntable turnTable;
 		
 		//Most recent read from color sensor
