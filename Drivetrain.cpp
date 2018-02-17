@@ -244,19 +244,28 @@ void Drivetrain::searchForward(float inputYaw)
 	}
 }
 
-void Drivetrain::followLineGyro(float targetAngle, float inputAngle){
+void Drivetrain::followLineGyro(float targetAngle, float inputAngle)
+{	
+	this->irMatrixValue = irMatrix.readToBinary();
+	
 	//IF all center IR senor arn't on line
 	//CHeck current angle against angle
 	if(irMatrixValue&21 == 1)//If all center IR sensor are on line
 	{
 		arcadeDrive(lineFollowSpeed,0);
 	}
-	else{
-		int diff = inputAngle - targetAngle);
-		if(diff > 0){
+	else
+	{
+		//Find difference between current angle and the target angle
+		int diff = inputAngle - targetAngle;
+		
+		//Turn left or right based on the difference
+		if(diff > 0)
+		{
 			arcadeDrive(lineFollowSpeed,10);
 		}
-		else{
+		else
+		{
 			arcadeDrive(lineFollowSpeed,-10);
 		}
 	}

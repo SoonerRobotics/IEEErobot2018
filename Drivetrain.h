@@ -65,6 +65,9 @@ class Drivetrain : public BasicDrive
 		
 		bool movementComplete;
 		
+		//IR Matrix / Line follow
+		int irMatrixValue;
+		
 };
 
 
