@@ -27,14 +27,7 @@ void Drivetrain::initializeDistancePID(Collection<float> distanceK)
 	this->distancePID.initialize(0, distanceK);
 }
 
-<<<<<<< HEAD
-=======
-void Drivetrain::setConstants(DriveConstants k)
-{
-	this->constants = k;
-}
 /*
->>>>>>> a292f05b1d7bb38402e4564f897ec4d98ab25680
 void Drivetrain::setDecisions(LineDecisions lineDecisions)
 {
 	this->decisions = lineDecisions;
@@ -263,9 +256,22 @@ void Drivetrain::setYaw(double newYaw)
 	return this->gyro;
 }
 
-void Drivetrain::followLineGyro(float angle){
+void Drivetrain::followLineGyro(float targetAngle,float inputAngle){
 	//IF all center IR senor arn't on line
 	//CHeck current angle against angle
+	if(irMatrixValue&21 == 1)//If all center IR sensor are on line
+	{
+		arcadeDrive(lineFollowSpeed,0);
+	}
+	else{
+		int diff = inputAngle - targetAngle);
+		if(diff > 0){
+			arcadeDrive(lineFollowSpeed,10);
+		}
+		else{
+			arcadeDrive(lineFollowSpeed,-10);
+		}
+	}
 }
 	
 	
