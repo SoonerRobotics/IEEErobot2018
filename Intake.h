@@ -24,8 +24,6 @@ class Intake
 		
 		bool coinDetected();
 		
-		void setConstants(IntakeConstants K);
-		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
 		enum DropOffState{IDLEd, GRABd, RAISEd, DROPd};

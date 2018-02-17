@@ -22,7 +22,6 @@ class Drivetrain : public BasicDrive
 		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix matrix, DigitalDevice mDetector);
 		void initializeTurnPID(Collection<float> turnK);
 		void initializeDistancePID(Collection<float> distanceK);
-		void setConstants(DriveConstants k);
 		void setDecisions(LineDecisions lineDecisions);
 		
 		void drive(float distance, float angle);
@@ -35,6 +34,8 @@ class Drivetrain : public BasicDrive
 		void searchForward();
 		
 		Gyro& getGyro();
+		
+		void followLineGyro(float angle){
 		
 
 	private:

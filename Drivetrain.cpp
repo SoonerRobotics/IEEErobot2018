@@ -23,11 +23,6 @@ void Drivetrain::initializeDistancePID(Collection<float> distanceK)
 	this->distancePID.initialize(0, distanceK);
 }
 
-void Drivetrain::setConstants(DriveConstants k)
-{
-	this->constants = k;
-}
-
 void Drivetrain::setDecisions(LineDecisions lineDecisions)
 {
 	this->decisions = lineDecisions;
@@ -254,6 +249,14 @@ void Drivetrain::searchForward()
 Gyro& Drivetrain::getGyro()
 {
 	return this->gyro;
+}
+
+void Drivetrain::followLineGyro(float angle){
+	//IF all center IR senor arn't on line
+	//CHeck current angle against angle
+}
+	
+	
 }
 
 	
