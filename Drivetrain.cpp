@@ -7,8 +7,8 @@ Drivetrain::Drivetrain()
 }
 
 
-void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix mat, DigitalDevice mDetector)
-//void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector)
+//void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, Adafruit_BNO055 gyro, IRMatrix mat, DigitalDevice mDetector)
+void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	////this->gyro = gyro;
