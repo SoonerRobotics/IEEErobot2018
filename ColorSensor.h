@@ -25,8 +25,11 @@ public:
 	
 	Color getColor();
 	
-	//void reset();
-	
+	/*
+	void setRed(float newRed);
+	void setGreen(float newGreen);
+	void setBlue(float newBlue);
+	*/
 private:
 
 	Adafruit_TCS34725 colorSensor;

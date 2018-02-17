@@ -35,7 +35,7 @@ float Gyro::getRoll()
 }
 
 float Gyro::getYaw() 
-{
+{	
 	//Return the yaw
 	return this->yaw;
 }

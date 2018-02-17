@@ -38,7 +38,22 @@ float ColorSensor::getBlue() {
 	//returns raw blue value of color
 	return this->blueRaw;
 }
+/*
+void ColorSensor::setRed(float newRed) {
+	//sets raw red value of color
+	this->redRaw = newRed;
+}
 
+void ColorSensor::setGreen(float newGreen) {
+	//sets raw green value of color
+	this->greenRaw = newGreen;
+}
+
+void ColorSensor::setBlue(float newBlue) {
+	//sets raw blue value of color
+	this->blueRaw = newBlue;
+}
+*/
 Color ColorSensor::getColor() {
 	
 	float _R = redRaw;

@@ -19,6 +19,7 @@ IRMatrix::IRMatrix()  : values(5)
 
 IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5)  : values(5)
 {
+	
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
 	this->ir3.update(pin3, INPUT);
@@ -26,6 +27,8 @@ IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5)  : values(5
 	this->ir5.update(pin5, INPUT);
 	
 	this->binaryValue = 0;
+	
+	Serial.print(" -Matrix Construct- ");
 }
 
 void IRMatrix::operator=(const IRMatrix& matrix)
