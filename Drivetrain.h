@@ -32,6 +32,8 @@ class Drivetrain : public BasicDrive
 		
 		void followLineGyro(float targetAngle, float inputAngle);
 		
+		int getIRMatrixValue();
+		
 
 	private:
 		//Gyro gyro;

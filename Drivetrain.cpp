@@ -9,10 +9,8 @@ Drivetrain::Drivetrain()
 void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
-	////this->gyro = gyro;
-	//this->irMatrix = mat;			//Doesn't like this reference 
+	this->irMatrix = mat;			//Doesn't like this reference 
 	this->metDetector = mDetector;
-	
 }
 
 void Drivetrain::initializeTurnPID(Collection<float> turnK)
@@ -27,7 +25,6 @@ void Drivetrain::initializeDistancePID(Collection<float> distanceK)
 
 
 bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize)
-
 {
 	if(reinitialize)
 	{
@@ -269,4 +266,9 @@ void Drivetrain::followLineGyro(float targetAngle, float inputAngle)
 			arcadeDrive(lineFollowSpeed,-10);
 		}
 	}
+}
+
+int Drivetrain::getIRMatrixValue()
+{
+	return this->irMatrix.readToBinary();
 }
