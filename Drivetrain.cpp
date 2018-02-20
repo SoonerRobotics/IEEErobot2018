@@ -272,3 +272,8 @@ int Drivetrain::getIRMatrixValue()
 {
 	return this->irMatrix.readToBinary();
 }
+
+void Drivetrain::printIRMatrix()
+{
+	this->irMatrix.printRawToSerial();
+}

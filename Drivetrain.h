@@ -34,6 +34,7 @@ class Drivetrain : public BasicDrive
 		
 		int getIRMatrixValue();
 		
+		void printIRMatrix();
 
 	private:
 		IRMatrix irMatrix;
