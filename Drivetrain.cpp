@@ -157,7 +157,7 @@ void Drivetrain::followLine()
 		turnSpeed = 0.25;
 		
 	} 
-	else if(irMatrixValue&3 == 1)	
+	else
 	{
 		turnSpeed = -0.25;
 	}

@@ -57,7 +57,8 @@
 #define pinIbtakeMot1 0
 #define pinIbtakeMot2 0
 #define pinIbtakeMotEnb 0
-
+#define leftEncoderConstant 1/41.18667
+#define rightEncoderConstant 1/106.3985
 
 
 
