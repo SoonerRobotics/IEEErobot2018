@@ -46,6 +46,9 @@
 #define pinIRMatrix4 A3
 #define pinIRMatrix5 A4
 
+//Black/White Threshold
+#define BW_THRESHOLD 500
+
 //Servos
 #define turntableServoPin 0
 #define colorServoPin 0
@@ -54,6 +57,8 @@
 #define pinIbtakeMot1 0
 #define pinIbtakeMot2 0
 #define pinIbtakeMotEnb 0
+
+
 
 
 #endif

@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <AnalogDevice.h>
 #include "Collection.h"
+#include "RobotGlobals.h"
 
 class IRMatrix
 {
@@ -17,6 +18,8 @@ class IRMatrix
 		Collection<bool> getValues();
 		unsigned int readToBinary();
 		
+		void printRawToSerial();
+		
 	private:
 		AnalogDevice ir1;
 		AnalogDevice ir2;
@@ -29,6 +32,8 @@ class IRMatrix
 		int binaryValue;
 		
 		void readAll();
+		
+		int convertToBinary(int raw);
 };
 
 #endif

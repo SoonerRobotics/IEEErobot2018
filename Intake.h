@@ -13,7 +13,7 @@ class Intake
 	public:
 		Intake();
 		
-		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin);
+		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber);
 		
 		bool pickUpSequence(Color color);
 		

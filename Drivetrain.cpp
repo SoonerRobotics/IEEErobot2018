@@ -6,10 +6,10 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector)
+void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix mat, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
-	this->irMatrix = mat;			//Doesn't like this reference 
+	//this->irMatrix = mat;			//Doesn't like this reference 
 	this->metDetector = mDetector;
 }
 

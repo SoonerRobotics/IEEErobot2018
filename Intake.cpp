@@ -23,7 +23,7 @@ Intake::Intake()
 }
 
 
-void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPin)
+void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber)
 {
 	//this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
@@ -37,7 +37,7 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 	
 	this->lastColor = Color("none");
 	
-	this->colorServo.attach(colorServoPin);
+	this->colorServo.attach(colorServoPinNumber);
 }
 
 

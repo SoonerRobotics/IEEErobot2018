@@ -17,7 +17,7 @@ class Drivetrain : public BasicDrive
 	public:
 		Drivetrain();
 		
-		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix matrix, DigitalDevice mDetector);
+		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix mat, DigitalDevice mDetector);
 		void initializeTurnPID(Collection<float> turnK);
 		void initializeDistancePID(Collection<float> distanceK);
 		
@@ -36,7 +36,6 @@ class Drivetrain : public BasicDrive
 		
 
 	private:
-		//Gyro gyro;
 		IRMatrix irMatrix;
 		DigitalDevice metDetector;
 		
