@@ -12,12 +12,12 @@
  */
 
 
-IRMatrix::IRMatrix()  : values(5)
+IRMatrix::IRMatrix()
 {
 	this->binaryValue = 0;
 }
 
-IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5)  : values(5)
+IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5) 
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
@@ -39,7 +39,6 @@ void IRMatrix::operator=(const IRMatrix& matrix)
 	this->ir5 = matrix.ir5;
 	Serial.print(" -Matrix Copy-Assign- \n");
 	
-	this->values = matrix.values;
 	this->binaryValue = matrix.binaryValue;
 }
 
@@ -82,15 +81,6 @@ void IRMatrix::printRawToSerial()
 /**
  * Private Functions Below
  */
- 
- void IRMatrix::readAll()
- {
-	 values.set(0, convertToBinary(this->ir1.read()) == HIGH);
-	 values.set(1, convertToBinary(this->ir2.read()) == HIGH);
-	 values.set(2, convertToBinary(this->ir3.read()) == HIGH);
-	 values.set(3, convertToBinary(this->ir4.read()) == HIGH);
-	 values.set(4, convertToBinary(this->ir5.read()) == HIGH);
- }
  
  int IRMatrix::convertToBinary(int raw)
  {

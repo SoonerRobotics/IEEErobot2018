@@ -3,7 +3,6 @@
 
 #include <Arduino.h>
 #include <AnalogDevice.h>
-#include "Collection.h"
 #include "RobotGlobals.h"
 
 class IRMatrix
@@ -14,8 +13,7 @@ class IRMatrix
 		void operator=(const IRMatrix& matrix);
 		
 		void begin(int pin1, int pin2, int pin3, int pin4, int pin5);
-		
-		Collection<bool> getValues();
+	
 		unsigned int readToBinary();
 		
 		void printRawToSerial();
@@ -26,8 +24,6 @@ class IRMatrix
 		AnalogDevice ir3;
 		AnalogDevice ir4;
 		AnalogDevice ir5;
-		
-		Collection<bool> values;
 		
 		int binaryValue;
 		

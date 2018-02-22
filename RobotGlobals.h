@@ -1,5 +1,5 @@
-#ifndef ROBOTPINS_H
-#define ROBOTPINS_H
+#ifndef ROBOTGLOBALS_H
+#define ROBOTGLOBALS_H
 
 /**
  * The purpose of this header file is to be able to include all known pins 
@@ -25,10 +25,12 @@
 //Left Drivetrain Encoder
 #define pinLeftEnc1 1
 #define pinLeftEnc2 2
+#define leftEncoderConstant 0.0242797
 
 //Right Drivetrain Encoder
 #define pinRightEnc1 3
 #define pinRightEnc2 4
+#define rightEncoderConstant 0.0093986
 
 //Intake Encoder
 #define pinIntakeEnc1 0
@@ -57,9 +59,15 @@
 #define pinIbtakeMot1 0
 #define pinIbtakeMot2 0
 #define pinIbtakeMotEnb 0
-#define leftEncoderConstant 1/41.18667
-#define rightEncoderConstant 1/106.3985
 
+//Turn PID
+#define TURN_KP 0.5
+#define TURN_KI 0.002
+#define TURN_KD 0.003
 
+//Distance PID
+#define DIST_KP 0.8
+#define DIST_KI 0.004
+#define DIST_KD 0.001
 
 #endif
