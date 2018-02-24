@@ -40,4 +40,7 @@ void updateColorSensor()
 	color = Color(red, green, blue);
 }
 
+int convertToUsable() {
+	
+}
 #endif

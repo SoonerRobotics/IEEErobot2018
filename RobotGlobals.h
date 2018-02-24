@@ -70,4 +70,15 @@
 #define DIST_KI 0.004
 #define DIST_KD 0.001
 
+/*
+//Colors
+Color blue("blue");
+Color green("green");
+Color red("red");	
+Color cyan("cyan");
+Color magenta("magenta");
+Color yellow("yellow");
+Color gray("gray");
+*/
+
 #endif

@@ -11,54 +11,54 @@
 #include <Arduino.h>
 
 
-#define _BlueRMax 0
-#define _BlueRMin 0
-#define _BlueGMax 0
-#define _BlueGMin 0
-#define _BlueBMax 0
-#define _BlueBMin 0
+#define _BlueRMax 5
+#define _BlueRMin 1
+#define _BlueGMax 16
+#define _BlueGMin 12
+#define _BlueBMax 45
+#define _BlueBMin 41
 
-#define _GreenRMax 0
-#define _GreenRMin 0
-#define _GreenGMax 0
-#define _GreenGMin 0
-#define _GreenBMax 0
-#define _GreenBMin 0
+#define _GreenRMax 14
+#define _GreenRMin 10
+#define _GreenGMax 32
+#define _GreenGMin 28
+#define _GreenBMax 10
+#define _GreenBMin 6
 
-#define _RedRMax 0
-#define _RedRMin 0
-#define _RedGMax 0
-#define _RedGMin 0
-#define _RedBMax 0
-#define _RedBMin 0
+#define _RedRMax 101
+#define _RedRMin 97
+#define _RedGMax 5
+#define _RedGMin 1
+#define _RedBMax 5
+#define _RedBMin 1
 
-#define _CyanRMax 0
+#define _CyanRMax 4
 #define _CyanRMin 0
-#define _CyanGMax 0
-#define _CyanGMin 0
-#define _CyanBMax 0
-#define _CyanBMin 0
+#define _CyanGMax 28
+#define _CyanGMin 24
+#define _CyanBMax 32
+#define _CyanBMin 28
 
-#define _MagentaRMax 0
-#define _MagentaRMin 0
-#define _MagentaGMax 0
-#define _MagentaGMin 0
-#define _MagentaBMax 0
-#define _MagentaBMin 0
+#define _MagentaRMax 31
+#define _MagentaRMin 27
+#define _MagentaGMax 11
+#define _MagentaGMin 7
+#define _MagentaBMax 19
+#define _MagentaBMin 15
 
-#define _YellowRMax 0
-#define _YellowRMin 0
-#define _YellowGMax 0
-#define _YellowGMin 0
-#define _YellowBMax 0
-#define _YellowBMin 0
+#define _YellowRMax 32
+#define _YellowRMin 24
+#define _YellowGMax 30
+#define _YellowGMin 20
+#define _YellowBMax 8
+#define _YellowBMin 3
 
-#define _GrayRMax 0
-#define _GrayRMin 0
-#define _GrayGMax 0
-#define _GrayGMin 0
-#define _GrayBMax 0
-#define _GrayBMin 0
+#define _GrayRMax 16
+#define _GrayRMin 12
+#define _GrayGMax 21
+#define _GrayGMin 17
+#define _GrayBMax 17
+#define _GrayBMin 13
 
 #define _StartingAngle 0
 #define _BlueAngle 45
@@ -84,6 +84,8 @@ class Color {
 		String getColorName();
 		
 		void setColor(String color);
+		
+		void setColor(float r, float g, float b);
 		
 		double getAngle();
 	

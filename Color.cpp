@@ -165,7 +165,51 @@ void Color::setColor(String color) {
 	
 }
 
-bool Color::isBetween(float x,float low,float high) {
+void Color::setColor(float r, float g, float b) {
+		
+	//BLUE
+	if (isBetween(r,_BlueRMax,_BlueRMin) && isBetween(g,_BlueGMax,_BlueGMin) && isBetween(b,_BlueBMax,_BlueBMin)) {
+		this->angle = _BlueAngle;
+		this->colorName = "blue";
+	}
+	//GREEN
+	else if (isBetween(r,_GreenRMax,_GreenRMin) && isBetween(g,_GreenGMax,_GreenGMin) && isBetween(b,_GreenBMax,_GreenBMin)) {
+		this->angle = _GreenAngle;
+		this->colorName = "green";
+	}
+	//RED
+	else if (isBetween(r,_RedRMax,_RedRMin) && isBetween(g,_RedGMax,_RedGMin) && isBetween(b,_RedBMax,_RedBMin)) {
+		this->angle = _RedAngle;
+		this->colorName = "red";
+	}
+	//CYAN
+	else if (isBetween(r,_CyanRMax,_CyanRMin) && isBetween(g,_CyanGMax,_CyanGMin) && isBetween(b,_CyanBMax,_CyanBMin)) {
+		this->angle = _CyanAngle;
+		this->colorName = "cyan";
+	}
+	//MAGENTA
+	else if (isBetween(r,_MagentaRMax,_MagentaRMin) && isBetween(g,_MagentaGMax,_MagentaGMin) && isBetween(b,_MagentaBMax,_MagentaBMin)) {
+		this->angle = _MagentaAngle;
+		this->colorName = "magenta";
+	}
+	//YELLOW
+	else if (isBetween(r,_YellowRMax,_YellowRMin) && isBetween(g,_YellowGMax,_YellowGMin) && isBetween(b,_YellowBMax,_YellowBMin)) {
+		this->angle = _YellowAngle;
+		this->colorName = "yellow";
+	}
+	//GRAY
+	else if (isBetween(r,_GrayRMax,_GrayRMin) && isBetween(g,_GrayGMax,_GrayGMin) && isBetween(b,_GrayBMax,_GrayBMin)) {
+		this->angle = _GrayAngle;
+		this->colorName = "gray";
+	}
+	else
+	{
+		this->angle = _StartingAngle;
+		this->colorName = "n/a";
+	}
+}
+
+bool Color::isBetween(float x,float high,float low) {
 	if (x > low && x < high) {
 		return true;
 	} else {
@@ -174,7 +218,7 @@ bool Color::isBetween(float x,float low,float high) {
 }
 
 String Color::getColorName() {
-	return colorName;
+	return this->colorName;
 }
 
 /**
