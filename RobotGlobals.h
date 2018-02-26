@@ -72,4 +72,15 @@
 
 
 
+/*
+//Colors
+Color blue("blue");
+Color green("green");
+Color red("red");	
+Color cyan("cyan");
+Color magenta("magenta");
+Color yellow("yellow");
+Color gray("gray");
+*/
+
 #endif
