@@ -21,6 +21,7 @@
 #include "IRMatrix.h"
 #include "RobotGlobals.h"
 #include "SpecialSensors.h"
+#include "RobotStartup.h"
 
 
 #endif

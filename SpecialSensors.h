@@ -8,9 +8,11 @@ Color color;
 float redRaw;
 float greenRaw;
 float blueRaw;
-float pitch;
-float roll;
-float yaw;
+
+float pitch = 0;
+float roll = 0;
+float yaw = 0;
+float pitchOffset = 0, rollOffset = 0, yawOffset = 0;
 
 void updateGyro()
 {
@@ -19,9 +21,22 @@ void updateGyro()
 	//Get the data from the gyro
 	imu::Vector<3> euler = gyro.getVector(Adafruit_BNO055::VECTOR_EULER);
 	
-	pitch = euler.x();
-	roll = euler.y();
-	yaw = euler.z();
+	pitch = euler.y() - pitchOffset;
+	roll = euler.z() - rollOffset;
+	yaw = euler.x() - yawOffset;
+	
+	//Map yaw to (-180, 180]
+	if(yaw > 180)
+	{
+		yaw = -(360 - yaw);
+	}
+}
+
+void resetGyro()
+{
+	rollOffset = roll;
+	pitchOffset = pitch;
+	yawOffset = yaw;
 }
 
 void updateColorSensor()

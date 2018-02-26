@@ -13,18 +13,19 @@ void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder r
 	this->metDetector = mDetector;
 }
 
-void Drivetrain::initializeTurnPID(Collection<float> turnK)
+void Drivetrain::initializeTurnPID(Collection<float> turnK, float high, float low)
 {
 	this->turnPID.initialize(0, turnK);
+	this->turnPID.setOutputRange(high, low);
 }
 
-void Drivetrain::initializeDistancePID(Collection<float> distanceK)
+void Drivetrain::initializeDistancePID(Collection<float> distanceK, float high, float low)
 {
 	this->distancePID.initialize(0, distanceK);
 }
 
 
-bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize)
+bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize, long timeout)
 {
 	if(reinitialize)
 	{
@@ -51,7 +52,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 	if(!movementComplete)
 	{
 		//Calculate Distance
-		distance = (BasicDrive::getLeftEncoder().getTicks() + BasicDrive::getRightEncoder().getTicks()) / 2;
+		distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
 		
 		//Calculate Gyro Error
 		gyroError = inputYaw - targetAngle;
@@ -140,7 +141,6 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 	movementComplete = driveComplete && turnComplete; 
 	
 	return movementComplete;
-	
 }
 
 
