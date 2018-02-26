@@ -9,6 +9,15 @@ float redRaw;
 float greenRaw;
 float blueRaw;
 
+//Colors
+Color blue("blue");
+Color green("green");
+Color red("red");	
+Color cyan("cyan");
+Color magenta("magenta");
+Color yellow("yellow");
+Color gray("gray");
+
 float pitch = 0;
 float roll = 0;
 float yaw = 0;
