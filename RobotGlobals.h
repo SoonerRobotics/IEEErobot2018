@@ -23,7 +23,7 @@
 #define pinGyro2 0
 
 //Left Drivetrain Encoder
-#define pinLeftEnc1 1
+#define pinLeftEnc1 5
 #define pinLeftEnc2 2
 #define leftEncoderConstant 0.0242797
 
