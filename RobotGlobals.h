@@ -12,8 +12,8 @@
 #define pinLeftMotEnb 10
 
 //Right Drivetrain Motor
-#define pinRightMot1 16
-#define pinRightMot2 15
+#define pinRightMot1 15
+#define pinRightMot2 16
 #define pinRightMotEnb 11
 
 //I2C addresses for Gyro and Color Sensor
@@ -61,14 +61,14 @@
 #define pinIbtakeMotEnb 0
 
 //Turn PID
-#define TURN_KP 0.5
-#define TURN_KI 0.002
-#define TURN_KD 0.003
+#define TURN_KP 0.05
+#define TURN_KI 0.000
+#define TURN_KD 0.1
 
 //Distance PID
-#define DIST_KP 0.4
-#define DIST_KI 0.001
-#define DIST_KD 0.03
+#define DIST_KP 0.05
+#define DIST_KI 0.000
+#define DIST_KD 0.005
 
 
 

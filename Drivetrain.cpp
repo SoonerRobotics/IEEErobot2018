@@ -22,6 +22,7 @@ void Drivetrain::initializeTurnPID(Collection<float> turnK, float high, float lo
 void Drivetrain::initializeDistancePID(Collection<float> distanceK, float high, float low)
 {
 	this->distancePID.initialize(0, distanceK);
+	this->distancePID.setOutputRange(high, low);
 }
 
 
@@ -65,7 +66,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		
 		//Calculate Y and X values (straight vector and turn vector respectively)
 		Y = distancePID.getOutput(targetDistance, distance);
-		X = turnPID.getOutput(0, gyroError);
+		X = -turnPID.getOutput(0, gyroError);
 		
 		//Check to see if the distance is in range and if the drive is completed
 		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
@@ -74,7 +75,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			if(!distanceInRange)
 			{
 				//Start the timer
-				distanceTimer= millis();
+				distanceTimer = millis();
 				
 				//Set to true to keep timer reference point
 				distanceInRange = true;
@@ -107,7 +108,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			}
 			
 			//Calculate how long we have been at the target
-			angleTimerElapsed = angleTimer - millis();
+			angleTimerElapsed = millis() - angleTimer;
 			
 			//If we have been at the target long enough, the turn is complete
 			if(angleTimerElapsed > setpointTimeout)
@@ -123,7 +124,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 
 		//Set the robot output
-		arcadeDrive(Y, X);
+		arcadeDrive(X, Y);
 		
 		//Calculate the time taken in this process
 		timeoutClock = millis() - timer;

@@ -40,6 +40,7 @@ void robotSetup()
 	{
 		Serial.println("Error Connecting to Gyro!");
 	}
+	
 	//Reset the gyro
 	updateGyro();
 	resetGyro();
@@ -67,8 +68,8 @@ void robotSetup()
 	drivetrain.begin(leftMot, rightMot, leftEnc, rightEnc, mat, mDetector);
 	
 	//Setup PID
-	drivetrain.initializeTurnPID(turnK);
-	drivetrain.initializeDistancePID(distanceK);
+	drivetrain.initializeTurnPID(turnK, 0.15, -0.15);
+	drivetrain.initializeDistancePID(distanceK, 0.2, -0.2);
 	
 	Serial.print(" -Drive Has Begun- \n");
 	
