@@ -47,6 +47,7 @@
 #define pinIRMatrix3 A2
 #define pinIRMatrix4 A3
 #define pinIRMatrix5 A4
+#define pinIRMatrix6 A5
 
 //Black/White Threshold
 #define BW_THRESHOLD 500
