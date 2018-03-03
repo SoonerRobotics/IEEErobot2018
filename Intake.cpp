@@ -41,7 +41,7 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 }
 
 
-bool Intake::pickUpSequence(Color color)
+int Intake::pickUpSequence(Color color)
 {	
 	switch(this->pickUpState)
 	{
@@ -56,7 +56,7 @@ bool Intake::pickUpSequence(Color color)
 			{
 				this->pickUpState = GRAB;
 			}
-			return false;
+			return 0;
 			
 		case GRAB:
 			//Stop the motor so we can do a pickup
@@ -72,7 +72,7 @@ bool Intake::pickUpSequence(Color color)
 			this->pickUpState = SCAN;
 			
 			//Process not complete yet
-			return false;
+			return 0;
 			
 		case SCAN:
 			//Raise the intake to scanning height
@@ -100,7 +100,7 @@ bool Intake::pickUpSequence(Color color)
 				//Move to the full raise state
 				this->pickUpState = RAISE;
 			}
-			return false;
+			return 1;
 			
 		case RAISE:
 			//While the intake is below the max height and the limit switch is not pressed
@@ -119,7 +119,7 @@ bool Intake::pickUpSequence(Color color)
 			}
 			
 			//Process unfinished
-			return false;
+			return 1;
 			
 		case STORE:
 			
@@ -140,7 +140,7 @@ bool Intake::pickUpSequence(Color color)
 				delay(turnTableWaitMax);
 				
 				//Process unfinished
-				return false;
+				return 1;
 			}
 			//Check to see if the turntable is ready to let the intake drop
 			else if(!this->electromagnet.hasCoin())
@@ -152,7 +152,7 @@ bool Intake::pickUpSequence(Color color)
 					this->intakeMotor.output((-1) * motorSpeed);
 					
 					//Almost done, but not quite.
-					return false;
+					return 1;
 				}
 				else
 				{
@@ -163,13 +163,13 @@ bool Intake::pickUpSequence(Color color)
 					this->pickUpState = IDLE;
 					
 					//Pickup complete!
-					return true;
+					return 2;
 				}
 			}
 			
 		default:
 			this->pickUpState = IDLE;
-			return false;
+			return 0;
 	}
 	
 }
