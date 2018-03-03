@@ -20,12 +20,15 @@ public:
 	Turntable();
 	Turntable(int pinServo);
 	
+	void begin(int pinServo);
+	void operator=(const Turntable& turnTable);
+	
 	void setPosition(Color color);
 	void setPosition(int angle);
 	void setPosition();
 
 private:
-	
+	int pin;
 	Servo servo;
 	 
 };

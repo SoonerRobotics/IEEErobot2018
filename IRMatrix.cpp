@@ -17,7 +17,7 @@ IRMatrix::IRMatrix()
 	this->binaryValue = 0;
 }
 
-IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6) 
+IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5) 
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
@@ -42,7 +42,7 @@ void IRMatrix::operator=(const IRMatrix& matrix)
 	this->binaryValue = matrix.binaryValue;
 }
 
-void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6)
+void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5)
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);

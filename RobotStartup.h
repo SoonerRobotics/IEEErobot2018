@@ -3,7 +3,7 @@
 
 //Global variables
 Drivetrain drivetrain;
-Intake intake;		
+Intake intake;
 
 //Encoder Masking
 void encLeftInterrupt() 
@@ -56,7 +56,7 @@ void robotSetup()
 	Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
 	Encoder rightEnc(pinRightEnc1, pinRightEnc2);
 	DigitalDevice mDetector(pinMetDet, INPUT);
-	IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5, pinIRMatrix6);
+	IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5);
 
 	//Set the encoder constants
 	leftEnc.setConstant(rightEncoderConstant);

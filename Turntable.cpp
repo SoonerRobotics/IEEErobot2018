@@ -9,12 +9,26 @@
 
 Turntable::Turntable()
 {
-	// TODO Auto-generated constructor stub
+	//Do nothing
+	this->pin = 0;
 }
 
 Turntable::Turntable(int pinServo) 
 {
 	servo.attach(pinServo);
+	this->pin = pinServo;
+}
+
+void Turntable::operator=(const Turntable& turnTable)
+{
+	servo.attach(turnTable.pin);
+	this->pin = turnTable.pin;
+}
+
+void Turntable::begin(int pinServo)
+{
+	servo.attach(pinServo);
+	this->pin = pinServo;
 }
 
 void Turntable::setPosition(Color color)

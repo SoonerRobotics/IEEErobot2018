@@ -404,3 +404,8 @@ bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;
 }
+
+Turntable& Intake::getTurnTable()
+{
+	return this->turnTable;
+}
