@@ -68,8 +68,8 @@ void robotSetup()
 	drivetrain.begin(leftMot, rightMot, leftEnc, rightEnc, mat, mDetector);
 	
 	//Setup PID
-	drivetrain.initializeTurnPID(turnK, 0.15, -0.15);
-	drivetrain.initializeDistancePID(distanceK, 0.2, -0.2);
+	drivetrain.initializeTurnPID(turnK, 0.3, -0.3);
+	drivetrain.initializeDistancePID(distanceK, 0.3, -0.3);
 	
 	Serial.print(" -Drive Has Begun- \n");
 	

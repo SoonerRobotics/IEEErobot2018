@@ -62,14 +62,14 @@
 #define pinIbtakeMotEnb 0
 
 //Turn PID
-#define TURN_KP 0.05
+#define TURN_KP 0.004
 #define TURN_KI 0.000
 #define TURN_KD 0.1
 
 //Distance PID
 #define DIST_KP 0.05
 #define DIST_KI 0.000
-#define DIST_KD 0.005
+#define DIST_KD 0.1
 
 
 
