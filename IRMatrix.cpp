@@ -17,13 +17,14 @@ IRMatrix::IRMatrix()
 	this->binaryValue = 0;
 }
 
-IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5) 
+IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6) 
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
 	this->ir3.update(pin3, INPUT);
 	this->ir4.update(pin4, INPUT);
 	this->ir5.update(pin5, INPUT);
+	this->ir6.update(pin6, INPIT);
 	
 	this->binaryValue = 0;
 	
@@ -37,18 +38,20 @@ void IRMatrix::operator=(const IRMatrix& matrix)
 	this->ir3 = matrix.ir3;
 	this->ir4 = matrix.ir4;
 	this->ir5 = matrix.ir5;
+	this->ir6 = matrix.ir6;
 	Serial.print(" -Matrix Copy-Assign- \n");
 	
 	this->binaryValue = matrix.binaryValue;
 }
 
-void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5)
+void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6)
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
 	this->ir3.update(pin3, INPUT);
 	this->ir4.update(pin4, INPUT);
 	this->ir5.update(pin5, INPUT);
+	this->ir6.update(pin6, INPUT);
 }
 
 unsigned int IRMatrix::readToBinary()
@@ -60,6 +63,7 @@ unsigned int IRMatrix::readToBinary()
 	this->binaryValue += convertToBinary(this->ir3.read()) * 4;
 	this->binaryValue += convertToBinary(this->ir4.read()) * 8;
 	this->binaryValue += convertToBinary(this->ir5.read()) * 16;
+	this->binaryValue += convertToBinary(this->ir6.read()) * 32;
 	
 	return this->binaryValue;
 }
@@ -75,6 +79,8 @@ void IRMatrix::printRawToSerial()
 	Serial.print(this->ir4.read());
 	Serial.print("\t");
 	Serial.print(this->ir5.read());
+	Serial.print("\t");
+	Serial.print(this->ir6.read());
 	Serial.print("\n");
 }
 
