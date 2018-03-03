@@ -344,8 +344,7 @@ void Intake::dropOffSequence(Color color)
 				
 				//We have reached the height, so time to drop off the coins.
 				this->dropOffState = DROPd;
-			}
-			
+			}	
 		case DROPd:
 			
 			if(this->electromagnet.hasCoin())

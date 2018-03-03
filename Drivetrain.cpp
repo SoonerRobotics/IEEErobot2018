@@ -1,6 +1,5 @@
 #include "Drivetrain.h"
 
-
 Drivetrain::Drivetrain()
 {
 	
@@ -141,6 +140,11 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 	//Is the move complete or not?
 	movementComplete = driveComplete && turnComplete; 
 	
+	if(movementComplete)
+	{
+		arcadeDrive(0, 0);
+	}
+	
 	return movementComplete;
 }
 
@@ -227,7 +231,10 @@ void Drivetrain::arcadeDrive(float Y, float X)
 			left = (-1) * max(-X, -Y);
 		}
 	}
-	
+	Serial.print("\tX: ");
+	Serial.print(X);
+	Serial.print("\tY: ");
+	Serial.print(Y);
 	//Output to the motors
 	BasicDrive::setOutput(left, right);
 }
