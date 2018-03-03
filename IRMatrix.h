@@ -9,10 +9,10 @@ class IRMatrix
 {
 	public:
 		IRMatrix();
-		IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6);
+		IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5);
 		void operator=(const IRMatrix& matrix);
 		
-		void begin(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6);
+		void begin(int pin1, int pin2, int pin3, int pin4, int pin5);
 	
 		unsigned int readToBinary();
 		
@@ -24,7 +24,6 @@ class IRMatrix
 		AnalogDevice ir3;
 		AnalogDevice ir4;
 		AnalogDevice ir5;
-		AnalogDevice ir6;
 		
 		int binaryValue;
 		
