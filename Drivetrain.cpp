@@ -12,31 +12,28 @@ void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder r
 	this->metDetector = mDetector;
 	
 	//Set params for PID's
-	turnPID_v1(gyroError, turnPIDOutput, targetDistance, TURN_KP, TURN_KI, TURN_KD, 0);
-	distancePID_v1(distance, distancePIDOutput, 0, DIST_KP, DIST_KI, DIST_KD, 0);
+	//turnPID_v1(gyroError, turnPIDOutput, targetDistance, TURN_KP, TURN_KI, TURN_KD, 0);
+	//distancePID_v1(distance, distancePIDOutput, 0, DIST_KP, DIST_KI, DIST_KD, 0);
 	
 	//Set PID modes
-	turnPID_v1.SetMode(AUTOMATIC);
-	distancePID_v1.SetMode(AUTOMATIC);
+	//turnPID_v1.SetMode(AUTOMATIC);
+	//distancePID_v1.SetMode(AUTOMATIC);
 	
 	//Clamp max and min values, from -1 to 1 to match motor outputs
-	turnPID_v1.SetOutputLimits(-1, 1);
-	distancePID_v1.SetOutputLimits(-1, 1);
+	//turnPID_v1.SetOutputLimits(-1, 1);
+	//distancePID_v1.SetOutputLimits(-1, 1);
 }
 
 void Drivetrain::initializeTurnPID(Collection<float> turnK, float high, float low)
 {
 	this->turnPID.initialize(0, turnK);
 	this->turnPID.setOutputRange(high, low);
-	
 }
 
 void Drivetrain::initializeDistancePID(Collection<float> distanceK, float high, float low)
 {
 	this->distancePID.initialize(0, distanceK);
-	this->distancePID.setOutputRange(high, low);
-	
-	this->distancePID_v1 PID_v1(INPUT,OUTPUT,SETPOINT,turnK[0],turnK[1],turnK[2],0);
+	this->distancePID.setOutputRange(high, low);	
 }
 
 
@@ -85,11 +82,8 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//Y = distancePID.getOutput(targetDistance, distance);
 		//X = -turnPID.getOutput(0, gyroError);
 		
-		distancePID_v1.Compute();
-		turnPID_v1.Compute();
-		
-		Y = distancePIDOutput;
-		X = -turnPIDOutput;
+		Y = distancePID.getOutput2(targetDistance, distance);
+		X = -turnPID.getOutput2(0, gyroError);
 		
 		//Check to see if the distance is in range and if the drive is completed
 		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)

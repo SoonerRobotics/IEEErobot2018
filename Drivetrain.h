@@ -44,8 +44,11 @@ class Drivetrain : public BasicDrive
 		PIDController turnPID;
 		PIDController distancePID;
 		
-		PID turnPID_v1;
-		PID distancePID_v1;
+		//PID turnPID_v1;
+		//PID distancePID_v1;
+		
+		//PID turnPID_v1(gyroError, turnPIDOutput, targetDistance, TURN_KP, TURN_KI, TURN_KD, 0);
+		//PID distancePID_v1(distance, distancePIDOutput, 0, DIST_KP, DIST_KI, DIST_KD, 0);
 		
 		void arcadeDrive(float Y, float X);
 		
