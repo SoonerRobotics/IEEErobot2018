@@ -8,6 +8,7 @@
 #include <DigitalDevice.h>
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
+#include <PID_v1.h>
 
 #include "DriveConstants.h"
 #include "IRMatrix.h"
@@ -43,6 +44,9 @@ class Drivetrain : public BasicDrive
 		PIDController turnPID;
 		PIDController distancePID;
 		
+		PID turnPID_v1;
+		PID distancePID_v1;
+		
 		void arcadeDrive(float Y, float X);
 		
 		void makeDecision();
@@ -52,6 +56,12 @@ class Drivetrain : public BasicDrive
 		float X;
 		float distance;
 		float gyroError;
+		
+		float distancePIDOutput;
+		float turnPIDOutput;
+		
+		float targetDistance;
+		float targetAngle;	
 		
 		bool distanceInRange;
 		bool angleInRange;

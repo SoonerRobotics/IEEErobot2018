@@ -10,18 +10,33 @@ void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder r
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	//this->irMatrix = mat;			//Doesn't like this reference 
 	this->metDetector = mDetector;
+	
+	//Set params for PID's
+	turnPID_v1(gyroError, turnPIDOutput, targetDistance, TURN_KP, TURN_KI, TURN_KD, 0);
+	distancePID_v1(distance, distancePIDOutput, 0, DIST_KP, DIST_KI, DIST_KD, 0);
+	
+	//Set PID modes
+	turnPID_v1.SetMode(AUTOMATIC);
+	distancePID_v1.SetMode(AUTOMATIC);
+	
+	//Clamp max and min values, from -1 to 1 to match motor outputs
+	turnPID_v1.SetOutputLimits(-1, 1);
+	distancePID_v1.SetOutputLimits(-1, 1);
 }
 
 void Drivetrain::initializeTurnPID(Collection<float> turnK, float high, float low)
 {
 	this->turnPID.initialize(0, turnK);
 	this->turnPID.setOutputRange(high, low);
+	
 }
 
 void Drivetrain::initializeDistancePID(Collection<float> distanceK, float high, float low)
 {
 	this->distancePID.initialize(0, distanceK);
 	this->distancePID.setOutputRange(high, low);
+	
+	this->distancePID_v1 PID_v1(INPUT,OUTPUT,SETPOINT,turnK[0],turnK[1],turnK[2],0);
 }
 
 
@@ -44,6 +59,9 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		turnComplete = false;
 		movementComplete = false;
 		
+		this->targetDistance = targetDistance;
+		this->targetAngle = targetAngle;
+		
 		//Start a timer
 		timer = millis();
 		timeoutClock = 0;
@@ -52,7 +70,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 	if(!movementComplete)
 	{
 		//Calculate Distance
-		distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
+		this->distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
 		
 		//Calculate Gyro Error
 		gyroError = inputYaw - targetAngle;
@@ -64,8 +82,14 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 		
 		//Calculate Y and X values (straight vector and turn vector respectively)
-		Y = distancePID.getOutput(targetDistance, distance);
-		X = -turnPID.getOutput(0, gyroError);
+		//Y = distancePID.getOutput(targetDistance, distance);
+		//X = -turnPID.getOutput(0, gyroError);
+		
+		distancePID_v1.Compute();
+		turnPID_v1.Compute();
+		
+		Y = distancePIDOutput;
+		X = -turnPIDOutput;
 		
 		//Check to see if the distance is in range and if the drive is completed
 		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
