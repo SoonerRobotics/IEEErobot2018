@@ -15,13 +15,15 @@ class Intake
 		
 		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber);
 		
-		bool pickUpSequence(Color color);
+		int pickUpSequence(Color color);
 		
 		void pickUpSequenceA(Color color);
 		
 		void dropOffSequence(Color color);
 		
 		bool coinDetected();
+		
+		Turntable turnTable;
 		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
@@ -38,7 +40,7 @@ class Intake
 		Electromagnet electromagnet;
 		
 		Servo colorServo;
-		Turntable turnTable;
+		
 		
 		//Most recent read from color sensor
 		Color lastColor;
