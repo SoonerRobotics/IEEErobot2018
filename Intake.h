@@ -23,7 +23,7 @@ class Intake
 		
 		bool coinDetected();
 		
-		Turntable& getTurnTable();
+		Turntable turnTable;
 		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
@@ -40,7 +40,7 @@ class Intake
 		Electromagnet electromagnet;
 		
 		Servo colorServo;
-		Turntable turnTable;
+		
 		
 		//Most recent read from color sensor
 		Color lastColor;

@@ -53,7 +53,7 @@
 #define BW_THRESHOLD 500
 
 //Servos
-#define turntableServoPin 0
+#define turntableServoPin 7
 #define colorServoPin 0
 
 //Intake Motor Pins
