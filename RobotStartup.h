@@ -81,7 +81,7 @@ void robotSetup()
 	Turntable turntable(turntableServoPin);
 	
 	//--Intake
-	iMotor.begin(pinIbtakeMot1, pinIbtakeMot2, pinIbtakeMotEnb);
+	iMotor.begin(pinIntakeMot1, pinIntakeMot2, pinIntakeMotEnb);
 	eMagnet.initialize(pinElecMag);
 	intake.begin(iMotor, tEncoder, mDetector, lSwitch, eMagnet, turntable, colorServoPin);
   

@@ -57,9 +57,9 @@
 #define colorServoPin 0
 
 //Intake Motor Pins
-#define pinIbtakeMot1 0
-#define pinIbtakeMot2 0
-#define pinIbtakeMotEnb 0
+#define pinIntakeMot1 22
+#define pinIntakeMot2 23
+#define pinIntakeMotEnb 13
 
 //Turn PID
 #define TURN_KP 0.004
