@@ -23,9 +23,9 @@ class Intake
 		
 		bool coinDetected();
 		
-		Encoder getRackAndPinionEncoder();
+		//Encoder getRackAndPinionEncoder();
 		
-		Motor raiseRackAndPinion();
+		//Motor raiseRackAndPinion();
 		
 		Turntable turnTable;
 		
