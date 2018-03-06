@@ -25,7 +25,7 @@ Intake::Intake()
 
 void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber)
 {
-	//this->intakeMotor = motor;
+	this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
 	this->metalDetector = metalDetector;
 	this->limitSwitch = limitSwitch;
@@ -38,6 +38,7 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 	this->lastColor = Color("none");
 	
 	this->colorServo.attach(colorServoPinNumber);
+	
 }
 
 
@@ -402,4 +403,14 @@ void Intake::dropOffSequence(Color color)
 bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;
+}
+
+Encoder Intake::getRackAndPinionEncoder()
+{
+	return intakeEncoder;
+}
+
+Motor Intake::raiseRackAndPinion()
+{
+	return intakeMotor;
 }
