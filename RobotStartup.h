@@ -16,11 +16,6 @@ void encRightInterrupt()
 	drivetrain.getRightEncoder().process(); 
 }
 
-void encIntakeInterrupt()
-{
-	intake.getRackAndPinionEncoder().process();
-}
-
 //Setup Function
 void robotSetup()
 {
@@ -66,7 +61,6 @@ void robotSetup()
 	//Set the encoder constants
 	leftEnc.setConstant(rightEncoderConstant);
 	rightEnc.setConstant(rightEncoderConstant);
-	
 
 	//--Drivetrain
 	leftMot.begin(pinLeftMot1, pinLeftMot2, pinLeftMotEnb);
@@ -86,9 +80,6 @@ void robotSetup()
 	Motor iMotor;	
 	Turntable turntable(turntableServoPin);
 	
-	//Set the encoder constants
-	//tEncoder.setConstant(intakeEncoderConstant);
-	
 	//--Intake
 	iMotor.begin(pinIntakeMot1, pinIntakeMot2, pinIntakeMotEnb);
 	eMagnet.initialize(pinElecMag);
@@ -99,7 +90,6 @@ void robotSetup()
 	//--Interrupts
 	attachInterrupt(0, encLeftInterrupt, CHANGE);
 	attachInterrupt(1, encRightInterrupt, CHANGE);
-	attachInterrupt(2, encIntakeInterrupt, CHANGE);
 	
 	//Interrupt for Turntable Encoder needed + method
 	Serial.print(" -Interrupts- \n");

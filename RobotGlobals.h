@@ -33,9 +33,8 @@
 #define rightEncoderConstant 0.0093986
 
 //Intake Encoder
-#define pinIntakeEnc1 20
-#define pinIntakeEnc2 21
-//#define intakeEncoderConstant 0
+#define pinIntakeEnc1 0
+#define pinIntakeEnc2 0
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
 #define pinMetDet 0 //make sure it's giving an output
