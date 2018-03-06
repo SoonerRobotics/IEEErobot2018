@@ -35,10 +35,11 @@
 //Intake Encoder
 #define pinIntakeEnc1 0
 #define pinIntakeEnc2 0
+#define intakeEncoderConstant .002302351
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
 #define pinMetDet 0 //make sure it's giving an output
-#define pinElecMag 0 //make sure it's giving an output
+#define pinElecMag 19 //make sure it's giving an output
 #define pinLimSwitch 0
 
 //Pins for the IR Matrix
@@ -62,14 +63,14 @@
 #define pinIntakeMotEnb 13
 
 //Turn PID
-#define TURN_KP 0.004
-#define TURN_KI 0.000
-#define TURN_KD 0.1
+#define TURN_KP .035
+#define TURN_KI 0
+#define TURN_KD .2
 
 //Distance PID
-#define DIST_KP 0.05
-#define DIST_KI 0.000
-#define DIST_KD 0.1
+#define DIST_KP .1
+#define DIST_KI 0
+#define DIST_KD 0
 
 
 

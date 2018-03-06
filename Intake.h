@@ -23,6 +23,10 @@ class Intake
 		
 		bool coinDetected();
 		
+		Motor getRackAndPinionMotor();
+		
+		Encoder getRackAndPinionEncoder();
+		
 		Turntable turnTable;
 		
 	private:

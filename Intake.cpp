@@ -399,6 +399,16 @@ void Intake::dropOffSequence(Color color)
 	
 }
 
+Motor Intake::getRackAndPinionMotor()
+{
+	return this->intakeMotor;
+}
+
+Encoder Intake::getRackAndPinionEncoder()
+{
+	return this->intakeEncoder;
+}
+
 bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;

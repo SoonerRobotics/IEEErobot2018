@@ -8,7 +8,6 @@
 #include <DigitalDevice.h>
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
-#include <PID_v1.h>
 
 #include "DriveConstants.h"
 #include "IRMatrix.h"
@@ -59,6 +58,11 @@ class Drivetrain : public BasicDrive
 		float X;
 		float distance;
 		float gyroError;
+		
+		float highT;
+		float lowT;
+		float highD;
+		float lowD;
 		
 		float distancePIDOutput;
 		float turnPIDOutput;

@@ -28,12 +28,16 @@ void Drivetrain::initializeTurnPID(Collection<float> turnK, float high, float lo
 {
 	this->turnPID.initialize(0, turnK);
 	this->turnPID.setOutputRange(high, low);
+	this->highT = high;
+	this->lowT = low;
 }
 
 void Drivetrain::initializeDistancePID(Collection<float> distanceK, float high, float low)
 {
 	this->distancePID.initialize(0, distanceK);
 	this->distancePID.setOutputRange(high, low);	
+	this->highD = high;
+	this->lowD = low;
 }
 
 
@@ -83,7 +87,11 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//X = -turnPID.getOutput(0, gyroError);
 		
 		Y = distancePID.getOutput2(targetDistance, distance);
+		if (Y >= highD) { Y = highD; }
+		else if (Y <= lowD) { Y = lowD; }
 		X = -turnPID.getOutput2(0, gyroError);
+		if (X >= highT) { X = highT; }
+		else if (X <= lowT) { X = lowT; }
 		
 		//Check to see if the distance is in range and if the drive is completed
 		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
@@ -115,7 +123,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 		
 		//Check to see if the angle is 'in-range' and if the turn is completed
-		if(abs(gyroError) < angleThreshold && abs(X) < stopSpeedThreshold)
+		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
 		{
 			//If this is the first time we have been at the angle goal, reset the timer
 			if(!angleInRange)
@@ -249,10 +257,10 @@ void Drivetrain::arcadeDrive(float Y, float X)
 			left = (-1) * max(-X, -Y);
 		}
 	}
-	Serial.print("\tX: ");
-	Serial.print(X);
-	Serial.print("\tY: ");
-	Serial.print(Y);
+	Serial.print("\tleft: ");
+	Serial.print(left);
+	Serial.print("\tright: ");
+	Serial.print(right);
 	//Output to the motors
 	BasicDrive::setOutput(left, right);
 }
