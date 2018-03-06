@@ -37,7 +37,8 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 	
 	this->lastColor = Color("none");
 	
-	this->colorServo.attach(colorServoPinNumber);	
+	this->colorServo.attach(colorServoPinNumber);
+	
 }
 
 
@@ -403,13 +404,13 @@ bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;
 }
-/*
+
 Encoder Intake::getRackAndPinionEncoder()
 {
 	return intakeEncoder;
 }
 
-Motor Intake::getRackAndPinion()
+Motor Intake::raiseRackAndPinion()
 {
 	return intakeMotor;
-}*/
+}

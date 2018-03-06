@@ -16,10 +16,10 @@ void encRightInterrupt()
 	drivetrain.getRightEncoder().process(); 
 }
 
-//void encIntakeInterrupt()
-//{
-//	intake.getRackAndPinionEncoder().process();
-//}
+void encIntakeInterrupt()
+{
+	intake.getRackAndPinionEncoder().process();
+}
 
 //Setup Function
 void robotSetup()
@@ -99,7 +99,7 @@ void robotSetup()
 	//--Interrupts
 	attachInterrupt(0, encLeftInterrupt, CHANGE);
 	attachInterrupt(1, encRightInterrupt, CHANGE);
-	//attachInterrupt(2, encIntakeInterrupt, CHANGE);
+	attachInterrupt(2, encIntakeInterrupt, CHANGE);
 	
 	//Interrupt for Turntable Encoder needed + method
 	Serial.print(" -Interrupts- \n");
