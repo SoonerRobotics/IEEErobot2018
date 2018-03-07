@@ -27,11 +27,15 @@ class Intake
 		
 		Encoder getRackAndPinionEncoder();
 		
+		void raiseRackAndPinion(int newHeight);
+		
 		Turntable turnTable;
 		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
 		enum DropOffState{IDLEd, GRABd, RAISEd, DROPd};
+		
+		int lastHeight;
 		
 		PickUpState pickUpState;
 		DropOffState dropOffState;

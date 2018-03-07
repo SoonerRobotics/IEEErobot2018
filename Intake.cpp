@@ -25,7 +25,7 @@ Intake::Intake()
 
 void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber)
 {
-	//this->intakeMotor = motor;
+	this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
 	this->metalDetector = metalDetector;
 	this->limitSwitch = limitSwitch;
@@ -38,6 +38,8 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 	this->lastColor = Color("none");
 	
 	this->colorServo.attach(colorServoPinNumber);
+	
+	this->lastHeight = idleHeight;
 }
 
 
@@ -187,12 +189,13 @@ void Intake::pickUpSequenceA(Color color)
 			}
 			else //Otherwise it is time to grab the coin
 			{
+				this->intakeMotor.output(0);
 				this->pickUpState = GRAB;
 			}
 			
 		case GRAB:
 			//Stop the motor so we can do a pickup
-			this->intakeMotor.output(stallSpeed);
+			this->intakeMotor.output(0);
 			
 			//Pick up the coin
 			this->electromagnet.pickUp();
@@ -213,7 +216,7 @@ void Intake::pickUpSequenceA(Color color)
 			else
 			{
 				//Stop the motor so we can scan the coin
-				this->intakeMotor.output(stallSpeed);
+				this->intakeMotor.output(0);
 				
 				//Deploy the RGB color sensor! (servo)
 				this->colorServo.write(colorServoDeployAngle);
@@ -240,7 +243,7 @@ void Intake::pickUpSequenceA(Color color)
 			else
 			{
 				//Stop driving the motor upwards
-				this->intakeMotor.output(stallSpeed);
+				this->intakeMotor.output(0);
 				
 				//We have reached the height, so time to store.
 				this->pickUpState = STORE;
@@ -399,6 +402,27 @@ void Intake::dropOffSequence(Color color)
 	
 }
 
+void Intake::raiseRackAndPinion(int newHeight)
+{
+	while (abs(this->intakeEncoder.getValue() - newHeight) > heightTreshold)
+	{
+		//If we are above the last height lower the motor
+		if(lastHeight > newHeight)
+		{
+			this->intakeMotor.output((-1) * (motorSpeed));
+		}
+		//If we are below the last height raise the motor
+		else if(lastHeight < newHeight)
+		{
+			this->intakeMotor.output((1) * (motorSpeed));
+		}
+	}
+	if (abs(this->intakeEncoder.getValue() - newHeight) < heightTreshold)
+	{
+		lastHeight = newHeight;
+	}
+}
+
 Motor Intake::getRackAndPinionMotor()
 {
 	return this->intakeMotor;
@@ -406,6 +430,7 @@ Motor Intake::getRackAndPinionMotor()
 
 Encoder Intake::getRackAndPinionEncoder()
 {
+	Serial.print("this");
 	return this->intakeEncoder;
 }
 

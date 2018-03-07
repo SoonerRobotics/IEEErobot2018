@@ -33,8 +33,8 @@
 #define rightEncoderConstant 0.0093986
 
 //Intake Encoder
-#define pinIntakeEnc1 0
-#define pinIntakeEnc2 0
+#define pinIntakeEnc1 20
+#define pinIntakeEnc2 21
 #define intakeEncoderConstant .002302351
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
@@ -65,7 +65,7 @@
 //Turn PID
 #define TURN_KP .035
 #define TURN_KI 0
-#define TURN_KD .2
+#define TURN_KD .3
 
 //Distance PID
 #define DIST_KP .1
