@@ -14,7 +14,7 @@
 //Use topHeight
 #define dropHeight 0	
 
-#define heightTreshold 1
+#define heightThreshold 1
 
 //Angles for the color sensor
 #define colorServoIdleAngle 0

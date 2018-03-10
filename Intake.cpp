@@ -416,7 +416,7 @@ void Intake::dropOffSequence(Color color)
 
 void Intake::raiseRackAndPinion(int newHeight)
 {
-	while (abs(this->intakeEncoder.getValue() - newHeight) > heightTreshold)
+	while (abs(this->intakeEncoder.getValue() - newHeight) > heightThreshold)
 	{
 		//If we are above the last height lower the motor
 		if(lastHeight > newHeight)
@@ -429,7 +429,7 @@ void Intake::raiseRackAndPinion(int newHeight)
 			this->intakeMotor.output((1) * (motorSpeed));
 		}
 	}
-	if (abs(this->intakeEncoder.getValue() - newHeight) < heightTreshold)
+	if (abs(this->intakeEncoder.getValue() - newHeight) < heightThreshold)
 	{
 		lastHeight = newHeight;
 	}
