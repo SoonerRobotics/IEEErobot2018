@@ -24,17 +24,17 @@ void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder r
 	//distancePID_v1.SetOutputLimits(-1, 1);
 }
 
-void Drivetrain::initializeTurnPID(Collection<float> turnK, float high, float low)
+void Drivetrain::initializeTurnPID(float turnKp, float turnKi, float turnKd, float high, float low)
 {
-	this->turnPID.initialize(0, turnK);
+	this->turnPID.initialize(0, turnKp, turnKi, turnKd);
 	this->turnPID.setOutputRange(high, low);
 	this->highT = high;
 	this->lowT = low;
 }
 
-void Drivetrain::initializeDistancePID(Collection<float> distanceK, float high, float low)
+void Drivetrain::initializeDistancePID(float distanceKp, float distanceKi, float distanceKd, float high, float low)
 {
-	this->distancePID.initialize(0, distanceK);
+	this->distancePID.initialize(0, distanceKp, distanceKi, distanceKd);
 	this->distancePID.setOutputRange(high, low);	
 	this->highD = high;
 	this->lowD = low;

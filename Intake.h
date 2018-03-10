@@ -7,13 +7,14 @@
 #include "IntakeConstants.h"
 #include "Turntable.h"
 #include <Servo.h>
+#include "PIDController.h"
 
 class Intake
 {
 	public:
 		Intake();
 		
-		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber);
+		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice loLimitSwitch, DigitalDevice hiLimitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber);
 		
 		int pickUpSequence(Color color);
 		
@@ -31,25 +32,34 @@ class Intake
 		
 		Turntable turnTable;
 		
+		void bottomLimit();
+		void topLimit();
+		void reset();
+		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
 		enum DropOffState{IDLEd, GRABd, RAISEd, DROPd};
 		
 		int lastHeight;
 		
+		float currentMotorOutput;
+		
+		float coerce(float value, float high, float low);
+		
 		PickUpState pickUpState;
 		DropOffState dropOffState;
+		PIDController intakePID;
 		
 		Motor intakeMotor;
 		Encoder intakeEncoder;
 		
 		DigitalDevice metalDetector;
-		DigitalDevice limitSwitch;
+		DigitalDevice lowLimitSwitch;
+		DigitalDevice highLimitSwitch;
 		Electromagnet electromagnet;
 		
 		Servo colorServo;
-		
-		
+				
 		//Most recent read from color sensor
 		Color lastColor;
 };

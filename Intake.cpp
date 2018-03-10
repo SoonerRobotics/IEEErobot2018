@@ -20,15 +20,19 @@ Intake::Intake()
 {
 	this->pickUpState = IDLE;
 	this->dropOffState = IDLEd;
+	this->currentMotorOutput = 0;
+	
+	intakePID.initialize(0, intakeKp, intakeKi, intakeKd);
 }
 
 
-void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice limitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber)
+void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice loLimitSwitch, DigitalDevice hiLimitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber)
 {
 	this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
 	this->metalDetector = metalDetector;
-	this->limitSwitch = limitSwitch;
+	this->lowLimitSwitch = loLimitSwitch;
+	this->highLimitSwitch = hiLimitSwitch;
 	this->electromagnet = electromagnet;
 	this->turnTable = turnTable;
 	
@@ -48,11 +52,13 @@ int Intake::pickUpSequence(Color color)
 	switch(this->pickUpState)
 	{
 		case IDLE:
+			currentMotorOutput = resetSpeed;
+		
 			//If the intake is above the grab height, drop the magnet to that height
-			if(this->intakeEncoder.getValue() > pickUpHeight)
+			if(this->lowLimitSwitch.read() != HIGH) // This MUST bottom out!
 			{
 				//Output <0 to go down
-				this->intakeMotor.output((-1) * motorSpeed);
+				this->intakeMotor.output(currentMotorOutput);
 			}
 			else //Otherwise it is time to grab the coin
 			{
@@ -77,11 +83,14 @@ int Intake::pickUpSequence(Color color)
 			return 0;
 			
 		case SCAN:
+			currentMotorOutput = intakePID.getOutput2(scanHeight, this->intakeEncoder.getValue());
+			currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
+			
 			//Raise the intake to scanning height
-			if(this->intakeEncoder.getValue() < scanHeight)
+			if(abs(this->intakeEncoder.getValue() - scanHeight) < RP_TOLERANCE)
 			{
 				//Output >0 to go up
-				this->intakeMotor.output(motorSpeed);
+				this->intakeMotor.output(currentMotorOutput);
 			}
 			else
 			{
@@ -105,8 +114,11 @@ int Intake::pickUpSequence(Color color)
 			return 1;
 			
 		case RAISE:
+			currentMotorOutput = intakePID.getOutput2(topHeight, this->intakeEncoder.getValue());
+			currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
+			
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < topHeight && this->limitSwitch.read() == LOW)
+			if(abs(this->intakeEncoder.getValue() - topHeight) < RP_TOLERANCE || this->highLimitSwitch.read() == HIGH)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -150,8 +162,8 @@ int Intake::pickUpSequence(Color color)
 				//Drive the intake down to the idle height
 				if(this->intakeEncoder.getValue() > idleHeight)
 				{
-					//Output <0 to go down
-					this->intakeMotor.output((-1) * motorSpeed);
+					//Output <0 to go down to the bottom
+					this->intakeMotor.output(resetSpeed);
 					
 					//Almost done, but not quite.
 					return 1;
@@ -235,7 +247,7 @@ void Intake::pickUpSequenceA(Color color)
 			
 		case RAISE:
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < topHeight && this->limitSwitch.read() == LOW)
+			if(this->intakeEncoder.getValue() < topHeight && this->lowLimitSwitch.read() == LOW)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -335,7 +347,7 @@ void Intake::dropOffSequence(Color color)
 			
 		case RAISEd:
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < topHeight && this->limitSwitch.read() == LOW)
+			if(this->intakeEncoder.getValue() < topHeight && this->highLimitSwitch.read() == LOW)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -434,7 +446,35 @@ Encoder Intake::getRackAndPinionEncoder()
 	return this->intakeEncoder;
 }
 
+void Intake::bottomLimit()
+{
+	this->intakeMotor.output(0);
+	this->intakeEncoder.reset();
+	currentMotorOutput = 0;
+}
+
+void Intake::topLimit()
+{
+	this->intakeMotor.output(0);
+	currentMotorOutput = 0;
+}
+
+void Intake::reset()
+{
+	//Reset the encoders and the height of the rack and pinion!
+	intakeMotor.output(resetSpeed);
+	
+	//This will cause the rack and pinion to drop and the interrupts above should make the motor not die
+}
+
 bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;
+}
+
+float Intake::coerce(float value, float high, float low)
+{
+	value = value > high ? high : value;
+	value = value < low ? low : value;
+	return value;
 }

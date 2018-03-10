@@ -39,8 +39,9 @@
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
 #define pinMetDet 0 //make sure it's giving an output
-#define pinElecMag 19 //make sure it's giving an output
-#define pinLimSwitch 0
+#define pinElecMag 17 //make sure it's giving an output
+#define pinLowLimSwitch 19
+#define pinHighLimSwitch 18
 
 //Pins for the IR Matrix
 #define pinIRMatrix1 A0

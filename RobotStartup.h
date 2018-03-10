@@ -5,6 +5,23 @@
 Drivetrain drivetrain;
 Intake intake;
 
+//Global variables that aren't supposed to be global, but have to be for setup to work
+//--Drivetrain
+Motor leftMot;
+Motor rightMot;
+Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
+Encoder rightEnc(pinRightEnc1, pinRightEnc2);
+DigitalDevice mDetector(pinMetDet, INPUT);
+IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5);
+
+//--Intake
+Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
+DigitalDevice loSwitch(pinLowLimSwitch, INPUT);
+DigitalDevice hiSwitch(pinHighLimSwitch, INPUT);
+Electromagnet eMagnet(pinElecMag);
+Motor iMotor;	
+Turntable turntable(turntableServoPin);
+
 //Encoder Masking
 void encLeftInterrupt() 
 {
@@ -21,25 +38,24 @@ void encIntakeInterrupt()
 	intake.getRackAndPinionEncoder().process(); 
 }
 
+void intakeLowLimit()
+{
+	intake.bottomLimit();
+	Serial.println("TRIGGERED");
+}
+
+void intakeHighLimit()
+{
+	intake.topLimit();
+}
+
 //Setup Function
 void robotSetup()
 {
 	Serial.begin(9600);
 	Serial.print(" -Has Begun- \n");
-	
-	Collection<float> turnK(3);
-	Collection<float> distanceK(3);
-	
-	//Add Turn Constants
-	turnK.add(TURN_KP);
-	turnK.add(TURN_KI);
-	turnK.add(TURN_KD);
-	
-	//Add Distance Constants
-	distanceK.add(DIST_KP);
-	distanceK.add(DIST_KI);
-	distanceK.add(DIST_KD);
-	
+
+	/*
 	//Initialize Gyro and Color Sensor
 	if(!gyro.begin())
 	{
@@ -54,36 +70,28 @@ void robotSetup()
 	{
 		Serial.println("Error Connecting to Color Sensor!");
 	}
-	
-	//--Drivetrain
-	Motor leftMot;
-	Motor rightMot;
-	Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
-	Encoder rightEnc(pinRightEnc1, pinRightEnc2);
-	DigitalDevice mDetector(pinMetDet, INPUT);
-	IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5);
+	*/
 
+	
 	//Set the encoder constants
 	leftEnc.setConstant(leftEncoderConstant);
 	rightEnc.setConstant(rightEncoderConstant);
 
-	//--Drivetrain
+	//Initialize motors and basic drivetrain functions
 	leftMot.begin(pinLeftMot1, pinLeftMot2, pinLeftMotEnb);
 	rightMot.begin(pinRightMot1, pinRightMot2, pinRightMotEnb);
 	drivetrain.begin(leftMot, rightMot, leftEnc, rightEnc, mat, mDetector);
 	
 	//Setup PID
-	drivetrain.initializeTurnPID(turnK, 0.3, -0.3);
-	drivetrain.initializeDistancePID(distanceK, 0.3, -0.3);
+	drivetrain.initializeTurnPID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);
+	Serial.println("y u do dis to me");
+	drivetrain.initializeDistancePID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);
 	
 	Serial.print(" -Drive Has Begun- \n");
 	
-	//--Intake
-	Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
-	DigitalDevice lSwitch(pinLimSwitch, INPUT);
-	Electromagnet eMagnet(pinElecMag);
-	Motor iMotor;	
-	Turntable turntable(turntableServoPin);
+	//Add pull down resistors to low and high limit switches
+	loSwitch.pullUp();
+	hiSwitch.pullUp();
 	
 	//--Intake
 	tEncoder.setConstant(intakeEncoderConstant);
@@ -91,7 +99,7 @@ void robotSetup()
 	//--Intake
 	iMotor.begin(pinIntakeMot1, pinIntakeMot2, pinIntakeMotEnb);
 	eMagnet.initialize(pinElecMag);
-	intake.begin(iMotor, tEncoder, mDetector, lSwitch, eMagnet, turntable, colorServoPin);
+	intake.begin(iMotor, tEncoder, mDetector, loSwitch, hiSwitch, eMagnet, turntable, colorServoPin);
   
 	Serial.print(" -Intake Has Begun- \n");
 	
@@ -99,9 +107,18 @@ void robotSetup()
 	attachInterrupt(0, encLeftInterrupt, CHANGE);
 	attachInterrupt(1, encRightInterrupt, CHANGE);
 	attachInterrupt(3, encIntakeInterrupt, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, RISING);
+	attachInterrupt(digitalPinToInterrupt(pinHighLimSwitch), intakeHighLimit, RISING);
 	
 	//Interrupt for Turntable Encoder needed + method
 	Serial.print(" -Interrupts- \n");
+	
+	
+	//Don't leave setup until GO button is pressed
+	
+	
+	//Reset the intake to start
+	intake.reset();
 }
 
 #endif

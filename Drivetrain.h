@@ -18,8 +18,8 @@ class Drivetrain : public BasicDrive
 		Drivetrain();
 		
 		void begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix mat, DigitalDevice mDetector);
-		void initializeTurnPID(Collection<float> turnK, float high = 1, float low = -1);
-		void initializeDistancePID(Collection<float> distanceK, float high = 1, float low = -1);
+		void initializeTurnPID(float kp, float ki, float kd, float high = 1, float low = -1);
+		void initializeDistancePID(float kp, float ki, float kd, float high = 1, float low = -1);
 		
 		bool drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize, long timeout = -1);
 		void turnToAngle(float angle);
