@@ -438,3 +438,11 @@ bool Intake::coinDetected()
 {
 	return this->metalDetector.read() == HIGH;
 }
+
+void Intake::interrupt()
+{
+	//stop intake motor
+	intakeMotor.output(0);
+	//reset intake encoder
+	intakeEncoder.reset();
+}
