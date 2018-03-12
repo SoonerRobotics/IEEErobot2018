@@ -197,6 +197,59 @@ void Drivetrain::followLine()
 	arcadeDrive(driveSpeed, turnSpeed);
 }
 
+//get data from IR as a vector to the average of detected points
+//example, if center bits detect line (ir2, ir3, ir4), the position will be 0
+void Drivetrain::getPositionSpark()
+{
+	int irMatrixValue = this->irMatrix.readToBinary();
+	int bitsCounted = 0;
+	int accumulator = 0;
+	
+	float driveSpeed = lineFollowSpeed;
+	float turnSpeed = 0;
+	
+	//count bits
+	for(int i = 0; i < 5; i++)
+	{
+		if ( (irMatrixValue >> i) & 1 == 1)
+		{
+			bitsCounted++;
+		}
+	}
+	
+	//positive bits (ir5, ir4, ir3)
+	for (int i = 4; i > 1; i--)
+	{
+		if ( (irMatrixValue >> i ) & 1 == 1)
+		{
+			accumulator += ((-32 * (i - 1)) + 1);
+		}
+	}
+	
+	//negative bits (ir3, ir2, ir1)
+	for (int i = 0; i > 3; i++)
+	{
+		if ( (irMatrixValue >> i ) & 1 == 1)
+		{
+			accumulator += ((32 * (3 - i)) - 1);
+		}
+	} 
+	
+	//position value in a range from -127 to 127
+	positionValue = accumulator / bitsCounted;
+
+	if (positionValue > 0)
+	{
+		turnSpeed = 0.25
+	}
+	else if (positionValue < 0)
+	{
+		turnSpeed = -0.25
+	}
+	
+	return positionValue;
+}
+
 void Drivetrain::followLineUntilCoin() 
 {
 	while(metDetector.read() == LOW)
@@ -279,7 +332,7 @@ void Drivetrain::followLineGyro(float targetAngle, float inputAngle)
 {	
 	this->irMatrixValue = irMatrix.readToBinary();
 	
-	//IF all center IR senor arn't on line
+	//IF all center IR senor aren't on line
 	//CHeck current angle against angle
 	if(irMatrixValue&21 == 1)//If all center IR sensor are on line
 	{
