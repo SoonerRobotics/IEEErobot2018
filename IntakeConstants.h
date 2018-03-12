@@ -17,8 +17,8 @@
 #define heightThreshold 1
 
 //Angles for the color sensor
-#define colorServoIdleAngle 0
-#define colorServoDeployAngle 0
+#define colorServoIdleAngle 100
+#define colorServoDeployAngle 4
 
 //Speeds for the motor to move at during the pickup sequence
 #define motorSpeed 0.35
