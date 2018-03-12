@@ -76,7 +76,8 @@
 //Go Button
 #define pinGoButton 0//Set Later
 
-
+#define distMetalDetectToIntake 0
+#define distIntakeToMatrix 0
 
 /*
 //Colors

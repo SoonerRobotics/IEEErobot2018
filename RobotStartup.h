@@ -117,8 +117,9 @@ void robotSetup()
 	
 	//Don't leave setup until GO button is pressed
 	goButton.pullUp();
+	int signal = goButton.read();
 	do{
-		int signal = goButton.read();
+		signal = goButton.read();
 		
 	}while(signal != 0);
 	
