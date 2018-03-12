@@ -73,6 +73,9 @@
 #define DIST_KI 0
 #define DIST_KD 0
 
+//Go Button
+#define pinGoButton 0//Set Later
+
 
 
 /*

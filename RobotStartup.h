@@ -13,6 +13,7 @@ Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
 Encoder rightEnc(pinRightEnc1, pinRightEnc2);
 DigitalDevice mDetector(pinMetDet, INPUT);
 IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5);
+DigitalDevice goButton(pinGoButton,INPUT);
 
 //--Intake
 Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
@@ -115,6 +116,11 @@ void robotSetup()
 	
 	
 	//Don't leave setup until GO button is pressed
+	goButton.pullUp();
+	do{
+		int signal = goButton.read();
+		
+	}while(signal != 0);
 	
 	
 	//Reset the intake to start
