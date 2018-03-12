@@ -183,7 +183,7 @@ void Drivetrain::followLine()
 	float turnSpeed = 0;
 	
 	//Check for special case situations before setting output
-	if(irMatrixValue&3 == 1)
+	/*if(irMatrixValue&3 == 1)
 	{
 		turnSpeed = 0.25;
 		
@@ -191,15 +191,43 @@ void Drivetrain::followLine()
 	else
 	{
 		turnSpeed = -0.25;
-	}
+	}*/
+	
+	getPositionSpark();
 	
 	//Set the output to drive along the line
 	arcadeDrive(driveSpeed, turnSpeed);
 }
 
+void Drivetrain::followLineUntilCoin() 
+{
+	while(metDetector.read() == LOW)
+	{
+		int irMatrixValue = this->irMatrix.readToBinary();
+		
+		float driveSpeed = lineFollowSpeed;
+		float turnSpeed = 0;
+		
+		//Check for special case situations before setting output
+		/*if(irMatrixValue&3 == 1)
+		{
+			turnSpeed = 0.25;
+		
+		} else if(irMatrixValue&3 == 1)
+		
+		{
+			turnSpeed = -0.25;
+		}*/
+		
+		getPositionSpark();
+		
+		arcadeDrive(driveSpeed, turnSpeed);
+	}
+}
+
 //get data from IR as a vector to the average of detected points
 //example, if center bits detect line (ir2, ir3, ir4), the position will be 0
-void Drivetrain::getPositionSpark()
+float Drivetrain::getPositionSpark()
 {
 	int irMatrixValue = this->irMatrix.readToBinary();
 	int bitsCounted = 0;
@@ -236,42 +264,18 @@ void Drivetrain::getPositionSpark()
 	} 
 	
 	//position value in a range from -127 to 127
-	positionValue = accumulator / bitsCounted;
+	float positionValue = accumulator / bitsCounted;
 
-	if (positionValue > 0)
+	if (positionValue > 50)
 	{
-		turnSpeed = 0.25
+		turnSpeed = 0.25;
 	}
-	else if (positionValue < 0)
+	else if (positionValue < 05)
 	{
-		turnSpeed = -0.25
+		turnSpeed = -0.25;
 	}
 	
 	return positionValue;
-}
-
-void Drivetrain::followLineUntilCoin() 
-{
-	while(metDetector.read() == LOW)
-	{
-		int irMatrixValue = this->irMatrix.readToBinary();
-		
-		float driveSpeed = lineFollowSpeed;
-		float turnSpeed = 0;
-		
-		//Check for special case situations before setting output
-		if(irMatrixValue&3 == 1)
-		{
-			turnSpeed = 0.25;
-		
-		} else if(irMatrixValue&3 == 1)
-		
-		{
-			turnSpeed = -0.25;
-		}
-		
-		arcadeDrive(driveSpeed, turnSpeed);
-	}
 }
 
 /**
