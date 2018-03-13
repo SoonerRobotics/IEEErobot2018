@@ -12,7 +12,7 @@
 #define storageHeight 0
 
 //Use topHeight
-#define dropHeight 0	
+#define dropHeight 3.0	
 
 #define heightThreshold 1
 
@@ -27,9 +27,9 @@
 
 //TODO: Add more speeds to optimize the process
 //Time delays in the pickup sequence
-#define magnetWaitTime 0
-#define turnTableWaitMax 0
-#define colorServoDelay 0
+#define magnetWaitTime 1000
+#define turnTableWaitMax 1000
+#define colorServoDelay 1000
 
 
 //PID for intake

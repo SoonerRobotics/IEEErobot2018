@@ -160,7 +160,7 @@ int Intake::pickUpSequence(Color color)
 			else if(!this->electromagnet.hasCoin())
 			{
 				//Drive the intake down to the idle height
-				if(this->intakeEncoder.getValue() > idleHeight)
+				if(this->lowLimitSwitch.read() != HIGH)
 				{
 					//Output <0 to go down to the bottom
 					this->intakeMotor.output(resetSpeed);

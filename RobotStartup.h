@@ -36,7 +36,7 @@ void encRightInterrupt()
 
 void encIntakeInterrupt() 
 {  
-	intake.getRackAndPinionEncoder().process(); 
+	tEncoder.process(); 
 }
 
 void intakeLowLimit()
@@ -108,8 +108,8 @@ void robotSetup()
 	attachInterrupt(0, encLeftInterrupt, CHANGE);
 	attachInterrupt(1, encRightInterrupt, CHANGE);
 	attachInterrupt(3, encIntakeInterrupt, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, RISING);
-	attachInterrupt(digitalPinToInterrupt(pinHighLimSwitch), intakeHighLimit, RISING);
+	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, FALLING);
+	attachInterrupt(digitalPinToInterrupt(pinHighLimSwitch), intakeHighLimit, FALLING);
 	
 	//Interrupt for Turntable Encoder needed + method
 	Serial.print(" -Interrupts- \n");
@@ -120,7 +120,7 @@ void robotSetup()
 	int signal = goButton.read();
 	do{
 		signal = goButton.read();
-		
+		Serial.println(signal);
 	}while(signal != 0);
 	
 	
