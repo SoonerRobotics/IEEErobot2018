@@ -9,8 +9,8 @@
 
 #define angleThreshold 3 //Window for robot to be in range of angle setpoint.
 
-#define lineFollowSpeed .25//Speed to drive when line following
+#define lineFollowSpeed .20//Speed to drive when line following
 
-#define lineTurnSpeed .25 //Speed to turn when correcting for line following errors
+#define lineTurnSpeed .15 //Speed to turn when correcting for line following errors
 
 #endif

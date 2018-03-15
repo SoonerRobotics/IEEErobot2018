@@ -125,7 +125,7 @@ void robotSetup()
 	
 	
 	//Reset the intake to start
-	intake.reset();
+//	intake.reset();
 }
 
 #endif

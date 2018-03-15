@@ -55,10 +55,10 @@ unsigned int IRMatrix::readToBinary()
 {
 	this->binaryValue = 0;
 	
-	this->binaryValue = convertToBinary(this->ir1.read());
+	this->binaryValue = convertToBinary(this->ir1.read()) * 8;
 	this->binaryValue += convertToBinary(this->ir2.read()) * 2;
-	this->binaryValue += convertToBinary(this->ir3.read()) * 4;
-	this->binaryValue += convertToBinary(this->ir4.read()) * 8;
+	this->binaryValue += convertToBinary(this->ir3.read()) * 1; //Center is least significant
+	this->binaryValue += convertToBinary(this->ir4.read()) * 4;
 	this->binaryValue += convertToBinary(this->ir5.read()) * 16;
 	
 	return this->binaryValue;
@@ -84,7 +84,7 @@ void IRMatrix::printRawToSerial()
  
  int IRMatrix::convertToBinary(int raw)
  {
-	 if(raw >= BW_THRESHOLD)
+	 if(raw < BW_THRESHOLD)
 	 {
 		 return 0;
 	 }

@@ -8,7 +8,7 @@ Drivetrain::Drivetrain()
 void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix mat, DigitalDevice mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
-	//this->irMatrix = mat;			//Doesn't like this reference 
+	this->irMatrix = mat;			//Doesn't like this reference 
 	this->metDetector = mDetector;
 	
 	//Set params for PID's
@@ -193,10 +193,15 @@ void Drivetrain::followLine()
 		turnSpeed = -0.25;
 	}*/
 	
-	getPositionSpark();
+	turnSpeed = getPositionSpark();
+	
+			
+			Serial.print("\tspd: ");
+	Serial.print(turnSpeed);
+	Serial.println();
 	
 	//Set the output to drive along the line
-	arcadeDrive(driveSpeed, turnSpeed);
+	arcadeDrive(turnSpeed, driveSpeed);
 }
 
 void Drivetrain::followLineUntilCoin() 
@@ -219,9 +224,10 @@ void Drivetrain::followLineUntilCoin()
 			turnSpeed = -0.25;
 		}*/
 		
-		getPositionSpark();
+		turnSpeed = getPositionSpark();
+
 		
-		arcadeDrive(driveSpeed, turnSpeed);
+		arcadeDrive(turnSpeed, driveSpeed);
 	}
 }
 
@@ -232,8 +238,6 @@ float Drivetrain::getPositionSpark()
 	int irMatrixValue = this->irMatrix.readToBinary();
 	int bitsCounted = 0;
 	int accumulator = 0;
-	
-	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
 	//count bits
@@ -245,8 +249,12 @@ float Drivetrain::getPositionSpark()
 		}
 	}
 	
+	//Sparkfun does bits differently, with 0 at the center.
+	//We need to convert our center IR to be the least significant.
+	//This is done in the IR matrix Class
+	
 	//positive bits (ir5, ir4, ir3)
-	for (int i = 4; i > 1; i--)
+	for (int i = 3; i >= 2; i--)
 	{
 		if ( (irMatrixValue >> i ) & 1 == 1)
 		{
@@ -255,7 +263,7 @@ float Drivetrain::getPositionSpark()
 	}
 	
 	//negative bits (ir3, ir2, ir1)
-	for (int i = 0; i > 3; i++)
+	for (int i = 0; i < 2; i++)
 	{
 		if ( (irMatrixValue >> i ) & 1 == 1)
 		{
@@ -263,19 +271,39 @@ float Drivetrain::getPositionSpark()
 		}
 	} 
 	
-	//position value in a range from -127 to 127
-	float positionValue = accumulator / bitsCounted;
-
-	if (positionValue > 50)
-	{
-		turnSpeed = 0.25;
+	float positionValue = 0;
+	if(bitsCounted > 0)
+	{	
+		//position value in a range from -127 to 127
+		positionValue = accumulator / bitsCounted;
 	}
-	else if (positionValue < 05)
+
+	Serial.print("acc: ");
+	Serial.print(accumulator);
+	Serial.print("\t bc: ");
+	Serial.print(bitsCounted);
+	Serial.print("\tpos: ");
+	Serial.print(positionValue);
+	
+	if (positionValue > 30)
 	{
-		turnSpeed = -0.25;
+		turnSpeed = -lineTurnSpeed;
+	}
+	else if (positionValue < -30)
+	{
+		turnSpeed = lineTurnSpeed;
+	}
+	else
+	{
+		turnSpeed = 0;
 	}
 	
-	return positionValue;
+	Serial.print("\tbinary: ");
+	Serial.print(irMatrixValue);
+	
+	//Serial.println();
+	
+	return turnSpeed;
 }
 
 /**
@@ -314,10 +342,7 @@ void Drivetrain::arcadeDrive(float Y, float X)
 			left = (-1) * max(-X, -Y);
 		}
 	}
-	Serial.print("\tleft: ");
-	Serial.print(left);
-	Serial.print("\tright: ");
-	Serial.print(right);
+	
 	//Output to the motors
 	BasicDrive::setOutput(left, right);
 }
