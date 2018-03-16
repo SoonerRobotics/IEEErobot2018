@@ -68,12 +68,11 @@ void robotSetup()
 	//Reset the gyro
 	updateGyro();
 	resetGyro();
-	/*
+	*/
 	if(!colorSensor.begin())
 	{
 		Serial.println("Error Connecting to Color Sensor!");
 	}
-	*/
 	
 	
 	//Set the encoder constants
