@@ -106,7 +106,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			if(this->intakeEncoder.getValue() < scanHeight)
 			{
 				//Output >0 to go up
-				this->intakeMotor.output(currentMotorOutput);
+				this->intakeMotor.output(motorSpeed);
 			}
 			else
 			{
@@ -115,7 +115,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				
 				//Deploy the RGB color sensor! (servo)
 				this->colorServo.write(colorServoDeployAngle);
-				delay(colorServoDelay);
+				delay(colorServoDeployDelay);
 				
 				if (colorScanned)
 				{
@@ -124,7 +124,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 					
 					//Retract color sensor
 					this->colorServo.write(colorServoIdleAngle);
-					delay(colorServoDelay);
+					delay(colorServoRetractDelay);
 					
 					//Move to the full raise state
 					this->state = "RAISE";
@@ -139,7 +139,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			//currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
 			
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < 3.4 || this->highLimitSwitch.read() != HIGH)
+			if(this->intakeEncoder.getValue() < topHeight || this->highLimitSwitch.read() != HIGH)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -336,6 +336,11 @@ Encoder& Intake::getRackAndPinionEncoder()
 {
 	//Serial.print(intakeEncoder.getA());
 	return this->intakeEncoder;
+}
+
+void Intake::setColorServoIdle()
+{
+	this->colorServo.write(colorServoIdleAngle);
 }
 
 void Intake::bottomLimit()

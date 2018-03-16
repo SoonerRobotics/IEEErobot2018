@@ -31,6 +31,7 @@ class Intake
 		Turntable turnTable;
 		
 		String getStateString();
+		void setColorServoIdle();
 		
 		void resetRack();
 		

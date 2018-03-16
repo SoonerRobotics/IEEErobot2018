@@ -12,7 +12,7 @@
 #include <Servo.h>
 #include "Color.h"
 
-#define IDLE_ANGLE 0
+#define IDLE_ANGLE 935
 
 class Turntable {
 

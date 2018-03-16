@@ -15,19 +15,19 @@ Turntable::Turntable()
 
 Turntable::Turntable(int pinServo) 
 {
-	servo.attach(pinServo);
+	//this->servo.attach(pinServo);
 	this->pin = pinServo;
 }
 
 void Turntable::operator=(const Turntable& turnTable)
 {
-	servo.attach(turnTable.pin);
+	//this->servo = turnTable.servo;
 	this->pin = turnTable.pin;
 }
 
 void Turntable::begin(int pinServo)
 {
-	servo.attach(pinServo);
+	//this->servo.attach(pinServo);
 	this->pin = pinServo;
 }
 
@@ -35,15 +35,15 @@ void Turntable::setPosition(Color color)
 {
 	int angle = color.getAngle();
 	
-	servo.write(angle);
+	this->servo.writeMicroseconds(angle);
 }
 
 void Turntable::setPosition(int angle)
 {
-	servo.write(angle);
+	this->servo.writeMicroseconds(angle);
 }
 
 void Turntable::setPosition()
 {
-	servo.write(IDLE_ANGLE);
+	this->servo.writeMicroseconds(IDLE_ANGLE);
 }

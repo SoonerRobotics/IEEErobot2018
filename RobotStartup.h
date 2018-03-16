@@ -52,7 +52,6 @@ void robotSetup()
 	Serial.begin(9600);
 	Serial.print(" -Has Begun- \n");
 
-	/*
 	//Initialize Gyro and Color Sensor
 	if(!gyro.begin())
 	{
@@ -62,7 +61,7 @@ void robotSetup()
 	//Reset the gyro
 	updateGyro();
 	resetGyro();
-	*/
+	
 	if(!colorSensor.begin())
 	{
 		Serial.println("Error Connecting to Color Sensor!");
@@ -117,6 +116,9 @@ void robotSetup()
 		Serial.println(signal);
 	}while(signal != 0);
 	
+	//Set the turntable to idle
+//	intake.turnTable.setPosition();
+	intake.setColorServoIdle();
 	
 	//Reset the intake to start
 	//intake.reset();

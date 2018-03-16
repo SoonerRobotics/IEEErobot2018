@@ -30,12 +30,12 @@
 //Right Drivetrain Encoder
 #define pinRightEnc1 3
 #define pinRightEnc2 4
-#define rightEncoderConstant 0.0093986
+#define rightEncoderConstant  .002302351//0.0093986
 
 //Intake Encoder
 #define pinIntakeEnc1 28
 #define pinIntakeEnc2 18
-#define intakeEncoderConstant .002302351
+#define intakeEncoderConstant -0.002302351
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
 #define pinMetDet 0 //make sure it's giving an output

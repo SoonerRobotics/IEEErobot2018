@@ -3,8 +3,8 @@
 //Important heights in the pickup sequence
 #define idleHeight 0.0
 #define pickUpHeight 0.0
-#define topHeight 3.5
-#define scanHeight 1.5
+#define topHeight 3
+#define scanHeight 2.25
 
 //Important heights in the dropoff sequence
 //Use idleHeight
@@ -27,9 +27,10 @@
 
 //TODO: Add more speeds to optimize the process
 //Time delays in the pickup sequence
-#define magnetWaitTime 1000
+#define magnetWaitTime 200
 #define turnTableWaitMax 1000
-#define colorServoDelay 1000
+#define colorServoDeployDelay 1000
+#define colorServoRetractDelay 200
 
 //PID for intake
 #define intakeKp 0.4
