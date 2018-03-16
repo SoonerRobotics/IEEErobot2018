@@ -3,16 +3,16 @@
 //Important heights in the pickup sequence
 #define idleHeight 0.0
 #define pickUpHeight 0.0
-#define topHeight 3.0
-#define scanHeight 2.5
+#define topHeight 3.5
+#define scanHeight 1.5
 
 //Important heights in the dropoff sequence
-
 //Use idleHeight
-#define storageHeight 0
-
+#define getFromStorageHeight 0
 //Use topHeight
 #define dropHeight 3.0	
+//
+
 
 #define heightThreshold 1
 
@@ -21,7 +21,7 @@
 #define colorServoDeployAngle 4
 
 //Speeds for the motor to move at during the pickup sequence
-#define motorSpeed 0.35
+#define motorSpeed 0.75
 #define stallSpeed 0
 #define resetSpeed -0.4
 
@@ -30,7 +30,6 @@
 #define magnetWaitTime 1000
 #define turnTableWaitMax 1000
 #define colorServoDelay 1000
-
 
 //PID for intake
 #define intakeKp 0.4

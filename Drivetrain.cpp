@@ -196,7 +196,7 @@ void Drivetrain::followLine()
 	turnSpeed = getPositionSpark();
 	
 			
-			Serial.print("\tspd: ");
+	Serial.print("\tspd: ");
 	Serial.print(turnSpeed);
 	Serial.println();
 	

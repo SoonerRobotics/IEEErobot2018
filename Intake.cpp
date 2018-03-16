@@ -26,7 +26,7 @@ Intake::Intake()
 }
 
 
-void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice loLimitSwitch, DigitalDevice hiLimitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber)
+void Intake::begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector, DigitalDevice& loLimitSwitch, DigitalDevice& hiLimitSwitch, Electromagnet& electromagnet, Turntable& turnTable, int colorServoPinNumber)
 {
 	this->intakeMotor = motor;
 	this->intakeEncoder = encoder;
@@ -44,6 +44,14 @@ void Intake::begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, Di
 	this->colorServo.attach(colorServoPinNumber);
 	
 	this->lastHeight = idleHeight;
+	this->intakeEncoder.reset();
+	
+	/*while (this->lowLimitSwitch.read() != HIGH)
+	{
+		//Output <0 to go down
+		this->intakeMotor.output(currentMotorOutput);
+		this->intakeEncoder.reset();
+	}*/
 }
 
 
@@ -52,21 +60,27 @@ int Intake::pickUpSequence(Color color)
 	switch(this->pickUpState)
 	{
 		case IDLE:
+			this->state = "IDLE";
 			currentMotorOutput = resetSpeed;
 		
 			//If the intake is above the grab height, drop the magnet to that height
 			if(this->lowLimitSwitch.read() != HIGH) // This MUST bottom out!
 			{
 				//Output <0 to go down
-				this->intakeMotor.output(currentMotorOutput);
+				this->intakeMotor.output(-motorSpeed);
 			}
 			else //Otherwise it is time to grab the coin
 			{
+				this->intakeEncoder.reset();
+				this->intakeMotor.output(0);
+				this->state = "GRAB";
 				this->pickUpState = GRAB;
 			}
 			return 0;
 			
 		case GRAB:
+			this->intakeEncoder.reset();
+			this->state = "GRAB";
 			//Stop the motor so we can do a pickup
 			this->intakeMotor.output(stallSpeed);
 			
@@ -77,12 +91,14 @@ int Intake::pickUpSequence(Color color)
 			delay(magnetWaitTime);
 			
 			//Begin the process of scanning the coin
+			this->state = "SCAN";
 			this->pickUpState = SCAN;
 			
 			//Process not complete yet
 			return 0;
 			
 		case SCAN:
+			this->state = "SCAN";
 			currentMotorOutput = intakePID.getOutput2(scanHeight, this->intakeEncoder.getValue());
 			currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
 			
@@ -109,16 +125,18 @@ int Intake::pickUpSequence(Color color)
 				delay(colorServoDelay);
 				
 				//Move to the full raise state
+				this->state = "RAISE";
 				this->pickUpState = RAISE;
 			}
 			return 1;
 			
 		case RAISE:
-			currentMotorOutput = intakePID.getOutput2(topHeight, this->intakeEncoder.getValue());
-			currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
+			this->state = "RAISE";
+			//currentMotorOutput = intakePID.getOutput2(topHeight, this->intakeEncoder.getValue());
+			//currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
 			
 			//While the intake is below the max height and the limit switch is not pressed
-			if(abs(this->intakeEncoder.getValue() - topHeight) < RP_TOLERANCE || this->highLimitSwitch.read() == HIGH)
+			if(this->intakeEncoder.getValue() < 0.1)//|| this->highLimitSwitch.read() != HIGH)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -129,6 +147,7 @@ int Intake::pickUpSequence(Color color)
 				this->intakeMotor.output(stallSpeed);
 				
 				//We have reached the height, so time to store.
+				this->state = "STORE";
 				this->pickUpState = STORE;
 			}
 			
@@ -136,6 +155,7 @@ int Intake::pickUpSequence(Color color)
 			return 1;
 			
 		case STORE:
+			this->state = "STORE";
 			
 			if(this->electromagnet.hasCoin())
 			{
@@ -174,6 +194,7 @@ int Intake::pickUpSequence(Color color)
 					this->intakeMotor.output(stallSpeed);
 					
 					//set the sequence to idle
+					this->state = "IDLE";
 					this->pickUpState = IDLE;
 					
 					//Pickup complete!
@@ -182,131 +203,9 @@ int Intake::pickUpSequence(Color color)
 			}
 			
 		default:
+			this->state = "IDLE";
 			this->pickUpState = IDLE;
 			return 0;
-	}
-	
-}
-
-void Intake::pickUpSequenceA(Color color)
-{	
-	switch(this->pickUpState)
-	{
-		case IDLE:
-			//If the intake is above the grab height, drop the magnet to that height
-			if(this->intakeEncoder.getValue() > pickUpHeight)
-			{
-				//Output <0 to go down
-				this->intakeMotor.output((-1) * motorSpeed);
-			}
-			else //Otherwise it is time to grab the coin
-			{
-				this->intakeMotor.output(0);
-				this->pickUpState = GRAB;
-			}
-			
-		case GRAB:
-			//Stop the motor so we can do a pickup
-			this->intakeMotor.output(0);
-			
-			//Pick up the coin
-			this->electromagnet.pickUp();
-			
-			//Wait to make sure it is picked up
-			delay(magnetWaitTime);
-			
-			//Begin the process of scanning the coin
-			this->pickUpState = SCAN;
-			
-		case SCAN:
-			//Raise the intake to scanning height
-			if(this->intakeEncoder.getValue() < scanHeight)
-			{
-				//Output >0 to go up
-				this->intakeMotor.output(motorSpeed);
-			}
-			else
-			{
-				//Stop the motor so we can scan the coin
-				this->intakeMotor.output(0);
-				
-				//Deploy the RGB color sensor! (servo)
-				this->colorServo.write(colorServoDeployAngle);
-				delay(colorServoDelay);
-				
-				//Detect and save the color
-				this->lastColor = color;
-				
-				//Retract color sensor
-				this->colorServo.write(colorServoIdleAngle);
-				delay(colorServoDelay);
-				
-				//Move to the full raise state
-				this->pickUpState = RAISE;
-			}
-			
-		case RAISE:
-			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < topHeight && this->lowLimitSwitch.read() == LOW)
-			{
-				//Output >0 to go up
-				this->intakeMotor.output(motorSpeed);
-			}
-			else
-			{
-				//Stop driving the motor upwards
-				this->intakeMotor.output(0);
-				
-				//We have reached the height, so time to store.
-				this->pickUpState = STORE;
-			}
-			
-		case STORE:
-			
-			if(this->electromagnet.hasCoin())
-			{
-				//Turn the turntable so it is ready to receive the coin
-				this->turnTable.setPosition(this->lastColor);
-				delay(turnTableWaitMax);
-				
-				//Once the turntable is ready, drop the coin
-				this->electromagnet.drop();
-				
-				//Wait for the coin to drop
-				delay(magnetWaitTime);
-				
-				//Tell the turntable to go back to its idle state
-				this->turnTable.setPosition();
-				delay(turnTableWaitMax);
-				
-			}
-			//Check to see if the turntable is ready to let the intake drop
-			else if(!this->electromagnet.hasCoin())
-			{
-				//Drive the intake down to the idle height
-				if(this->intakeEncoder.getValue() > idleHeight)
-				{
-					//Output <0 to go down
-					this->intakeMotor.output((-1) * motorSpeed);
-					
-					//Almost done, but not quite.
-					return false;
-				}
-				else
-				{
-					//Stop driving the motor downwards
-					this->intakeMotor.output(stallSpeed);
-					
-					//set the sequence to idle
-					this->pickUpState = IDLE;
-					
-					//Pickup complete!
-					break;
-				}
-			}
-			
-		default:
-			this->pickUpState = IDLE;
 	}
 	
 }
@@ -317,21 +216,30 @@ void Intake::dropOffSequence(Color color)
 	switch(this->dropOffState)
 	{
 		case IDLEd:
-			//If the intake is above the grab height, drop the magnet to that height
-			if(this->intakeEncoder.getValue() > storageHeight)
+		
+			//If the magnet is below the grab height (from storage), raise the magnet to that height
+			while (this->highLimitSwitch.read() != HIGH)
 			{
-				//Output <0 to go down
-				this->intakeMotor.output((-1) * motorSpeed);
-			}
-			else //Otherwise it is time to grab the coin from storage
-			{
-				this->dropOffState = GRABd;
+				//Output >0 to go up
+				this->intakeMotor.output((1) * motorSpeed);
 			}
 			
+			//Otherwise it is time to grab the coin from storage
+			this->dropOffState = GRABd;
+			
 		case GRABd:
+		
 			//Turn the turntable to the coin storage of given color
 			this->turnTable.setPosition(color);
 			delay(turnTableWaitMax);
+			
+			//Drop the magnet to the height to pick up coins from storage
+			while (this->intakeEncoder.getValue() < getFromStorageHeight) 
+			{
+				//Drive the motor down to the getFromStorageHeight height
+				//Output <0 to go down
+				this->intakeMotor.output((-1) * motorSpeed);
+			}
 			
 			//Stop the motor so we can do a pickup
 			this->intakeMotor.output(stallSpeed);
@@ -347,66 +255,57 @@ void Intake::dropOffSequence(Color color)
 			
 		case RAISEd:
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < topHeight && this->highLimitSwitch.read() == LOW)
+			while (this->highLimitSwitch.read() != HIGH)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
 			}
-			else
-			{
-				//Stop driving the motor upwards
-				this->intakeMotor.output(stallSpeed);
+
+			//Stop driving the motor upwards
+			this->intakeMotor.output(stallSpeed);
 				
-				//We have reached the height, so time to drop off the coins.
-				this->dropOffState = DROPd;
-			}	
+			//We have reached the height, so time to drop off the coins.
+			this->dropOffState = DROPd;
+				
 		case DROPd:
 			
-			if(this->electromagnet.hasCoin())
+			//Turn the turntable so the coins can pass through
+			this->turnTable.setPosition(0);
+			delay(turnTableWaitMax);
+			
+			//Once the turntable is ready, drop the magnet to drop height
+			while(this->intakeEncoder.getValue() > dropHeight)
 			{
-				//Turn the turntable so the coins can pass through
-				this->turnTable.setPosition(0);
-				delay(turnTableWaitMax);
-				
-				//Once the turntable is ready, drop the magnet to drop height
-				if(this->intakeEncoder.getValue() > dropHeight)
-				{
-					//Output <0 to go down
-					this->intakeMotor.output((-1) * (motorSpeed));
-				}
-				else if(this->intakeEncoder.getValue() < dropHeight)
-				{
-					//Once the turntable is ready, drop the coin
-					this->electromagnet.drop();
-				
-					//Wait for the coin to drop
-					delay(magnetWaitTime);
-				}
-				
-				this->turnTable.setPosition();
-				delay(turnTableWaitMax);
+				//Output <0 to go down
+				this->intakeMotor.output((-1) * (motorSpeed));
 			}
-			//Check to see if the turntable is ready to let the intake drop
-			else if(!this->electromagnet.hasCoin())
+				
+			//Stop driving the motor upwards
+			this->intakeMotor.output(stallSpeed);
+				
+			//Once the turntable is ready, drop the coin
+			this->electromagnet.drop();
+			
+			//Wait for the coin to drop
+			delay(magnetWaitTime);
+				
+
+			
+			//Return the magnet to above the turntable
+			while (this->highLimitSwitch.read() != HIGH)
 			{
-				//Return the magnet to above the turntable
-				if(this->intakeEncoder.getValue() < idleHeight)
-				{
-					//Output >0 to go up
-					this->intakeMotor.output(motorSpeed);
-				}
-				else
-				{
-					//Stop driving the motor downwards
-					this->intakeMotor.output(stallSpeed);
-					
-					//set the sequence to idle
-					this->dropOffState = IDLEd;
-					
-					//Pickup complete!
-					break;
-				}
+				//Output >0 to go up
+				this->intakeMotor.output(motorSpeed);
 			}
+			
+			//Stop driving the motor upwards
+			this->intakeMotor.output(stallSpeed);
+				
+			//set the sequence to idle
+			this->dropOffState = IDLEd;
+					
+			//Pickup complete!
+			break;
 			
 		default:
 			this->dropOffState = IDLEd;
@@ -440,7 +339,7 @@ Motor Intake::getRackAndPinionMotor()
 	return this->intakeMotor;
 }
 
-Encoder Intake::getRackAndPinionEncoder()
+Encoder& Intake::getRackAndPinionEncoder()
 {
 	Serial.print("this");
 	return this->intakeEncoder;
@@ -477,4 +376,18 @@ float Intake::coerce(float value, float high, float low)
 	value = value > high ? high : value;
 	value = value < low ? low : value;
 	return value;
+}
+
+String Intake::getStateString()
+{
+	return this->state;
+}
+
+void Intake::resetRack()
+{
+	while(this->lowLimitSwitch.read() != HIGH) // This MUST bottom out!
+	{
+		//Output <0 to go down
+		this->intakeMotor.output(currentMotorOutput);
+	}
 }
