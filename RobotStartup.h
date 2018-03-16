@@ -13,6 +13,10 @@ DigitalDevice mDetector(pinMetDet, INPUT);
 IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5, pinIRMatrix6, pinIRMatrix7, pinIRMatrix8, pinIRMatrixLED);
 DigitalDevice goButton(pinGoButton,INPUT);
 
+Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
+Encoder rightEnc(pinRightEnc1, pinRightEnc2);
+Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
+
 //--Intake
 
 DigitalDevice loSwitch(pinLowLimSwitch, INPUT);
@@ -40,12 +44,6 @@ void encIntakeInterrupt()
 void intakeLowLimit()
 {
 	intake.bottomLimit();
-	Serial.println("TRIGGERED");
-}
-
-void intakeHighLimit()
-{
-	intake.topLimit();
 }
 
 //Setup Function
@@ -64,15 +62,12 @@ void robotSetup()
 	//Reset the gyro
 	updateGyro();
 	resetGyro();
-	/*
+	*/
 	if(!colorSensor.begin())
 	{
 		Serial.println("Error Connecting to Color Sensor!");
 	}
-	*/
-	Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
-	Encoder rightEnc(pinRightEnc1, pinRightEnc2);
-	Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
+	
 	
 	//Set the encoder constants
 	leftEnc.setConstant(leftEncoderConstant);
@@ -107,9 +102,8 @@ void robotSetup()
 	//--Interrupts
 	attachInterrupt(0, encLeftInterrupt, CHANGE);
 	attachInterrupt(1, encRightInterrupt, CHANGE);
-	attachInterrupt(3, encIntakeInterrupt, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, FALLING);
-	attachInterrupt(digitalPinToInterrupt(pinHighLimSwitch), intakeHighLimit, FALLING);
+	attachInterrupt(digitalPinToInterrupt(pinIntakeEnc2), encIntakeInterrupt, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, RISING);
 	
 	//Interrupt for Turntable Encoder needed + method
 	Serial.print(" -Interrupts- \n");

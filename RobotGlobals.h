@@ -33,15 +33,15 @@
 #define rightEncoderConstant 0.0093986
 
 //Intake Encoder
-#define pinIntakeEnc1 20
-#define pinIntakeEnc2 21
+#define pinIntakeEnc1 28
+#define pinIntakeEnc2 18
 #define intakeEncoderConstant .002302351
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
 #define pinMetDet 0 //make sure it's giving an output
 #define pinElecMag 17 //make sure it's giving an output
 #define pinLowLimSwitch 19
-#define pinHighLimSwitch 50
+#define pinHighLimSwitch 29
 
 //Pins for the IR Matrix
 #define pinIRMatrix1 A0
@@ -60,7 +60,7 @@
 
 //Servos
 #define turntableServoPin 7
-#define colorServoPin 0
+#define colorServoPin 38
 
 //Intake Motor Pins
 #define pinIntakeMot1 22

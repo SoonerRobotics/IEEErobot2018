@@ -55,7 +55,7 @@ void Intake::begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector,
 }
 
 
-int Intake::pickUpSequence(Color color)
+int Intake::pickUpSequence()
 {	
 	switch(this->pickUpState)
 	{
@@ -99,11 +99,11 @@ int Intake::pickUpSequence(Color color)
 			
 		case SCAN:
 			this->state = "SCAN";
-			currentMotorOutput = intakePID.getOutput2(scanHeight, this->intakeEncoder.getValue());
-			currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
+			//currentMotorOutput = intakePID.getOutput2(scanHeight, this->intakeEncoder.getValue());
+			//currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
 			
 			//Raise the intake to scanning height
-			if(abs(this->intakeEncoder.getValue() - scanHeight) < RP_TOLERANCE)
+			if(this->intakeEncoder.getValue() < scanHeight)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(currentMotorOutput);
@@ -136,7 +136,7 @@ int Intake::pickUpSequence(Color color)
 			//currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
 			
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < 0.1)//|| this->highLimitSwitch.read() != HIGH)
+			if(this->intakeEncoder.getValue() < 3.4 || this->highLimitSwitch.read() != HIGH)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -160,7 +160,7 @@ int Intake::pickUpSequence(Color color)
 			if(this->electromagnet.hasCoin())
 			{
 				//Turn the turntable so it is ready to receive the coin
-				this->turnTable.setPosition(this->lastColor);
+				this->turnTable.setPosition(lastColor);
 				delay(turnTableWaitMax);
 				
 				//Once the turntable is ready, drop the coin
@@ -221,7 +221,7 @@ void Intake::dropOffSequence(Color color)
 			while (this->highLimitSwitch.read() != HIGH)
 			{
 				//Output >0 to go up
-				this->intakeMotor.output((1) * motorSpeed);
+				this->intakeMotor.output(motorSpeed);
 			}
 			
 			//Otherwise it is time to grab the coin from storage
@@ -238,7 +238,7 @@ void Intake::dropOffSequence(Color color)
 			{
 				//Drive the motor down to the getFromStorageHeight height
 				//Output <0 to go down
-				this->intakeMotor.output((-1) * motorSpeed);
+				this->intakeMotor.output(-motorSpeed);
 			}
 			
 			//Stop the motor so we can do a pickup
@@ -270,42 +270,32 @@ void Intake::dropOffSequence(Color color)
 		case DROPd:
 			
 			//Turn the turntable so the coins can pass through
-			this->turnTable.setPosition(0);
+			this->turnTable.setPosition();
 			delay(turnTableWaitMax);
 			
 			//Once the turntable is ready, drop the magnet to drop height
-			while(this->intakeEncoder.getValue() > dropHeight)
+			if (this->intakeEncoder.getValue() > dropHeight)
 			{
 				//Output <0 to go down
-				this->intakeMotor.output((-1) * (motorSpeed));
+				this->intakeMotor.output(-motorSpeed);
 			}
-				
-			//Stop driving the motor upwards
-			this->intakeMotor.output(stallSpeed);
-				
-			//Once the turntable is ready, drop the coin
-			this->electromagnet.drop();
-			
-			//Wait for the coin to drop
-			delay(magnetWaitTime);
-				
-
-			
-			//Return the magnet to above the turntable
-			while (this->highLimitSwitch.read() != HIGH)
-			{
-				//Output >0 to go up
-				this->intakeMotor.output(motorSpeed);
-			}
-			
-			//Stop driving the motor upwards
-			this->intakeMotor.output(stallSpeed);
-				
-			//set the sequence to idle
-			this->dropOffState = IDLEd;
+			else
+			{				
+				//Stop driving the motor upwards
+				this->intakeMotor.output(stallSpeed);
 					
-			//Pickup complete!
-			break;
+				//Once the turntable is ready, drop the coin
+				this->electromagnet.drop();
+				
+				//Wait for the coin to drop
+				delay(magnetWaitTime);
+					
+				//set the sequence to idle
+				this->dropOffState = IDLEd;
+						
+				//Pickup complete!
+				break;
+			}
 			
 		default:
 			this->dropOffState = IDLEd;
@@ -341,7 +331,7 @@ Motor Intake::getRackAndPinionMotor()
 
 Encoder& Intake::getRackAndPinionEncoder()
 {
-	Serial.print("this");
+	//Serial.print(intakeEncoder.getA());
 	return this->intakeEncoder;
 }
 
