@@ -44,12 +44,6 @@ void encIntakeInterrupt()
 void intakeLowLimit()
 {
 	intake.bottomLimit();
-	Serial.println("TRIGGERED");
-}
-
-void intakeHighLimit()
-{
-	intake.topLimit();
 }
 
 //Setup Function
@@ -108,9 +102,8 @@ void robotSetup()
 	//--Interrupts
 	attachInterrupt(0, encLeftInterrupt, CHANGE);
 	attachInterrupt(1, encRightInterrupt, CHANGE);
-	attachInterrupt(3, encIntakeInterrupt, CHANGE);
-	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, FALLING);
-	attachInterrupt(digitalPinToInterrupt(pinHighLimSwitch), intakeHighLimit, FALLING);
+	attachInterrupt(digitalPinToInterrupt(pinIntakeEnc2), encIntakeInterrupt, CHANGE);
+	attachInterrupt(digitalPinToInterrupt(pinLowLimSwitch), intakeLowLimit, RISING);
 	
 	//Interrupt for Turntable Encoder needed + method
 	Serial.print(" -Interrupts- \n");
