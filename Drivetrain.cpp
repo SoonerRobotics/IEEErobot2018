@@ -182,16 +182,6 @@ void Drivetrain::followLine()
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
-	//Check for special case situations before setting output
-	/*if(irMatrixValue&3 == 1)
-	{
-		turnSpeed = 0.25;
-		
-	} 
-	else
-	{
-		turnSpeed = -0.25;
-	}*/
 	
 	turnSpeed = getPositionSpark();
 	

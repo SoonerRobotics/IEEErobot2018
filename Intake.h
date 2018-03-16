@@ -14,23 +14,25 @@ class Intake
 	public:
 		Intake();
 		
-		void begin(Motor motor, Encoder encoder, DigitalDevice metalDetector, DigitalDevice loLimitSwitch, DigitalDevice hiLimitSwitch, Electromagnet electromagnet, Turntable turnTable, int colorServoPinNumber);
+		void begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector, DigitalDevice& loLimitSwitch, DigitalDevice& hiLimitSwitch, Electromagnet& electromagnet, Turntable& turnTable, int colorServoPinNumber);
 		
 		int pickUpSequence(Color color);
-		
-		void pickUpSequenceA(Color color);
-		
+				
 		void dropOffSequence(Color color);
 		
 		bool coinDetected();
 		
 		Motor getRackAndPinionMotor();
 		
-		Encoder getRackAndPinionEncoder();
+		Encoder& getRackAndPinionEncoder();
 		
 		void raiseRackAndPinion(int newHeight);
 		
 		Turntable turnTable;
+		
+		String getStateString();
+		
+		void resetRack();
 		
 		void bottomLimit();
 		void topLimit();
@@ -41,6 +43,8 @@ class Intake
 		enum DropOffState{IDLEd, GRABd, RAISEd, DROPd};
 		
 		int lastHeight;
+		
+		String state;
 		
 		float currentMotorOutput;
 		
