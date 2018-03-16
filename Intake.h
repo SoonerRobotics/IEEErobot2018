@@ -16,7 +16,7 @@ class Intake
 		
 		void begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector, DigitalDevice& loLimitSwitch, DigitalDevice& hiLimitSwitch, Electromagnet& electromagnet, Turntable& turnTable, int colorServoPinNumber);
 		
-		int pickUpSequence(Color color);
+		int pickUpSequence(Color color, bool colorScanned);
 				
 		void dropOffSequence(Color color);
 		
