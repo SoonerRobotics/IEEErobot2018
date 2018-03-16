@@ -136,7 +136,7 @@ int Intake::pickUpSequence(Color color)
 			//currentMotorOutput = coerce(currentMotorOutput, motorSpeed, -motorSpeed);
 			
 			//While the intake is below the max height and the limit switch is not pressed
-			if(this->intakeEncoder.getValue() < 0.1)//|| this->highLimitSwitch.read() != HIGH)
+			if(this->intakeEncoder.getValue() < 3.0)//|| this->highLimitSwitch.read() != HIGH)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
@@ -160,7 +160,7 @@ int Intake::pickUpSequence(Color color)
 			if(this->electromagnet.hasCoin())
 			{
 				//Turn the turntable so it is ready to receive the coin
-				this->turnTable.setPosition(this->lastColor);
+				this->turnTable.setPosition(color);
 				delay(turnTableWaitMax);
 				
 				//Once the turntable is ready, drop the coin
@@ -270,7 +270,7 @@ void Intake::dropOffSequence(Color color)
 		case DROPd:
 			
 			//Turn the turntable so the coins can pass through
-			this->turnTable.setPosition(0);
+			this->turnTable.setPosition();
 			delay(turnTableWaitMax);
 			
 			//Once the turntable is ready, drop the magnet to drop height
@@ -341,7 +341,7 @@ Motor Intake::getRackAndPinionMotor()
 
 Encoder& Intake::getRackAndPinionEncoder()
 {
-	Serial.print("this");
+	//Serial.print(intakeEncoder.getA());
 	return this->intakeEncoder;
 }
 
