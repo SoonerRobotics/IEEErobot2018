@@ -5,7 +5,7 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor leftMot, Motor rightMot, Encoder leftEnc, Encoder rightEnc, IRMatrix mat, DigitalDevice mDetector)
+void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, IRMatrix& mat, DigitalDevice& mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
 	this->irMatrix = mat;			//Doesn't like this reference 
@@ -195,13 +195,18 @@ void Drivetrain::followLine()
 	
 	turnSpeed = getPositionSpark();
 	
-			
-			Serial.print("\tspd: ");
+	Serial.print("\tspd: ");
 	Serial.print(turnSpeed);
 	Serial.println();
 	
-	//Set the output to drive along the line
-	arcadeDrive(turnSpeed, driveSpeed);
+	if(abs(turnSpeed) > 0)
+	{
+		arcadeDrive(turnSpeed, 0);
+	}
+	else
+	{
+		arcadeDrive(0, 0);
+	}
 }
 
 void Drivetrain::followLineUntilCoin() 
@@ -213,21 +218,17 @@ void Drivetrain::followLineUntilCoin()
 		float driveSpeed = lineFollowSpeed;
 		float turnSpeed = 0;
 		
-		//Check for special case situations before setting output
-		/*if(irMatrixValue&3 == 1)
-		{
-			turnSpeed = 0.25;
-		
-		} else if(irMatrixValue&3 == 1)
-		
-		{
-			turnSpeed = -0.25;
-		}*/
-		
 		turnSpeed = getPositionSpark();
 
+		if(abs(turnSpeed) > 0)
+		{
+			arcadeDrive(turnSpeed, 0);
+		}
+		else
+		{
+			arcadeDrive(0, driveSpeed);
+		}
 		
-		arcadeDrive(turnSpeed, driveSpeed);
 	}
 }
 
@@ -241,7 +242,7 @@ float Drivetrain::getPositionSpark()
 	float turnSpeed = 0;
 	
 	//count bits
-	for(int i = 0; i < 5; i++)
+	for(int i = 0; i < 8; i++)
 	{
 		if ( (irMatrixValue >> i) & 1 == 1)
 		{
@@ -253,17 +254,17 @@ float Drivetrain::getPositionSpark()
 	//We need to convert our center IR to be the least significant.
 	//This is done in the IR matrix Class
 	
-	//positive bits (ir5, ir4, ir3)
-	for (int i = 3; i >= 2; i--)
+	//positive bits 
+	for (int i = 7; i > 3; i--)
 	{
 		if ( (irMatrixValue >> i ) & 1 == 1)
 		{
-			accumulator += ((-32 * (i - 1)) + 1);
+			accumulator += ((-32* (i - 1)) + 1);
 		}
 	}
 	
 	//negative bits (ir3, ir2, ir1)
-	for (int i = 0; i < 2; i++)
+	for (int i = 0; i < 4; i++)
 	{
 		if ( (irMatrixValue >> i ) & 1 == 1)
 		{
@@ -278,32 +279,66 @@ float Drivetrain::getPositionSpark()
 		positionValue = accumulator / bitsCounted;
 	}
 
-	Serial.print("acc: ");
-	Serial.print(accumulator);
-	Serial.print("\t bc: ");
-	Serial.print(bitsCounted);
 	Serial.print("\tpos: ");
 	Serial.print(positionValue);
 	
-	if (positionValue > 30)
-	{
-		turnSpeed = -lineTurnSpeed;
-	}
-	else if (positionValue < -30)
+	if (positionValue > 50)
 	{
 		turnSpeed = lineTurnSpeed;
+	}
+	else if (positionValue < -50)
+	{
+		turnSpeed = -lineTurnSpeed;
 	}
 	else
 	{
 		turnSpeed = 0;
 	}
 	
-	Serial.print("\tbinary: ");
-	Serial.print(irMatrixValue);
-	
-	//Serial.println();
-	
 	return turnSpeed;
+}
+
+float Drivetrain::getTurnSpeed()
+{
+	int irMatrixValue = this->irMatrix.readToBinary();
+	int left = 0, right = 0;
+	
+	for(int r = 0; r < 8; ++r)
+	{
+		Serial.print((irMatrixValue >> r) & 1);
+		Serial.print("\t");
+	}
+	
+	if(irMatrixValue == 1)
+	{
+		return 0;
+	}
+	else
+	{
+		for(int i = 0; i < 4; ++i)
+		{
+			right += ((irMatrixValue >> i) & 1) * (4-i);
+		}
+		
+		for(int i = 7; i > 3; --i)
+		{
+			left += ((irMatrixValue >> i) & 1) * (i-3);
+		}
+		
+		Serial.print(left);
+		Serial.print(" vs ");
+		Serial.print(right);
+		
+		if(right - left > 1)
+		{
+			return -lineTurnSpeed;
+		}
+		else if(right - left < -3)
+		{
+			return lineTurnSpeed;
+		}
+		return 0;
+	}
 }
 
 /**

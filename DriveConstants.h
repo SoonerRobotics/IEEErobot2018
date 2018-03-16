@@ -11,6 +11,6 @@
 
 #define lineFollowSpeed .20//Speed to drive when line following
 
-#define lineTurnSpeed .15 //Speed to turn when correcting for line following errors
+#define lineTurnSpeed .20 //Speed to turn when correcting for line following errors
 
 #endif

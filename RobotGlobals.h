@@ -50,6 +50,10 @@
 #define pinIRMatrix4 A3
 #define pinIRMatrix5 A4
 #define pinIRMatrix6 A5
+#define pinIRMatrix7 A6
+#define pinIRMatrix8 A7
+
+#define pinIRMatrixLED 53
 
 //Black/White Threshold
 #define BW_THRESHOLD 500

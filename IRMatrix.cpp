@@ -17,13 +17,19 @@ IRMatrix::IRMatrix()
 	this->binaryValue = 0;
 }
 
-IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5) 
+IRMatrix::IRMatrix(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6, int pin7, int pin8, int pinLED) 
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
 	this->ir3.update(pin3, INPUT);
 	this->ir4.update(pin4, INPUT);
 	this->ir5.update(pin5, INPUT);
+	this->ir6.update(pin6, INPUT);
+	this->ir7.update(pin7, INPUT);
+	this->ir8.update(pin8, INPUT);
+	
+	this->irLED.update(pinLED, OUTPUT);
+	this->irLED.write(HIGH);
 	
 	this->binaryValue = 0;
 	
@@ -37,29 +43,42 @@ void IRMatrix::operator=(const IRMatrix& matrix)
 	this->ir3 = matrix.ir3;
 	this->ir4 = matrix.ir4;
 	this->ir5 = matrix.ir5;
+	this->ir6 = matrix.ir6;
+	this->ir7 = matrix.ir7;
+	this->ir8 = matrix.ir8;
+	this->irLED = matrix.irLED;
 	Serial.print(" -Matrix Copy-Assign- \n");
 	
 	this->binaryValue = matrix.binaryValue;
 }
 
-void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5)
+void IRMatrix::begin(int pin1, int pin2, int pin3, int pin4, int pin5, int pin6, int pin7, int pin8, int pinLED)
 {
 	this->ir1.update(pin1, INPUT);
 	this->ir2.update(pin2, INPUT);
 	this->ir3.update(pin3, INPUT);
 	this->ir4.update(pin4, INPUT);
 	this->ir5.update(pin5, INPUT);
+	this->ir6.update(pin6, INPUT);
+	this->ir7.update(pin7, INPUT);
+	this->ir8.update(pin8, INPUT);
+	
+	this->irLED.update(pinLED, OUTPUT);
+	this->irLED.write(HIGH);
 }
 
 unsigned int IRMatrix::readToBinary()
 {
 	this->binaryValue = 0;
 	
-	this->binaryValue = convertToBinary(this->ir1.read()) * 8;
-	this->binaryValue += convertToBinary(this->ir2.read()) * 2;
-	this->binaryValue += convertToBinary(this->ir3.read()) * 1; //Center is least significant
-	this->binaryValue += convertToBinary(this->ir4.read()) * 4;
-	this->binaryValue += convertToBinary(this->ir5.read()) * 16;
+	this->binaryValue = (this->ir1.read()) * 1;
+	this->binaryValue += (this->ir2.read()) * 2;
+	this->binaryValue += (this->ir3.read()) * 4;
+	this->binaryValue += (this->ir4.read()) * 8; //Center Left
+	this->binaryValue += (this->ir5.read()) * 16; //Center Right
+	this->binaryValue += (this->ir6.read()) * 32;
+	this->binaryValue += (this->ir7.read()) * 64;
+	this->binaryValue += (this->ir8.read()) * 128;
 	
 	return this->binaryValue;
 }
@@ -75,6 +94,12 @@ void IRMatrix::printRawToSerial()
 	Serial.print(this->ir4.read());
 	Serial.print("\t");
 	Serial.print(this->ir5.read());
+	Serial.print("\n");
+	Serial.print(this->ir6.read());
+	Serial.print("\n");
+	Serial.print(this->ir7.read());
+	Serial.print("\n");
+	Serial.print(this->ir8.read());
 	Serial.print("\n");
 }
 

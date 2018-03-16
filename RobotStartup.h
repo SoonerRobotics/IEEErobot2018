@@ -12,7 +12,7 @@ Motor rightMot;
 Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
 Encoder rightEnc(pinRightEnc1, pinRightEnc2);
 DigitalDevice mDetector(pinMetDet, INPUT);
-IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5);
+IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5, pinIRMatrix6, pinIRMatrix7, pinIRMatrix8, pinIRMatrixLED);
 DigitalDevice goButton(pinGoButton,INPUT);
 
 //--Intake
@@ -66,7 +66,7 @@ void robotSetup()
 	//Reset the gyro
 	updateGyro();
 	resetGyro();
-	
+	/*
 	if(!colorSensor.begin())
 	{
 		Serial.println("Error Connecting to Color Sensor!");
