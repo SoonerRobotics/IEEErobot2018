@@ -7,8 +7,8 @@
  */
 
  //Adafruit sensors that must be included in Arduino/libraries/ for this code to work
-#include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
+#include <Adafruit_BNO055.h>
 #include <Adafruit_TCS34725.h>
 
 //2018 specific code
