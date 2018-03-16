@@ -55,7 +55,7 @@ void Intake::begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector,
 }
 
 
-int Intake::pickUpSequence()
+int Intake::pickUpSequence(Color color, bool colorScanned)
 {	
 	switch(this->pickUpState)
 	{
@@ -117,16 +117,19 @@ int Intake::pickUpSequence()
 				this->colorServo.write(colorServoDeployAngle);
 				delay(colorServoDelay);
 				
-				//Detect and save the color
-				this->lastColor = color; 
-				
-				//Retract color sensor
-				this->colorServo.write(colorServoIdleAngle);
-				delay(colorServoDelay);
-				
-				//Move to the full raise state
-				this->state = "RAISE";
-				this->pickUpState = RAISE;
+				if (colorScanned)
+				{
+					//Detect and save the color
+					this->lastColor = color; 
+					
+					//Retract color sensor
+					this->colorServo.write(colorServoIdleAngle);
+					delay(colorServoDelay);
+					
+					//Move to the full raise state
+					this->state = "RAISE";
+					this->pickUpState = RAISE;
+				}
 			}
 			return 1;
 			
