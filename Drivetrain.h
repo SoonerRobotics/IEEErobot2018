@@ -33,10 +33,6 @@ class Drivetrain : public BasicDrive
 		
 		void followLineGyro(float targetAngle, float inputAngle);
 		
-		int getIRMatrixValue();
-		
-		void printIRMatrix();
-		
 		float getPositionSpark();
 		float getTurnSpeed();
 
