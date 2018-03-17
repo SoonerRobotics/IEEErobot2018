@@ -210,13 +210,26 @@ void Drivetrain::followLine(float density, float position)
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
-	if(position > 50)
+	if(density == 0)
 	{
-		turnSpeed = lineTurnSpeed;
+		turnSpeed = lastTurnSpeed;
 	}
-	else if(position < -50)
+	else if(density < 7)
 	{
-		turnSpeed = -lineTurnSpeed;
+		if(position > 50)
+		{
+			turnSpeed = lineTurnSpeed;
+		}
+		else if(position < -50)
+		{
+			turnSpeed = -lineTurnSpeed;
+		}
+		lastTurnSpeed = turnSpeed;
+	}
+	else
+	{
+		//Maybe we are at a 90 degree turn point. Do something here later.
+		//TODO: Implement 90 degree turn
 	}
 	
 	Serial.print("\tspd: ");
