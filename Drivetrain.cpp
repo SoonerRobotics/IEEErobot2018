@@ -65,6 +65,15 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//Start a timer
 		timer = millis();
 		timeoutClock = 0;
+		
+		if(targetDistance == 0)
+		{
+			turnPID.initialize(0, TURN_KP, TURN_KI, TURN_KD);
+		}
+		else
+		{
+			turnPID.initialize(0, IN_PLACE_KP, IN_PLACE_KI, IN_PLACE_KD);
+		}
 	}
 	
 	if(!movementComplete)
@@ -95,9 +104,15 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			
 		//if (targetAngle != 0)
 		//{			
-			X = -turnPID.getOutput2(inputYaw, targetAngle);
-				if (X >= highT) { X = highT; }
-				else if (X <= lowT) { X = lowT; }
+		X = -turnPID.getOutput2(inputYaw, targetAngle);
+		if (X >= highT) 
+		{ 
+			X = highT; 
+		}
+		else if (X <= lowT) 
+		{
+			X = lowT;
+		}
 		//}
 		//else 
 		//{
@@ -205,7 +220,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 }
 
 
-void Drivetrain::followLine(float density, float position)
+void Drivetrain::followLine(int density, int position)
 {
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
@@ -234,15 +249,17 @@ void Drivetrain::followLine(float density, float position)
 	
 	Serial.print("\tspd: ");
 	Serial.print(turnSpeed);
+	Serial.print("\tpos: ");
+	Serial.print(position);
 	Serial.println();
 	
 	if(abs(turnSpeed) > 0)
 	{
-		arcadeDrive(turnSpeed, 0);
+		arcadeDrive(0, turnSpeed);
 	}
 	else
 	{
-		arcadeDrive(0, driveSpeed);
+		arcadeDrive(driveSpeed, 0);
 	}
 }
 
@@ -309,52 +326,15 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	Serial.print("RIGHT: ");
 	Serial.print(right);
 	*/
-	BasicDrive::setOutput(left, -right);
+	BasicDrive::setOutput(-left, right);
 }
 
-void Drivetrain::searchForward(float inputYaw)
+void Drivetrain::searchForward()
 {
-	bool complete = true;
-	while (this->irMatrix.readToBinary()>>3&0) 
-	{
-		complete = drive(0.25, 0.0, inputYaw, complete);
-		delay(50);
-	}
-}
-
-void Drivetrain::followLineGyro(float targetAngle, float inputAngle)
-{	
-	this->irMatrixValue = irMatrix.readToBinary();
 	
-	//IF all center IR senor aren't on line
-	//CHeck current angle against angle
-	if(irMatrixValue&21 == 1)//If all center IR sensor are on line
-	{
-		arcadeDrive(lineFollowSpeed,0);
-	}
-	else
-	{
-		//Find difference between current angle and the target angle
-		int diff = inputAngle - targetAngle;
-		
-		//Turn left or right based on the difference
-		if(diff > 0)
-		{
-			arcadeDrive(lineFollowSpeed,10);
-		}
-		else
-		{
-			arcadeDrive(lineFollowSpeed,-10);
-		}
-	}
 }
 
-int Drivetrain::getIRMatrixValue()
-{
-	return this->irMatrix.readToBinary();
-}
-
-void Drivetrain::printIRMatrix()
-{
-	this->irMatrix.printRawToSerial();
+void Drivetrain::followLineGyro()
+{	
+	
 }

@@ -7,14 +7,14 @@
  */
 
  //Left Drivetrain Motor
-#define pinLeftMot1 24
-#define pinLeftMot2 25
-#define pinLeftMotEnb 10
+#define pinLeftMot1 15
+#define pinLeftMot2 16
+#define pinLeftMotEnb 11
 
 //Right Drivetrain Motor
-#define pinRightMot1 15
-#define pinRightMot2 16
-#define pinRightMotEnb 11
+#define pinRightMot1 24
+#define pinRightMot2 25
+#define pinRightMotEnb 10
 
 //I2C addresses for Gyro and Color Sensor
 #define pinColor1 0		//should have same pin on i2c chain
@@ -43,18 +43,6 @@
 #define pinLowLimSwitch 19
 #define pinHighLimSwitch 29
 
-//Pins for the IR Matrix
-#define pinIRMatrix1 A0
-#define pinIRMatrix2 A1
-#define pinIRMatrix3 A2
-#define pinIRMatrix4 A3
-#define pinIRMatrix5 A4
-#define pinIRMatrix6 A5
-#define pinIRMatrix7 A6
-#define pinIRMatrix8 A7
-
-#define pinIRMatrixLED 53
-
 //Black/White Threshold
 #define BW_THRESHOLD 500
 
@@ -67,10 +55,15 @@
 #define pinIntakeMot2 23
 #define pinIntakeMotEnb 13
 
-//Turn PID
-#define TURN_KP .004
+//Turn PID while driving forward
+#define TURN_KP .009 //.004
 #define TURN_KI 0
 #define TURN_KD 0
+
+//Turn in place PID
+#define IN_PLACE_KP .004
+#define IN_PLACE_KI 0
+#define IN_PLACE_KD 0
 
 //Distance PID
 #define DIST_KP .027

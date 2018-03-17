@@ -10,7 +10,7 @@ Intake intake;
 Motor leftMot;
 Motor rightMot;
 DigitalDevice mDetector(pinMetDet, INPUT);
-IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5, pinIRMatrix6, pinIRMatrix7, pinIRMatrix8, pinIRMatrixLED);
+//IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5, pinIRMatrix6, pinIRMatrix7, pinIRMatrix8, pinIRMatrixLED);
 DigitalDevice goButton(pinGoButton,INPUT);
 
 Encoder leftEnc(pinLeftEnc1, pinLeftEnc2);
@@ -51,6 +51,9 @@ void intakeLowLimit()
 //Setup Function
 void robotSetup()
 {
+	pinMode(45, OUTPUT);
+	digitalWrite(45, LOW);
+	
 	Serial.begin(9600);
 	Serial.print(" -Has Begun- \n");
 
@@ -59,7 +62,7 @@ void robotSetup()
 	{
 		Serial.println("Error Connecting to Gyro");
 	}
-	
+	Serial.println("Connecting to Gyro");
 	//Reset the gyro
 	updateGyro();
 	resetGyro();
@@ -68,12 +71,12 @@ void robotSetup()
 	{
 		Serial.println("Error Connecting to Color Sensor");
 	}
-	
+	Serial.println("Connecting to Gyro");
 	if(!lineFollower.begin())
 	{
 		Serial.println("Sensor bar connection error");
 	}
-	
+	Serial.println("Connecting to Sensor bar");
 	
 	//Set the encoder constants
 	leftEnc.setConstant(leftEncoderConstant);
@@ -82,7 +85,7 @@ void robotSetup()
 	//Initialize motors and basic drivetrain functions
 	leftMot.begin(pinLeftMot1, pinLeftMot2, pinLeftMotEnb);
 	rightMot.begin(pinRightMot1, pinRightMot2, pinRightMotEnb);
-	drivetrain.begin(leftMot, rightMot, leftEnc, rightEnc, mat, mDetector);
+	drivetrain.begin(leftMot, rightMot, leftEnc, rightEnc, mDetector);
 	
 	//Setup PID
 	drivetrain.initializeTurnPID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);

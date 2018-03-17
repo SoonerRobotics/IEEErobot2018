@@ -11,7 +11,7 @@
 #include <sensorbar.h>
 
 #include "DriveConstants.h"
-#include "IRMatrix.h"
+#include "RobotGlobals.h"
 
 class Drivetrain : public BasicDrive
 {
@@ -25,17 +25,13 @@ class Drivetrain : public BasicDrive
 		bool drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize, long timeout = -1);
 		void turnToAngle(float angle);
 		
-		void followLine();
+		void followLine(int density, int position);
 		
 		void followLineUntilCoin();
 		
-		void searchForward(float inputYaw);
+		void searchForward();
 		
-		void followLineGyro(float targetAngle, float inputAngle);
-		
-		int getIRMatrixValue();
-		
-		void printIRMatrix();
+		void followLineGyro();
 		
 		float getPositionSpark();
 		float getTurnSpeed();
@@ -89,7 +85,6 @@ class Drivetrain : public BasicDrive
 		
 		//Line following vars
 		float lastTurnSpeed;
-		
 };
 
 
