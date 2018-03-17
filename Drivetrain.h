@@ -11,7 +11,6 @@
 #include <sensorbar.h>
 
 #include "DriveConstants.h"
-#include "IRMatrix.h"
 
 class Drivetrain : public BasicDrive
 {
@@ -82,9 +81,6 @@ class Drivetrain : public BasicDrive
 		long distanceTimerElapsed;
 		
 		bool movementComplete;
-		
-		//IR Matrix / Line follow
-		int irMatrixValue;
 		
 };
 
