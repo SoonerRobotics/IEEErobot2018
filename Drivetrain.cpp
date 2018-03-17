@@ -5,10 +5,9 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, IRMatrix& mat, DigitalDevice& mDetector)
+void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, DigitalDevice& mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
-	this->irMatrix = mat;			//Doesn't like this reference 
 	this->metDetector = mDetector;
 	
 	//Set params for PID's
@@ -207,14 +206,12 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 
 
 void Drivetrain::followLine()
-{
-	int irMatrixValue = this->irMatrix.readToBinary();
-	
+{	
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
 	
-	turnSpeed = getPositionSpark();
+	turnSpeed = getPosition();
 	
 	Serial.print("\tspd: ");
 	Serial.print(turnSpeed);
@@ -233,13 +230,11 @@ void Drivetrain::followLine()
 void Drivetrain::followLineUntilCoin() 
 {
 	while(metDetector.read() == LOW)
-	{
-		int irMatrixValue = this->irMatrix.readToBinary();
-		
+	{		
 		float driveSpeed = lineFollowSpeed;
 		float turnSpeed = 0;
 		
-		turnSpeed = getPositionSpark();
+		turnSpeed = getPosition();
 
 		if(abs(turnSpeed) > 0)
 		{
@@ -253,75 +248,8 @@ void Drivetrain::followLineUntilCoin()
 	}
 }
 
-//get data from IR as a vector to the average of detected points
-//example, if center bits detect line (ir2, ir3, ir4), the position will be 0
-float Drivetrain::getPositionSpark()
-{
-	int irMatrixValue = this->irMatrix.readToBinary();
-	int bitsCounted = 0;
-	int accumulator = 0;
-	float turnSpeed = 0;
-	
-	//count bits
-	for(int i = 0; i < 8; i++)
-	{
-		if ( (irMatrixValue >> i) & 1 == 1)
-		{
-			bitsCounted++;
-		}
-	}
-	
-	//Sparkfun does bits differently, with 0 at the center.
-	//We need to convert our center IR to be the least significant.
-	//This is done in the IR matrix Class
-	
-	//positive bits 
-	for (int i = 7; i > 3; i--)
-	{
-		if ( (irMatrixValue >> i ) & 1 == 1)
-		{
-			accumulator += ((-32* (i - 1)) + 1);
-		}
-	}
-	
-	//negative bits (ir3, ir2, ir1)
-	for (int i = 0; i < 4; i++)
-	{
-		if ( (irMatrixValue >> i ) & 1 == 1)
-		{
-			accumulator += ((32 * (3 - i)) - 1);
-		}
-	} 
-	
-	float positionValue = 0;
-	if(bitsCounted > 0)
-	{	
-		//position value in a range from -127 to 127
-		positionValue = accumulator / bitsCounted;
-	}
-
-	Serial.print("\tpos: ");
-	Serial.print(positionValue);
-	
-	if (positionValue > 50)
-	{
-		turnSpeed = lineTurnSpeed;
-	}
-	else if (positionValue < -50)
-	{
-		turnSpeed = -lineTurnSpeed;
-	}
-	else
-	{
-		turnSpeed = 0;
-	}
-	
-	return turnSpeed;
-}
-
 float Drivetrain::getTurnSpeed()
 {
-	int irMatrixValue = this->irMatrix.readToBinary();
 	int left = 0, right = 0;
 	
 	for(int r = 0; r < 8; ++r)

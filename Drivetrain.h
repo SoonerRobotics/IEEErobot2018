@@ -8,6 +8,7 @@
 #include <DigitalDevice.h>
 #include <Adafruit_BNO055.h>
 #include <Adafruit_Sensor.h>
+#include <sensorbar.h>
 
 #include "DriveConstants.h"
 #include "IRMatrix.h"
@@ -17,7 +18,7 @@ class Drivetrain : public BasicDrive
 	public:
 		Drivetrain();
 		
-		void begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, IRMatrix& mat, DigitalDevice& mDetector);
+		void begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, DigitalDevice& mDetector);
 		void initializeTurnPID(float kp, float ki, float kd, float high = 1, float low = -1);
 		void initializeDistancePID(float kp, float ki, float kd, float high = 1, float low = -1);
 		
@@ -40,7 +41,6 @@ class Drivetrain : public BasicDrive
 		float getTurnSpeed();
 
 	private:
-		IRMatrix irMatrix;
 		DigitalDevice metDetector;
 		
 		PIDController turnPID;
