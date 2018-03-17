@@ -11,6 +11,9 @@
 #include <Adafruit_BNO055.h>
 #include <Adafruit_TCS34725.h>
 
+//Line follower sensor
+#include <sensorbar.h>
+
 //2018 specific code
 #include "Color.h"
 #include "Electromagnet.h"

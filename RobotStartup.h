@@ -18,12 +18,14 @@ Encoder rightEnc(pinRightEnc1, pinRightEnc2);
 Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
 
 //--Intake
-
 DigitalDevice loSwitch(pinLowLimSwitch, INPUT);
 DigitalDevice hiSwitch(pinHighLimSwitch, INPUT);
 Electromagnet eMagnet(pinElecMag);
 Motor iMotor;	
 Turntable turntable(turntableServoPin);
+
+//Line follower
+SensorBar lineFollower(0x3E);
 
 //Encoder Masking
 void encLeftInterrupt() 
@@ -55,7 +57,7 @@ void robotSetup()
 	//Initialize Gyro and Color Sensor
 	if(!gyro.begin())
 	{
-		Serial.println("Error Connecting to Gyro!");
+		Serial.println("Error Connecting to Gyro");
 	}
 	
 	//Reset the gyro
@@ -64,7 +66,12 @@ void robotSetup()
 	
 	if(!colorSensor.begin())
 	{
-		Serial.println("Error Connecting to Color Sensor!");
+		Serial.println("Error Connecting to Color Sensor");
+	}
+	
+	if(!lineFollower.begin())
+	{
+		Serial.println("Sensor bar connection error");
 	}
 	
 	

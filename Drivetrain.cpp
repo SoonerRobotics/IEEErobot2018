@@ -175,15 +175,21 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 }
 
 
-void Drivetrain::followLine()
+void Drivetrain::followLine(float density, float position)
 {
 	int irMatrixValue = this->irMatrix.readToBinary();
 	
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
-	
-	turnSpeed = getPositionSpark();
+	if(position > 50)
+	{
+		turnSpeed = lineTurnSpeed;
+	}
+	else if(position < -50)
+	{
+		turnSpeed = -lineTurnSpeed;
+	}
 	
 	Serial.print("\tspd: ");
 	Serial.print(turnSpeed);
@@ -195,20 +201,16 @@ void Drivetrain::followLine()
 	}
 	else
 	{
-		arcadeDrive(0, 0);
+		arcadeDrive(0, driveSpeed);
 	}
 }
 
 void Drivetrain::followLineUntilCoin() 
 {
-	while(metDetector.read() == LOW)
-	{
-		int irMatrixValue = this->irMatrix.readToBinary();
-		
+	if(metDetector.read() == LOW)
+	{		
 		float driveSpeed = lineFollowSpeed;
 		float turnSpeed = 0;
-		
-		turnSpeed = getPositionSpark();
 
 		if(abs(turnSpeed) > 0)
 		{
@@ -286,49 +288,6 @@ float Drivetrain::getPositionSpark()
 	}
 	
 	return turnSpeed;
-}
-
-float Drivetrain::getTurnSpeed()
-{
-	int irMatrixValue = this->irMatrix.readToBinary();
-	int left = 0, right = 0;
-	
-	for(int r = 0; r < 8; ++r)
-	{
-		Serial.print((irMatrixValue >> r) & 1);
-		Serial.print("\t");
-	}
-	
-	if(irMatrixValue == 1)
-	{
-		return 0;
-	}
-	else
-	{
-		for(int i = 0; i < 4; ++i)
-		{
-			right += ((irMatrixValue >> i) & 1) * (4-i);
-		}
-		
-		for(int i = 7; i > 3; --i)
-		{
-			left += ((irMatrixValue >> i) & 1) * (i-3);
-		}
-		
-		Serial.print(left);
-		Serial.print(" vs ");
-		Serial.print(right);
-		
-		if(right - left > 1)
-		{
-			return -lineTurnSpeed;
-		}
-		else if(right - left < -3)
-		{
-			return lineTurnSpeed;
-		}
-		return 0;
-	}
 }
 
 /**
