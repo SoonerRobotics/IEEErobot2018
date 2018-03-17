@@ -35,6 +35,8 @@ class Drivetrain : public BasicDrive
 		
 		float getPositionSpark();
 		float getTurnSpeed();
+		
+		void driveIndefinitely();
 
 	private:
 		DigitalDevice metDetector;
