@@ -7,14 +7,14 @@
  */
 
  //Left Drivetrain Motor
-#define pinLeftMot1 24
-#define pinLeftMot2 25
-#define pinLeftMotEnb 10
+#define pinLeftMot1 15
+#define pinLeftMot2 16
+#define pinLeftMotEnb 11
 
 //Right Drivetrain Motor
-#define pinRightMot1 15
-#define pinRightMot2 16
-#define pinRightMotEnb 11
+#define pinRightMot1 24
+#define pinRightMot2 25
+#define pinRightMotEnb 10
 
 //I2C addresses for Gyro and Color Sensor
 #define pinColor1 0		//should have same pin on i2c chain
@@ -68,7 +68,7 @@
 #define pinIntakeMotEnb 13
 
 //Turn PID
-#define TURN_KP .004
+#define TURN_KP .009 //.004
 #define TURN_KI 0
 #define TURN_KD 0
 
