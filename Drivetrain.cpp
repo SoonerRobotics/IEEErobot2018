@@ -255,7 +255,54 @@ void Drivetrain::followLineUntilCoin()
 	}
 }
 
-
+void Drivetrain::driveIndefinitely(float speed, float targetAngle, float inputYaw, bool reinitialize)
+{
+	if(reinitialize)
+	{
+		Y = 0.0;
+		X = 0.0; 
+		distance = 0.0;
+		
+		//Reset Encoders
+		BasicDrive::getLeftEncoder().reset();
+		BasicDrive::getRightEncoder().reset();
+		
+		//Set the 'in-range' and 'complete' flags to false
+		distanceInRange = false;
+		angleInRange = false;
+		driveComplete = false;
+		turnComplete = false;
+		movementComplete = false;
+		
+		this->targetDistance = targetDistance;
+		this->targetAngle = targetAngle;
+	}
+		
+	//Calculate Gyro Error
+	gyroError = targetAngle - inputYaw;
+		
+	//Wrap the gyro error to [-180, 180]
+	if(gyroError > 180)
+	{
+		gyroError = -(360 - gyroError);
+	}
+		
+	Y = speed;
+	
+	X = -turnPID.getOutput2(inputYaw, targetAngle);
+			if (X >= highT) { X = highT; }
+			else if (X <= lowT) { X = lowT; }
+	
+	Serial.print("PID X:  ");
+	Serial.print(X);
+	Serial.print("PID Y:  ");
+	Serial.print(Y);
+	Serial.print("\t");
+		
+	//Set the robot output
+	arcadeDrive(Y, X);
+}
+	
 /**
  * Private Functions Below
  */ 
