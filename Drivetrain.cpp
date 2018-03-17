@@ -5,10 +5,9 @@ Drivetrain::Drivetrain()
 	
 }
 
-void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, IRMatrix& mat, DigitalDevice& mDetector)
+void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, DigitalDevice& mDetector)
 {
 	BasicDrive::begin(leftMot, rightMot, leftEnc, rightEnc);
-	this->irMatrix = mat;			//Doesn't like this reference 
 	this->metDetector = mDetector;
 	
 	//Set params for PID's
@@ -74,7 +73,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		this->distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
 		
 		//Calculate Gyro Error
-		gyroError = inputYaw - targetAngle;
+		gyroError = targetAngle - inputYaw;
 		
 		//Wrap the gyro error to [-180, 180]
 		if(gyroError > 180)
@@ -83,45 +82,69 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 		
 		//Calculate Y and X values (straight vector and turn vector respectively)
-		//Y = distancePID.getOutput(targetDistance, distance);
-		//X = -turnPID.getOutput(0, gyroError);
-		
-		Y = distancePID.getOutput2(targetDistance, distance);
-		if (Y >= highD) { Y = highD; }
-		else if (Y <= lowD) { Y = lowD; }
-		X = -turnPID.getOutput2(0, gyroError);
-		if (X >= highT) { X = highT; }
-		else if (X <= lowT) { X = lowT; }
-		
-		//Check to see if the distance is in range and if the drive is completed
-		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
+		if (targetDistance != 0)
 		{
-			//If this is the first time being in range
-			if(!distanceInRange)
+			Y = distancePID.getOutput2(targetDistance, distance);
+				if (Y >= highD) { Y = highD; }
+				else if (Y <= lowD) { Y = lowD; }
+		}
+		else
+		{
+			Y = 0;
+		}
+			
+		//if (targetAngle != 0)
+		//{			
+			X = -turnPID.getOutput2(inputYaw, targetAngle);
+				if (X >= highT) { X = highT; }
+				else if (X <= lowT) { X = lowT; }
+		//}
+		//else 
+		//{
+		//	X = 0;
+		//}
+		
+		Serial.print("PID X:  ");
+		Serial.print(X);
+		Serial.print("PID Y:  ");
+		Serial.print(Y);
+		Serial.print("\t");
+		
+		if (targetDistance != 0) 
+		{
+			//Check to see if the distance is in range and if the drive is completed
+			if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
 			{
-				//Start the timer
-				distanceTimer = millis();
+				//If this is the first time being in range
+				if(!distanceInRange)
+				{
+					//Start the timer
+					distanceTimer = millis();
+					
+					//Set to true to keep timer reference point
+					distanceInRange = true;
+				}
 				
-				//Set to true to keep timer reference point
-				distanceInRange = true;
+				//Calculate time elapsed while on target
+				distanceTimerElapsed = millis() - distanceTimer;
+				
+				//If we have been on target for a long enough amount of time, we have completed the drive
+				if(distanceTimerElapsed > setpointTimeout)
+				{
+					driveComplete = true;
+				}
 			}
-			
-			//Calculate time elapsed while on target
-			distanceTimerElapsed = millis() - distanceTimer;
-			
-			//If we have been on target for a long enough amount of time, we have completed the drive
-			if(distanceTimerElapsed > setpointTimeout)
+			else
 			{
-				driveComplete = true;
+				driveComplete = false;
+				distanceInRange = false;
+				distanceTimer = millis();
 			}
 		}
 		else
 		{
-			driveComplete = false;
-			distanceInRange = false;
-			distanceTimer = millis();
+			driveComplete = true;
 		}
-		
 		//Check to see if the angle is 'in-range' and if the turn is completed
 		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
 		{
@@ -148,8 +171,15 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			angleTimer = millis();
 		}
 
+		//Output to the motors
+		Serial.print("X: ");
+		Serial.print(X);
+		Serial.print("\t");
+		Serial.print("Y: ");
+		Serial.print(Y);
+		
 		//Set the robot output
-		arcadeDrive(X, Y);
+		arcadeDrive(Y, X);
 		
 		//Calculate the time taken in this process
 		timeoutClock = millis() - timer;
@@ -177,8 +207,6 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 
 void Drivetrain::followLine(float density, float position)
 {
-	int irMatrixValue = this->irMatrix.readToBinary();
-	
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
@@ -207,6 +235,7 @@ void Drivetrain::followLine(float density, float position)
 
 void Drivetrain::followLineUntilCoin() 
 {
+
 	if(metDetector.read() == LOW)
 	{		
 		float driveSpeed = lineFollowSpeed;
@@ -224,77 +253,10 @@ void Drivetrain::followLineUntilCoin()
 	}
 }
 
-//get data from IR as a vector to the average of detected points
-//example, if center bits detect line (ir2, ir3, ir4), the position will be 0
-float Drivetrain::getPositionSpark()
-{
-	int irMatrixValue = this->irMatrix.readToBinary();
-	int bitsCounted = 0;
-	int accumulator = 0;
-	float turnSpeed = 0;
-	
-	//count bits
-	for(int i = 0; i < 8; i++)
-	{
-		if ( (irMatrixValue >> i) & 1 == 1)
-		{
-			bitsCounted++;
-		}
-	}
-	
-	//Sparkfun does bits differently, with 0 at the center.
-	//We need to convert our center IR to be the least significant.
-	//This is done in the IR matrix Class
-	
-	//positive bits 
-	for (int i = 7; i > 3; i--)
-	{
-		if ( (irMatrixValue >> i ) & 1 == 1)
-		{
-			accumulator += ((-32* (i - 1)) + 1);
-		}
-	}
-	
-	//negative bits (ir3, ir2, ir1)
-	for (int i = 0; i < 4; i++)
-	{
-		if ( (irMatrixValue >> i ) & 1 == 1)
-		{
-			accumulator += ((32 * (3 - i)) - 1);
-		}
-	} 
-	
-	float positionValue = 0;
-	if(bitsCounted > 0)
-	{	
-		//position value in a range from -127 to 127
-		positionValue = accumulator / bitsCounted;
-	}
-
-	Serial.print("\tpos: ");
-	Serial.print(positionValue);
-	
-	if (positionValue > 50)
-	{
-		turnSpeed = lineTurnSpeed;
-	}
-	else if (positionValue < -50)
-	{
-		turnSpeed = -lineTurnSpeed;
-	}
-	else
-	{
-		turnSpeed = 0;
-	}
-	
-	return turnSpeed;
-}
 
 /**
  * Private Functions Below
- */
-
- 
+ */ 
 void Drivetrain::arcadeDrive(float Y, float X)
 {
 	float right, left;
@@ -328,7 +290,13 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	}
 	
 	//Output to the motors
-	BasicDrive::setOutput(left, right);
+	/*Serial.print("LEFT: ");
+	Serial.print(left);
+	Serial.print("\t");
+	Serial.print("RIGHT: ");
+	Serial.print(right);
+	*/
+	BasicDrive::setOutput(left, -right);
 }
 
 void Drivetrain::searchForward(float inputYaw)

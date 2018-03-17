@@ -87,7 +87,7 @@ void robotSetup()
 	//Setup PID
 	drivetrain.initializeTurnPID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);
 	Serial.println("y u do dis to me");
-	drivetrain.initializeDistancePID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);
+	drivetrain.initializeDistancePID(DIST_KP, DIST_KI, DIST_KD, 0.4, -0.4);
 	
 	Serial.print(" -Drive Has Begun- \n");
 	

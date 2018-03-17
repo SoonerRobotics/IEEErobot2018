@@ -11,7 +11,7 @@
 #include <Adafruit_BNO055.h>
 #include <Adafruit_TCS34725.h>
 
-//Line follower sensor
+//SparkFun Line following library
 #include <sensorbar.h>
 
 //2018 specific code
