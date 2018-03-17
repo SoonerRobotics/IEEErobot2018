@@ -9,7 +9,7 @@
 #define TURNTABLE_H_
 
 #include <Arduino.h>
-#include <Servo.h>
+#include <StepperMotor.h>
 #include "Color.h"
 
 #define IDLE_ANGLE 935
@@ -18,18 +18,15 @@ class Turntable {
 
 public:
 	Turntable();
-	Turntable(int pinServo);
 	
-	void begin(int pinServo);
-	void operator=(const Turntable& turnTable);
+	void begin(StepperMotor stepper);
 	
 	void setPosition(Color color);
 	void setPosition(int angle);
 	void setPosition();
 
 private:
-	int pin;
-	Servo servo;
+	StepperMotor stepperMot;
 	 
 };
 

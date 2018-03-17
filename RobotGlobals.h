@@ -47,13 +47,16 @@
 #define BW_THRESHOLD 500
 
 //Servos
-#define turntableServoPin 7
 #define colorServoPin 38
 
 //Intake Motor Pins
 #define pinIntakeMot1 22
 #define pinIntakeMot2 23
 #define pinIntakeMotEnb 13
+
+//Stepper Motor Pins
+#define pinStepperMot1
+#define pinStepperMot2
 
 //Turn PID while driving forward
 #define TURN_KP .009 //.004

@@ -10,40 +10,29 @@
 Turntable::Turntable()
 {
 	//Do nothing
-	this->pin = 0;
 }
 
-Turntable::Turntable(int pinServo) 
+void Turntable::begin(StepperMotor stepperMot)
 {
-	//this->servo.attach(pinServo);
-	this->pin = pinServo;
-}
-
-void Turntable::operator=(const Turntable& turnTable)
-{
-	//this->servo = turnTable.servo;
-	this->pin = turnTable.pin;
-}
-
-void Turntable::begin(int pinServo)
-{
-	//this->servo.attach(pinServo);
-	this->pin = pinServo;
+	steps = 0;
+	this->stepperMot = stepperMot;
 }
 
 void Turntable::setPosition(Color color)
 {
-	int angle = color.getAngle();
+	int steps = (color.getAngle()/360)*200;
 	
-	this->servo.writeMicroseconds(angle);
+	this->stepperMot.step(steps);
 }
 
 void Turntable::setPosition(int angle)
 {
-	this->servo.writeMicroseconds(angle);
+	int steps = (angle/360)*200;
+	
+	this->stepperMot.step(steps);
 }
 
 void Turntable::setPosition()
 {
-	this->servo.writeMicroseconds(IDLE_ANGLE);
+	this->stepperMot.step(-stepperMot.getCurrentSteps());
 }
