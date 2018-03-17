@@ -13,4 +13,6 @@
 
 #define lineTurnSpeed .175 //Speed to turn when correcting for line following errors
 
+#define lineFollowP 0.5
+
 #endif

@@ -55,10 +55,15 @@
 #define pinIntakeMot2 23
 #define pinIntakeMotEnb 13
 
-//Turn PID
+//Turn PID while driving forward
 #define TURN_KP .009 //.004
 #define TURN_KI 0
 #define TURN_KD 0
+
+//Turn in place PID
+#define IN_PLACE_KP .004
+#define IN_PLACE_KI 0
+#define IN_PLACE_KD 0
 
 //Distance PID
 #define DIST_KP .027

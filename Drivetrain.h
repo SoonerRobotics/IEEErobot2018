@@ -11,6 +11,7 @@
 #include <sensorbar.h>
 
 #include "DriveConstants.h"
+#include "RobotGlobals.h"
 
 class Drivetrain : public BasicDrive
 {
@@ -82,6 +83,8 @@ class Drivetrain : public BasicDrive
 		
 		bool movementComplete;
 		
+		//Line following vars
+		float lastTurnSpeed;
 };
 
 

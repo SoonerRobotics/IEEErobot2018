@@ -65,6 +65,15 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//Start a timer
 		timer = millis();
 		timeoutClock = 0;
+		
+		if(targetDistance == 0)
+		{
+			turnPID.initialize(0, TURN_KP, TURN_KI, TURN_KD);
+		}
+		else
+		{
+			turnPID.initialize(0, IN_PLACE_KP, IN_PLACE_KI, IN_PLACE_KD);
+		}
 	}
 	
 	if(!movementComplete)
@@ -95,9 +104,15 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			
 		//if (targetAngle != 0)
 		//{			
-			X = -turnPID.getOutput2(inputYaw, targetAngle);
-				if (X >= highT) { X = highT; }
-				else if (X <= lowT) { X = lowT; }
+		X = -turnPID.getOutput2(inputYaw, targetAngle);
+		if (X >= highT) 
+		{ 
+			X = highT; 
+		}
+		else if (X <= lowT) 
+		{
+			X = lowT;
+		}
 		//}
 		//else 
 		//{
@@ -210,13 +225,26 @@ void Drivetrain::followLine(int density, int position)
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
-	if(position > 50)
+	if(density == 0)
 	{
-		turnSpeed = lineTurnSpeed;
+		turnSpeed = lastTurnSpeed;
 	}
-	else if(position < -50)
+	else if(density < 7)
 	{
-		turnSpeed = -lineTurnSpeed;
+		if(position > 50)
+		{
+			turnSpeed = lineTurnSpeed;
+		}
+		else if(position < -50)
+		{
+			turnSpeed = -lineTurnSpeed;
+		}
+		lastTurnSpeed = turnSpeed;
+	}
+	else
+	{
+		//Maybe we are at a 90 degree turn point. Do something here later.
+		//TODO: Implement 90 degree turn
 	}
 	
 	Serial.print("\tspd: ");
