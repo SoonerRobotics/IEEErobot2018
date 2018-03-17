@@ -11,7 +11,6 @@
 #include <sensorbar.h>
 
 #include "DriveConstants.h"
-//#include "IRMatrix.h"
 
 class Drivetrain : public BasicDrive
 {
