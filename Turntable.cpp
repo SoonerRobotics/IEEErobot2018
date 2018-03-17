@@ -14,21 +14,17 @@ Turntable::Turntable()
 
 void Turntable::begin(StepperMotor stepperMot)
 {
-	steps = 0;
 	this->stepperMot = stepperMot;
 }
 
 void Turntable::setPosition(Color color)
 {
-	int steps = (color.getAngle()/360)*200;
 	
-	this->stepperMot.step(steps);
+	this->stepperMot.step(color.getAngle());
 }
 
-void Turntable::setPosition(int angle)
-{
-	int steps = (angle/360)*200;
-	
+void Turntable::setPosition(int steps)
+{	
 	this->stepperMot.step(steps);
 }
 

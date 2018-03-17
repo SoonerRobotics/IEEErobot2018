@@ -105,7 +105,8 @@ void robotSetup()
 	//--Intake
 	iMotor.begin(pinIntakeMot1, pinIntakeMot2, pinIntakeMotEnb);
 	eMagnet.initialize(pinElecMag);
-	stepperMot.begin(pinStepperMot1, pinStepperMot2, 0, 200);
+	stepperMot.begin(pinStepperMotStep, pinStepperMotDir);
+	stepperMot.setRPM(stepperMotRPM);
 	turntable.begin(stepperMot);
 	intake.begin(iMotor, tEncoder, mDetector, loSwitch, hiSwitch, eMagnet, turntable, colorServoPin);
   

@@ -55,8 +55,9 @@
 #define pinIntakeMotEnb 13
 
 //Stepper Motor Pins
-#define pinStepperMot1
-#define pinStepperMot2
+#define pinStepperMotStep 49
+#define pinStepperMotDir 50
+#define stepperMotRPM 50
 
 //Turn PID while driving forward
 #define TURN_KP .009 //.004
