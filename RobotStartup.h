@@ -22,7 +22,8 @@ DigitalDevice loSwitch(pinLowLimSwitch, INPUT);
 DigitalDevice hiSwitch(pinHighLimSwitch, INPUT);
 Electromagnet eMagnet(pinElecMag);
 Motor iMotor;	
-Turntable turntable(turntableServoPin);
+Turntable turntable;
+StepperMotor stepperMot;
 
 //Line follower
 SensorBar lineFollower(0x3E);
@@ -110,6 +111,9 @@ void robotSetup()
 	//--Intake
 	iMotor.begin(pinIntakeMot1, pinIntakeMot2, pinIntakeMotEnb);
 	eMagnet.initialize(pinElecMag);
+	stepperMot.begin(pinStepperMotStep, pinStepperMotDir);
+	stepperMot.setRPM(stepperMotRPM);
+	turntable.begin(stepperMot);
 	intake.begin(iMotor, tEncoder, mDetector, loSwitch, hiSwitch, eMagnet, turntable, colorServoPin);
   
 	Serial.print(" -Intake Has Begun- \n");
@@ -133,7 +137,7 @@ void robotSetup()
 	}while(signal != 0);
 	
 	//Set the turntable to idle
-//	intake.turnTable.setPosition();
+//	intake.turntable.setPosition();
 	intake.setColorServoIdle();
 	
 	//Reset the intake to start
