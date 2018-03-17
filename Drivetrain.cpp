@@ -74,7 +74,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		this->distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
 		
 		//Calculate Gyro Error
-		gyroError = inputYaw - targetAngle;
+		gyroError = targetAngle - inputYaw;
 		
 		//Wrap the gyro error to [-180, 180]
 		if(gyroError > 180)
@@ -83,45 +83,69 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 		
 		//Calculate Y and X values (straight vector and turn vector respectively)
-		//Y = distancePID.getOutput(targetDistance, distance);
-		//X = -turnPID.getOutput(0, gyroError);
-		
-		Y = distancePID.getOutput2(targetDistance, distance);
-		if (Y >= highD) { Y = highD; }
-		else if (Y <= lowD) { Y = lowD; }
-		X = -turnPID.getOutput2(0, gyroError);
-		if (X >= highT) { X = highT; }
-		else if (X <= lowT) { X = lowT; }
-		
-		//Check to see if the distance is in range and if the drive is completed
-		if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
+		if (targetDistance != 0)
 		{
-			//If this is the first time being in range
-			if(!distanceInRange)
+			Y = distancePID.getOutput2(targetDistance, distance);
+				if (Y >= highD) { Y = highD; }
+				else if (Y <= lowD) { Y = lowD; }
+		}
+		else
+		{
+			Y = 0;
+		}
+			
+		//if (targetAngle != 0)
+		//{			
+			X = -turnPID.getOutput2(inputYaw, targetAngle);
+				if (X >= highT) { X = highT; }
+				else if (X <= lowT) { X = lowT; }
+		//}
+		//else 
+		//{
+		//	X = 0;
+		//}
+		
+		Serial.print("PID X:  ");
+		Serial.print(X);
+		Serial.print("PID Y:  ");
+		Serial.print(Y);
+		Serial.print("\t");
+		
+		if (targetDistance != 0) 
+		{
+			//Check to see if the distance is in range and if the drive is completed
+			if(abs(distance - targetDistance) < distanceThreshold && abs(Y) < stopSpeedThreshold)
 			{
-				//Start the timer
-				distanceTimer = millis();
+				//If this is the first time being in range
+				if(!distanceInRange)
+				{
+					//Start the timer
+					distanceTimer = millis();
+					
+					//Set to true to keep timer reference point
+					distanceInRange = true;
+				}
 				
-				//Set to true to keep timer reference point
-				distanceInRange = true;
+				//Calculate time elapsed while on target
+				distanceTimerElapsed = millis() - distanceTimer;
+				
+				//If we have been on target for a long enough amount of time, we have completed the drive
+				if(distanceTimerElapsed > setpointTimeout)
+				{
+					driveComplete = true;
+				}
 			}
-			
-			//Calculate time elapsed while on target
-			distanceTimerElapsed = millis() - distanceTimer;
-			
-			//If we have been on target for a long enough amount of time, we have completed the drive
-			if(distanceTimerElapsed > setpointTimeout)
+			else
 			{
-				driveComplete = true;
+				driveComplete = false;
+				distanceInRange = false;
+				distanceTimer = millis();
 			}
 		}
 		else
 		{
-			driveComplete = false;
-			distanceInRange = false;
-			distanceTimer = millis();
+			driveComplete = true;
 		}
-		
 		//Check to see if the angle is 'in-range' and if the turn is completed
 		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
 		{
@@ -148,8 +172,15 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			angleTimer = millis();
 		}
 
+		//Output to the motors
+		Serial.print("X: ");
+		Serial.print(X);
+		Serial.print("\t");
+		Serial.print("Y: ");
+		Serial.print(Y);
+		
 		//Set the robot output
-		arcadeDrive(X, Y);
+		arcadeDrive(Y, X);
 		
 		//Calculate the time taken in this process
 		timeoutClock = millis() - timer;
@@ -369,7 +400,13 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	}
 	
 	//Output to the motors
-	BasicDrive::setOutput(left, right);
+	/*Serial.print("LEFT: ");
+	Serial.print(left);
+	Serial.print("\t");
+	Serial.print("RIGHT: ");
+	Serial.print(right);
+	*/
+	BasicDrive::setOutput(left, -right);
 }
 
 void Drivetrain::searchForward(float inputYaw)

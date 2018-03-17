@@ -3,9 +3,9 @@
 
 #define setpointTimeout 100 //How long the robot needs to be at the setpoint to complete the drive
 
-#define stopSpeedThreshold 0.2 //Max speed for robot to be considered stopped at setpoint
+#define stopSpeedThreshold 0.4 //Max speed for robot to be considered stopped at setpoint
 
-#define distanceThreshold 3 //Window for robot to be in range of distance setpoint.
+#define distanceThreshold .5 //Window for robot to be in range of distance setpoint.
 
 #define angleThreshold 3 //Window for robot to be in range of angle setpoint.
 

@@ -25,12 +25,12 @@
 //Left Drivetrain Encoder
 #define pinLeftEnc1 5
 #define pinLeftEnc2 2
-#define leftEncoderConstant 0.0242797
+#define leftEncoderConstant 0.0093986//-0.0242797
 
 //Right Drivetrain Encoder
 #define pinRightEnc1 3
 #define pinRightEnc2 4
-#define rightEncoderConstant  .002302351//0.0093986
+#define rightEncoderConstant 0.0093986
 
 //Intake Encoder
 #define pinIntakeEnc1 28
@@ -68,13 +68,13 @@
 #define pinIntakeMotEnb 13
 
 //Turn PID
-#define TURN_KP .035
+#define TURN_KP .004
 #define TURN_KI 0
-#define TURN_KD .3
+#define TURN_KD 0
 
 //Distance PID
-#define DIST_KP .1
-#define DIST_KI 0
+#define DIST_KP .027
+#define DIST_KI .00001
 #define DIST_KD 0
 
 //Go Button
