@@ -72,11 +72,17 @@ void robotSetup()
 		Serial.println("Error Connecting to Color Sensor");
 	}
 	Serial.println("Connecting to Gyro");
+	
+	//Setup line follower
+	lineFollower.setBarStrobe();
+	lineFollower.clearInvertBits();
 	if(!lineFollower.begin())
 	{
 		Serial.println("Sensor bar connection error");
 	}
 	Serial.println("Connecting to Sensor bar");
+	
+	
 	
 	//Set the encoder constants
 	leftEnc.setConstant(leftEncoderConstant);
