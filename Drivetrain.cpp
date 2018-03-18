@@ -304,6 +304,8 @@ void Drivetrain::driveIndefinitely(float speed, float targetAngle, float inputYa
 		
 		this->targetDistance = targetDistance;
 		this->targetAngle = targetAngle;
+		
+		turnPID.initialize(0, TURN_KP, TURN_KI, TURN_KD);
 	}
 		
 	//Calculate Gyro Error
