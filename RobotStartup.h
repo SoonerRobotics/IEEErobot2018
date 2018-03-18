@@ -72,7 +72,7 @@ void robotSetup()
 	{
 		Serial.println("Error Connecting to Color Sensor");
 	}
-	Serial.println("Connecting to Gyro");
+	Serial.println("Connecting to Color Sensor");
 	
 	//Setup line follower
 	lineFollower.setBarStrobe();
@@ -96,7 +96,6 @@ void robotSetup()
 	
 	//Setup PID
 	drivetrain.initializeTurnPID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);
-	Serial.println("y u do dis to me");
 	drivetrain.initializeDistancePID(DIST_KP, DIST_KI, DIST_KD, 0.4, -0.4);
 	
 	Serial.print(" -Drive Has Begun- \n");
@@ -111,7 +110,7 @@ void robotSetup()
 	//--Intake
 	iMotor.begin(pinIntakeMot1, pinIntakeMot2, pinIntakeMotEnb);
 	eMagnet.initialize(pinElecMag);
-	stepperMot.begin(pinStepperMotStep, pinStepperMotDir);
+	stepperMot.begin(pinStepperMotStep, pinStepperMotDir, pinStepperEnable);
 	stepperMot.setRPM(stepperMotRPM);
 	turntable.begin(stepperMot);
 	intake.begin(iMotor, tEncoder, mDetector, loSwitch, hiSwitch, eMagnet, turntable, colorServoPin);
@@ -133,7 +132,6 @@ void robotSetup()
 	int signal = goButton.read();
 	do{
 		signal = goButton.read();
-		Serial.println(signal);
 	}while(signal != 0);
 	
 	//Set the turntable to idle

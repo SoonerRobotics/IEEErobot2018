@@ -21,6 +21,8 @@ Intake::Intake()
 	this->pickUpState = IDLE;
 	this->dropOffState = IDLEd;
 	this->currentMotorOutput = 0;
+	this->numColorSamples = 0;
+	this->trashedSamples = 0;
 	
 	intakePID.initialize(0, intakeKp, intakeKi, intakeKd);
 }
@@ -45,13 +47,6 @@ void Intake::begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector,
 	
 	this->lastHeight = idleHeight;
 	this->intakeEncoder.reset();
-	
-	/*while (this->lowLimitSwitch.read() != HIGH)
-	{
-		//Output <0 to go down
-		this->intakeMotor.output(currentMotorOutput);
-		this->intakeEncoder.reset();
-	}*/
 }
 
 
@@ -116,20 +111,63 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				
 				//Deploy the RGB color sensor! (servo)
 				this->colorServo.write(colorServoDeployAngle);
-				delay(colorServoDeployDelay);
+				
+				//Only wait for the servo to deploy on sample #1
+				if(numColorSamples == 0)
+				{
+					delay(colorServoDeployDelay);
+				}
+				
+				Serial.println("SCANNING THE COIN");
 				
 				if (colorScanned)
 				{
-					//Detect and save the color
-					this->lastColor = color; 
+					//Throw out the first sample, because it is consistently garbage
+					if(numColorSamples != 0)
+					{
+						//If this sample isn't also trash...
+						if(color.getRed() <= COLOR_MAX_VALUE && color.getGreen() <= COLOR_MAX_VALUE && color.getBlue() <= COLOR_MAX_VALUE)
+						{
+							//Detect and save the color
+							this->lastColor = this->lastColor + color;
+						}
+						else
+						{
+							this->trashedSamples++;
+						}
+					}
+					else
+					{
+						this->trashedSamples++;
+					}
 					
-					//Retract color sensor
-					this->colorServo.write(colorServoIdleAngle);
-					delay(colorServoRetractDelay);
+					this->numColorSamples++;
 					
-					//Move to the full raise state
-					this->state = "RAISE";
-					this->pickUpState = RAISE;
+					if(this->numColorSamples >= MIN_COLOR_SAMPLES)
+					{
+						Serial.print("Coin Scanned\t ");
+						this->avgColor = this->lastColor / (numColorSamples - trashedSamples);
+						Serial.print("R: ");
+						Serial.print(avgColor.getRed());
+						Serial.print("\tG: ");
+						Serial.print(avgColor.getGreen());
+						Serial.print("\tB: ");
+						Serial.print(avgColor.getBlue());
+						Serial.print("\t");
+						Serial.print("Color: ");
+						Serial.println(avgColor.getColorName());
+						
+						//Retract color sensor
+						this->colorServo.write(colorServoIdleAngle);
+						delay(colorServoRetractDelay);
+						
+						//Move to the full raise state
+						this->state = "RAISE";
+						this->pickUpState = RAISE;
+						
+						this->numColorSamples = 0;
+						this->lastColor.reset();
+					}
 				}
 			}
 			return 1;

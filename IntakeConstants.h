@@ -4,7 +4,7 @@
 #define idleHeight 0.0
 #define pickUpHeight 0.0
 #define topHeight 3
-#define scanHeight 2.25
+#define scanHeight 2
 
 //Important heights in the dropoff sequence
 //Use idleHeight
@@ -18,18 +18,18 @@
 
 //Angles for the color sensor
 #define colorServoIdleAngle 110
-#define colorServoDeployAngle 4
+#define colorServoDeployAngle -5
 
 //Speeds for the motor to move at during the pickup sequence
-#define motorSpeed 0.75
+#define motorSpeed 0.6
 #define stallSpeed 0
 #define resetSpeed -0.4
 
 //TODO: Add more speeds to optimize the process
 //Time delays in the pickup sequence
 #define magnetWaitTime 200
-#define turnTableWaitMax 1000
-#define colorServoDeployDelay 1000
+#define turnTableWaitMax 150
+#define colorServoDeployDelay 1500
 #define colorServoRetractDelay 200
 
 //PID for intake
@@ -39,5 +39,11 @@
 
 //Amount of error allowed in height
 #define RP_TOLERANCE 0.5
+
+//Number of color samples to take to decide on a color
+#define MIN_COLOR_SAMPLES 6
+
+//Don't accept samples with an RGB component over this number
+#define COLOR_MAX_VALUE 200
 
 #endif

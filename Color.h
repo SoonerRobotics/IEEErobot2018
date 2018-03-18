@@ -15,8 +15,8 @@
 #define _BlueRMin 1
 #define _BlueGMax 16
 #define _BlueGMin 12
-#define _BlueBMax 45
-#define _BlueBMin 41
+#define _BlueBMax 46
+#define _BlueBMin 37
 
 #define _GreenRMax 14
 #define _GreenRMin 10
@@ -25,8 +25,8 @@
 #define _GreenBMax 10
 #define _GreenBMin 6
 
-#define _RedRMax 101
-#define _RedRMin 97
+#define _RedRMax 100
+#define _RedRMin 85
 #define _RedGMax 5
 #define _RedGMin 1
 #define _RedBMax 5
@@ -39,12 +39,12 @@
 #define _CyanBMax 32
 #define _CyanBMin 28
 
-#define _MagentaRMax 31
-#define _MagentaRMin 27
-#define _MagentaGMax 11
-#define _MagentaGMin 7
-#define _MagentaBMax 19
-#define _MagentaBMin 15
+#define _MagentaRMax 20
+#define _MagentaRMin 10
+#define _MagentaGMax 20
+#define _MagentaGMin 15
+#define _MagentaBMax 15
+#define _MagentaBMin 10
 
 #define _YellowRMax 32
 #define _YellowRMin 24
@@ -54,20 +54,20 @@
 #define _YellowBMin 3
 
 #define _GrayRMax 16
-#define _GrayRMin 12
+#define _GrayRMin 9
 #define _GrayGMax 21
 #define _GrayGMin 17
 #define _GrayBMax 17
 #define _GrayBMin 13
 
 #define _StartingAngle 0
-#define _BlueAngle 0
-#define _GreenAngle 0
-#define _RedAngle 0
-#define _CyanAngle 0
-#define _MagentaAngle 0
-#define _YellowAngle 0
-#define _GrayAngle 100
+#define _RedAngle 25
+#define _GreenAngle 50
+#define _BlueAngle 75
+#define _CyanAngle 100
+#define _MagentaAngle -75
+#define _YellowAngle -50
+#define _GrayAngle -25
 
 
 class Color {
@@ -80,6 +80,8 @@ class Color {
 		Color(float r, float g, float b);
 		
 		void operator=(const Color& c);
+		Color operator+(const Color& c);
+		Color operator/(float divisor);
 		
 		String getColorName();
 		
@@ -88,10 +90,16 @@ class Color {
 		void setColor(float r, float g, float b);
 		
 		double getAngle();
+		
+		float getRed();
+		float getGreen();
+		float getBlue();
+		
+		void reset();
 	
 	private:
 	
-		
+		float R, G, B;
 	
 		double angle;
 		

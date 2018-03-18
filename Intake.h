@@ -67,6 +67,11 @@ class Intake
 				
 		//Most recent read from color sensor
 		Color lastColor;
+		Color avgColor;
+		
+		//number of samples taken from color sensor
+		int numColorSamples;
+		int trashedSamples;
 };
 
 #endif

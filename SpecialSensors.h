@@ -53,7 +53,7 @@ void updateColorSensor()
 {
 	uint16_t clear, red, green, blue;
 
-	delay(0);  //takes 50ms to read 
+	delay(60);  //takes 50ms to read 
 	
 	//Get the data from the color sensor
 	colorSensor.getRawData(&red, &green, &blue, &clear);	

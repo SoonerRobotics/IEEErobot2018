@@ -13,7 +13,12 @@ Color::Color()
 }
 
 Color::Color(float r, float g, float b) {
-		
+	
+	//Save raw values
+	this->R = r;
+	this->G = g;
+	this->B = b;
+	
 	//BLUE
 	if (isBetween(r,_BlueRMax,_BlueRMin) && isBetween(g,_BlueGMax,_BlueGMin) && isBetween(b,_BlueBMax,_BlueBMin)) {
 		this->angle = _BlueAngle;
@@ -112,6 +117,27 @@ void Color::operator=(const Color& c)
 {
 	this->angle = c.angle;
 	this->colorName = c.colorName;
+	
+	this->R = c.R;
+	this->G = c.G;
+	this->B = c.B;
+}
+
+Color Color::operator+(const Color& c)
+{
+	this->R += c.R;
+	this->G += c.G;
+	this->B += c.B;
+	
+	Color newColor(this->R, this->G, this->B);
+	return newColor;
+}
+
+Color Color::operator/(float divisor)
+{
+	Color newColor(this->R / divisor, this->G / divisor, this->B / divisor);
+	
+	return newColor;
 }
 
 /**
@@ -166,7 +192,12 @@ void Color::setColor(String color) {
 }
 
 void Color::setColor(float r, float g, float b) {
-		
+	
+	//Save raw values
+	this->R = r;
+	this->G = g;
+	this->B = b;
+	
 	//BLUE
 	if (isBetween(r,_BlueRMax,_BlueRMin) && isBetween(g,_BlueGMax,_BlueGMin) && isBetween(b,_BlueBMax,_BlueBMin)) {
 		this->angle = _BlueAngle;
@@ -219,6 +250,28 @@ bool Color::isBetween(float x,float high,float low) {
 
 String Color::getColorName() {
 	return this->colorName;
+}
+
+float Color::getRed()
+{
+	return this->R;
+}
+
+float Color::getGreen()
+{
+	return this->G;
+}
+
+float Color::getBlue()
+{
+	return this->B;
+}
+
+void Color::reset()
+{
+	this->R = 0;
+	this->G = 0;
+	this->B = 0;
 }
 
 /**
