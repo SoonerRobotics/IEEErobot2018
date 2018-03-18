@@ -107,6 +107,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			{
 				//Output >0 to go up
 				this->intakeMotor.output(motorSpeed);
+				this->colorServo.write(colorServoIdleAngle);
 			}
 			else
 			{

@@ -12,8 +12,6 @@
 #include <StepperMotor.h>
 #include "Color.h"
 
-#define IDLE_ANGLE 935
-
 class Turntable {
 
 public:

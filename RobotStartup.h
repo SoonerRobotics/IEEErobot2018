@@ -138,7 +138,7 @@ void robotSetup()
 	
 	//Set the turntable to idle
 //	intake.turntable.setPosition();
-	intake.setColorServoIdle();
+	//intake.setColorServoIdle();
 	
 	//Reset the intake to start
 	//intake.reset();
