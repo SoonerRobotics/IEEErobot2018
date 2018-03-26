@@ -72,6 +72,8 @@ class Intake
 		//number of samples taken from color sensor
 		int numColorSamples;
 		int trashedSamples;
+		
+		Color randColor();
 };
 
 #endif
