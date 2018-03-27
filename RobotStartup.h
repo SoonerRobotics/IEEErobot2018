@@ -178,7 +178,7 @@ void sitStillPickup()
 }
 
 bool doneDrive = false;
-void pickupDrive() 
+void pickUpDrive() 
 {	
 	//drive from metal detector to magnet
 	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
