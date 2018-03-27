@@ -149,6 +149,12 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 					{
 						Serial.print("Coin Scanned\t ");
 						this->avgColor = this->lastColor / (numColorSamples - trashedSamples);
+						
+						if(this->avgColor.getColorName() == "n/a"){
+							this->avgColor = randColor();
+							Serial.print("Average Color was Trash");
+						}
+						
 						Serial.print("R: ");
 						Serial.print(avgColor.getRed());
 						Serial.print("\tG: ");
@@ -421,6 +427,41 @@ float Intake::coerce(float value, float high, float low)
 	value = value > high ? high : value;
 	value = value < low ? low : value;
 	return value;
+}
+
+Color Intake::randColor(){
+	Color c;
+	int r = random(7);
+	switch(r){
+		case '0':
+			c.setColor("gray");
+		break;
+		
+		case '1':
+			c.setColor("blue");
+		break;
+		
+		case '2':
+			c.setColor("green");
+		break;
+		
+		case '3':
+			c.setColor("red");
+		break;
+				
+		case '4':
+			c.setColor("cyan");
+		break;
+		
+		case '5':
+			c.setColor("magenta");
+		break;
+				
+		case '6':
+			c.setColor("yellow");
+		break;
+	}
+	return c;
 }
 
 String Intake::getStateString()
