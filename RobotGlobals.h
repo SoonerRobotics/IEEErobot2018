@@ -38,7 +38,7 @@
 #define intakeEncoderConstant -0.002302351
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
-#define pinMetDet 0 //make sure it's giving an output
+#define pinMetDet 52 //make sure it's giving an output
 #define pinElecMag 17 //make sure it's giving an output
 #define pinLowLimSwitch 19
 #define pinHighLimSwitch 29

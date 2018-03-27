@@ -71,6 +71,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				this->state = "GRAB";
 				this->pickUpState = GRAB;
 			}
+			this->intakeReturn = 0;
 			return 0;
 			
 		case GRAB:
@@ -90,6 +91,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			this->pickUpState = SCAN;
 			
 			//Process not complete yet
+			this->intakeReturn = 0;
 			return 0;
 			
 		case SCAN:
@@ -170,6 +172,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 					}
 				}
 			}
+			this->intakeReturn = 1;
 			return 1;
 			
 		case RAISE:
@@ -194,6 +197,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			}
 			
 			//Process unfinished
+			this->intakeReturn = 1;
 			return 1;
 			
 		case STORE:
@@ -216,6 +220,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				delay(turnTableWaitMax);
 				
 				//Process unfinished
+				this->intakeReturn = 1;
 				return 1;
 			}
 			//Check to see if the turntable is ready to let the intake drop
@@ -228,6 +233,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 					this->intakeMotor.output(resetSpeed);
 					
 					//Almost done, but not quite.
+					this->intakeReturn = 1;
 					return 1;
 				}
 				else
@@ -240,6 +246,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 					this->pickUpState = IDLE;
 					
 					//Pickup complete!
+					this->intakeReturn = 2;
 					return 2;
 				}
 			}
@@ -247,6 +254,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 		default:
 			this->state = "IDLE";
 			this->pickUpState = IDLE;
+			this->intakeReturn = 0;
 			return 0;
 	}
 	
@@ -427,4 +435,9 @@ void Intake::resetRack()
 		//Output <0 to go down
 		this->intakeMotor.output(currentMotorOutput);
 	}
+}
+
+int Intake::getIntakeReturn()
+{
+	return this->intakeReturn;
 }

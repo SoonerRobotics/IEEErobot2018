@@ -52,8 +52,12 @@ void intakeLowLimit()
 //Setup Function
 void robotSetup()
 {
+	//Virtual grounds and virtual power
 	pinMode(45, OUTPUT);
 	digitalWrite(45, LOW);
+	
+	pinMode(53, OUTPUT);
+	digitalWrite(53, HIGH);
 	
 	Serial.begin(9600);
 	Serial.print(" -Has Begun- \n");
@@ -140,6 +144,116 @@ void robotSetup()
 	
 	//Reset the intake to start
 	//intake.reset();
+}
+
+bool colorScanned = false;
+void sitStillPickup() 
+{
+	
+	//drive from metal detector to magnet
+	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
+	
+	while(intake.getIntakeReturn() != 2) 
+	{
+		updateColorSensor();
+		
+		intake.pickUpSequence(currentColor, colorScanned);
+		
+		if(intake.getIntakeReturn() == 2)
+		{
+			colorScanned = false;
+		}
+		else if (intake.getIntakeReturn() == 1)
+		{
+			colorScanned = true;
+		}
+		else
+		{
+			delay(50);
+		}
+	}
+	
+	//drive from magnet to metal detector (or to sensor bar)
+	drivetrain.drive(distIntakeToMatrix, 0, yaw, true);
+}
+
+bool doneDrive = false;
+void pickupDrive() 
+{	
+	//drive from metal detector to magnet
+	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
+
+	while(intake.getIntakeReturn() !=2 && !doneDrive)
+	{
+		updateColorSensor();
+		
+		if(intake.getIntakeReturn() !=2)
+		{
+			intake.pickUpSequence(currentColor, colorScanned);
+		}
+		
+		if(intake.getIntakeReturn() == 2)
+		{
+			colorScanned = false;
+		}
+		else if(intake.getIntakeReturn() == 1)
+		{
+			colorScanned=true;
+		}
+		else
+		{
+			delay(50);
+		}
+		
+		if(!doneDrive && intake.getIntakeReturn() != 0)
+		{
+			//drive from magnet to metal detector (or to sensor bar)
+			drivetrain.drive(distIntakeToMatrix, 0, yaw, true);
+			doneDrive = drivetrain.followLineUntilCoin(lineFollower.getDensity(), lineFollower.getPosition(), yaw);
+		}
+	}
+}
+
+bool doneTurn = false;
+void pickUpTurnDrive(int turnAngle) 
+{
+	//drive from metal detector to magnet
+	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
+	
+	while(!intake.coinDetected() && intake.getIntakeReturn() != 2)
+	{
+		updateColorSensor();
+		
+		if(intake.getIntakeReturn() !=2)
+		{
+			intake.pickUpSequence(currentColor, colorScanned);
+		}
+		
+		if(intake.getIntakeReturn() == 2)
+		{
+			colorScanned = false;
+		}
+		else if(intake.getIntakeReturn() == 1)
+		{
+			colorScanned = true;
+		}
+		else
+		{
+			delay(50);
+		}
+		
+		if(!doneTurn && intake.getIntakeReturn() != 0)
+		{
+			//drive from magnet to metal detector (or to sensor bar)
+			drivetrain.drive(distIntakeToMatrix, 0, yaw, true);
+			doneTurn = drivetrain.drive(0, turnAngle, yaw, true);
+		}
+		else if(doneTurn && !doneDrive && intake.getIntakeReturn() != 0)
+		{
+			doneDrive = drivetrain.followLineUntilCoin(lineFollower.getDensity(), lineFollower.getPosition(), yaw);
+		}
+		
+	}
 }
 
 #endif

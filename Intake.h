@@ -39,6 +39,8 @@ class Intake
 		void topLimit();
 		void reset();
 		
+		int getIntakeReturn();
+		
 	private:
 		enum PickUpState{IDLE, GRAB, SCAN, RAISE, STORE, DROP};
 		enum DropOffState{IDLEd, GRABd, RAISEd, DROPd};
@@ -72,6 +74,8 @@ class Intake
 		//number of samples taken from color sensor
 		int numColorSamples;
 		int trashedSamples;
+		
+		int intakeReturn;
 };
 
 #endif

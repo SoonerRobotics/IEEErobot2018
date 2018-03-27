@@ -25,11 +25,11 @@ class Drivetrain : public BasicDrive
 		bool drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize, long timeout = -1);
 		void turnToAngle(float angle);
 		
-		void followLine(int density, int position);
+		void followLine(int density, int position, float yaw);
 		
-		void followLineUntilCoin();
+		bool followLineUntilCoin(int density, int position, float yaw);
 		
-		void searchForward();
+		bool searchForward(int density, float yaw);
 		
 		void followLineGyro();
 		
@@ -87,6 +87,8 @@ class Drivetrain : public BasicDrive
 		
 		//Line following vars
 		float lastTurnSpeed;
+		
+		String step = "";
 };
 
 

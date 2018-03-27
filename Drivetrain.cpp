@@ -220,8 +220,68 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 }
 
 
-void Drivetrain::followLine(int density, int position)
+void Drivetrain::followLine(int density, int position, float yaw)
 {
+	//Serial.print("\tpos: ");
+	//Serial.println(lineFollower.getPosition());
+	//Serial.print("\tden: ");
+	//Serial.println(lineFollower.getDensity());
+	//int density = lineFollower.getDensity();
+	//int position = lineFollower.getPosition();
+	if (density == 0)
+	{
+		if(step = "RIGHT")
+		{
+			drive(0, -25, yaw, true);
+			delay(100);
+			drive(6, 0, yaw, true);
+		}
+		else if(step = "LEFT")
+		{
+			drive(0, 25, yaw, true);
+			delay(100);
+			drive(6, 0, yaw, true);
+		}
+		else
+		{
+			drive(6, 0, yaw, true);
+		}
+	}
+	else if(density > 0 && density < 3)
+	{
+		if(position > 50)
+		{
+			drive(0, -25, yaw, true);
+			delay(100);
+			drive(6, 0, yaw, true);
+			step = "LEFT";
+		}
+		else if(position < -50)
+		{
+			drive(0, 25, yaw, true);
+			delay(100);
+			drive(6, 0, yaw, true);
+			step = "RIGHT";
+		}
+		else
+		{
+			drive(6, 0, yaw, true);
+		}
+	}
+	/*else
+	{
+		if(lineFollower.getPosition() > 0)
+		{
+			drivetrain.drive(0, 90, yaw, true);
+		}
+		else if (lineFollower.getPosition() < 0)
+		{
+			drivetrain.drive(0, -90, yaw, true);
+		}
+    
+	}*/
+
+	/*
 	float driveSpeed = lineFollowSpeed;
 	float turnSpeed = 0;
 	
@@ -260,26 +320,19 @@ void Drivetrain::followLine(int density, int position)
 	else
 	{
 		arcadeDrive(driveSpeed, 0);
-	}
+	}*/
 }
 
-void Drivetrain::followLineUntilCoin() 
+bool Drivetrain::followLineUntilCoin(int density, int position, float yaw) 
 {
-
 	if(metDetector.read() == LOW)
 	{		
-		float driveSpeed = lineFollowSpeed;
-		float turnSpeed = 0;
-
-		if(abs(turnSpeed) > 0)
-		{
-			arcadeDrive(turnSpeed, 0);
-		}
-		else
-		{
-			arcadeDrive(0, driveSpeed);
-		}
-		
+		followLine(density, position, yaw);
+		return false;
+	}
+	else if(metDetector.read() == HIGH)
+	{
+		return true;
 	}
 }
 
@@ -378,9 +431,17 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	BasicDrive::setOutput(-left, right);
 }
 
-void Drivetrain::searchForward()
+bool Drivetrain::searchForward(int density, float yaw)
 {
-	
+	if(density < 3)
+	{
+		drive(1, 0 , yaw, true);
+		return false;
+	}
+	else
+	{
+		return true;
+	}
 }
 
 void Drivetrain::followLineGyro()
