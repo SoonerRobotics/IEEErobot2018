@@ -119,11 +119,11 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//	X = 0;
 		//}
 		
-		Serial.print("PID X:  ");
+		/*Serial.print("PID X:  ");
 		Serial.print(X);
 		Serial.print("PID Y:  ");
 		Serial.print(Y);
-		Serial.print("\t");
+		Serial.println("\t");*/
 		
 		if (targetDistance != 0) 
 		{
@@ -187,11 +187,13 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 
 		//Output to the motors
+		
 		Serial.print("X: ");
 		Serial.print(X);
 		Serial.print("\t");
 		Serial.print("Y: ");
-		Serial.print(Y);
+		Serial.println(Y);
+		Serial.print("\t");
 		
 		//Set the robot output
 		arcadeDrive(Y, X);
@@ -221,110 +223,49 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 
 
 void Drivetrain::followLine(int density, int position, float yaw)
-{
-	//Serial.print("\tpos: ");
-	//Serial.println(lineFollower.getPosition());
-	//Serial.print("\tden: ");
-	//Serial.println(lineFollower.getDensity());
-	//int density = lineFollower.getDensity();
-	//int position = lineFollower.getPosition();
-	if (density == 0)
+{	
+	//No sensors see a line
+	if (density == 8)
 	{
-		if(step = "RIGHT")
+		//Drive forward until line is seen
+		driveIndefinitely(.3, 0, yaw, true);
+	}
+	//A line is seen somewhere
+	else if(density < 8)
+	{
+		//Line is to the right
+		if(position > 0)
 		{
-			drive(0, -25, yaw, true);
-			delay(100);
-			drive(6, 0, yaw, true);
+			driveIndefinitely(.3, 10, yaw, true);
+			
+			//Line is far to the right
+			if(position > 20)
+			{
+				driveIndefinitely(.3, 20, yaw, true);
+			}
 		}
-		else if(step = "LEFT")
+		//line is to the left
+		else if(position < 0)
 		{
-			drive(0, 25, yaw, true);
-			delay(100);
-			drive(6, 0, yaw, true);
+			driveIndefinitely(.3, -10, yaw, true);
+			
+			//Line far is to the left
+			if(position < -20)
+			{
+				driveIndefinitely(.3, -20, yaw, true);
+			}
 		}
 		else
 		{
-			drive(6, 0, yaw, true);
+			driveIndefinitely(.3, 0, yaw, true);
 		}
 	}
-	else if(density > 0 && density < 3)
-	{
-		if(position > 50)
-		{
-			drive(0, -25, yaw, true);
-			delay(100);
-			drive(6, 0, yaw, true);
-			step = "LEFT";
-		}
-		else if(position < -50)
-		{
-			drive(0, 25, yaw, true);
-			delay(100);
-			drive(6, 0, yaw, true);
-			step = "RIGHT";
-		}
-		else
-		{
-			drive(6, 0, yaw, true);
-		}
-	}
-	/*else
-	{
-		if(lineFollower.getPosition() > 0)
-		{
-			drivetrain.drive(0, 90, yaw, true);
-		}
-		else if (lineFollower.getPosition() < 0)
-		{
-			drivetrain.drive(0, -90, yaw, true);
-		}
-    
-	}*/
-
-	/*
-	float driveSpeed = lineFollowSpeed;
-	float turnSpeed = 0;
-	
-	if(density == 0)
-	{
-		turnSpeed = lastTurnSpeed;
-	}
-	else if(density < 7)
-	{
-		if(position > 50)
-		{
-			turnSpeed = lineTurnSpeed;
-		}
-		else if(position < -50)
-		{
-			turnSpeed = -lineTurnSpeed;
-		}
-		lastTurnSpeed = turnSpeed;
-	}
-	else
-	{
-		//Maybe we are at a 90 degree turn point. Do something here later.
-		//TODO: Implement 90 degree turn
-	}
-	
-	Serial.print("\tspd: ");
-	Serial.print(turnSpeed);
-	Serial.print("\tpos: ");
-	Serial.print(position);
-	Serial.println();
-	
-	if(abs(turnSpeed) > 0)
-	{
-		arcadeDrive(0, turnSpeed);
-	}
-	else
-	{
-		arcadeDrive(driveSpeed, 0);
-	}*/
 }
 
 bool Drivetrain::followLineUntilCoin(int density, int position, float yaw) 
 {
+	Serial.println("metDetector: ");
+	Serial.println(metDetector.read());
 	if(metDetector.read() == LOW)
 	{		
 		followLine(density, position, yaw);
@@ -375,13 +316,13 @@ void Drivetrain::driveIndefinitely(float speed, float targetAngle, float inputYa
 	X = -turnPID.getOutput2(inputYaw, targetAngle);
 			if (X >= highT) { X = highT; }
 			else if (X <= lowT) { X = lowT; }
-	
+	/*
 	Serial.print("PID X:  ");
 	Serial.print(X);
 	Serial.print("PID Y:  ");
 	Serial.print(Y);
 	Serial.print("\t");
-		
+	*/
 	//Set the robot output
 	arcadeDrive(Y, X);
 }
@@ -422,17 +363,18 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	}
 	
 	//Output to the motors
-	/*Serial.print("LEFT: ");
+	Serial.print("LEFT: ");
 	Serial.print(left);
 	Serial.print("\t");
 	Serial.print("RIGHT: ");
-	Serial.print(right);
-	*/
+	Serial.println(right);
+	
 	BasicDrive::setOutput(-left, right);
 }
 
 bool Drivetrain::searchForward(int density, float yaw)
 {
+	Serial.println(density);
 	if(density < 3)
 	{
 		drive(1, 0 , yaw, true);

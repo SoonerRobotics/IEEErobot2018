@@ -79,7 +79,7 @@ void robotSetup()
 	Serial.println("Connecting to Color Sensor");
 	
 	//Setup line follower
-	lineFollower.setBarStrobe();
+	lineFollower.clearBarStrobe();
 	lineFollower.clearInvertBits();
 	if(!lineFollower.begin())
 	{
