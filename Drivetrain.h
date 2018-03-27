@@ -23,7 +23,8 @@ class Drivetrain : public BasicDrive
 		void initializeDistancePID(float kp, float ki, float kd, float high = 1, float low = -1);
 		
 		bool drive(float targetDistance, float targetAngle, float inputYaw, bool reinitialize, long timeout = -1);
-		void turnToAngle(float angle);
+		
+		void followLineRaw(int density, int raw);
 		
 		void followLine(int density, int position);
 		

@@ -13,6 +13,10 @@
 #define dropHeight 3.0	
 //
 
+//Important distances
+//distance from metal detector to rack and pinion (centers)
+#define mDetToPickupDist 5.5
+
 
 #define heightThreshold 1
 
