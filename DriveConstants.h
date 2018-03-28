@@ -15,4 +15,6 @@
 
 #define lineFollowP 0.5
 
+#define driveTimeout 4
+
 #endif

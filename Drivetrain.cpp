@@ -2,7 +2,10 @@
 
 Drivetrain::Drivetrain()
 {
-	
+	angleTicks = 0;
+	this->lastLeft = 0;
+	this->lastRight = 0;
+	this->lastDirection = NONE;
 }
 
 void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, DigitalDevice& mDetector)
@@ -186,15 +189,6 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			angleTimer = millis();
 		}
 
-		//Output to the motors
-		
-		Serial.print("X: ");
-		Serial.print(X);
-		Serial.print("\t");
-		Serial.print("Y: ");
-		Serial.println(Y);
-		Serial.print("\t");
-		
 		//Set the robot output
 		arcadeDrive(Y, X);
 		
@@ -218,49 +212,146 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		arcadeDrive(0, 0);
 	}
 	
+	if(millis() >= driveTimeout)
+	{
+		return true;
+	}
+	
 	return movementComplete;
 }
 
-
-void Drivetrain::followLine(int density, int position, float yaw)
+void Drivetrain::followLine(int density, int raw, float yaw)
 {	
 	//No sensors see a line
-	if (density == 8)
+	if (raw == 0)
 	{
-		//Drive forward until line is seen
-		driveIndefinitely(.3, 0, yaw, true);
+		if (lastDirection == NONE)
+		{
+			//Drive forward until line is seen
+			driveIndefinitely(.2, 0, yaw, true);
+		}
+		else if (lastDirection == RIGHT)
+		{
+			driveIndefinitely(.2, 5, yaw, true);
+		}
+		else if (lastDirection == LEFT)
+		{
+			driveIndefinitely(.2, -5, yaw, true);
+		}
 	}
 	//A line is seen somewhere
-	else if(density < 8)
+	else
 	{
 		//Line is to the right
-		if(position > 0)
+		if(raw > 12)
 		{
-			driveIndefinitely(.3, 10, yaw, true);
+			driveIndefinitely(.2, 5, yaw, true);
+			lastDirection = RIGHT;
 			
-			//Line is far to the right
-			if(position > 20)
+			if (lastRaw > raw)
 			{
-				driveIndefinitely(.3, 20, yaw, true);
+				driveIndefinitely(.2, -5, yaw, true);
 			}
 		}
 		//line is to the left
-		else if(position < 0)
+		else if(raw < 12)
 		{
-			driveIndefinitely(.3, -10, yaw, true);
+			driveIndefinitely(.2, -5, yaw, true);
+			lastDirection = LEFT;
 			
-			//Line far is to the left
-			if(position < -20)
+			if (lastRaw < raw)
 			{
-				driveIndefinitely(.3, -20, yaw, true);
+				driveIndefinitely(.2, 5, yaw, true);
 			}
 		}
+	}
+	
+	if (raw != 0)
+	{
+		lastRaw = raw;
+	}
+
+}
+
+bool Drivetrain::pathFollower(int density, int raw)
+{
+	if(density > 3)
+	{
+		if(this->lastDirection != NONE)
+		{
+			//If we turned too far left
+			if(this->lastDirection == LEFT)
+			{
+				//Turn right
+				BasicDrive::setOutput(0.3, 0);
+				this->lastLeft = 0.3;
+				this->lastRight = 0;
+				this->lastDirection = RIGHT;
+				
+				//Wait a bit to escape the 4 IR case
+				delay(20);
+				
+				return true;
+			}
+			//If we turned too far right
+			else if(this->lastDirection == RIGHT)
+			{
+				//Turn left
+				BasicDrive::setOutput(0, 0.3);
+				this->lastLeft = 0;
+				this->lastRight = 0.3;
+				this->lastDirection = LEFT;
+				
+				//Wait a bit to escape the 4 IR case
+				delay(20);
+				
+				return true;
+			}
+			
+			//Otherwise we have encountered a 90 degree turn, so we need to handle this by 
+			//returning false, indicating we are off the continuous path.
+			return false;
+		}
+		
+		//We are off the path, return false;
+		return false;
+	}
+	else if(density == 0)
+	{
+		BasicDrive::setOutput(lastLeft, lastRight);
+	}
+	else 
+	{
+		//If the value is less than the left-center, turn right
+		if(raw <= 7)
+		{
+			BasicDrive::setOutput(0.3, 0);
+			this->lastLeft = 0.3;
+			this->lastRight = 0;
+			this->lastDirection = RIGHT;
+		}
+		//If the value is less than the right-center plus the left center, turn left
+		else if(raw > 24)
+		{
+			BasicDrive::setOutput(0, 0.3);
+			this->lastLeft = 0;
+			this->lastRight = 0.3;
+			this->lastDirection = LEFT;
+		}
+		//Otherwise we are centered and should go straight
 		else
 		{
-			driveIndefinitely(.3, 0, yaw, true);
+			BasicDrive::setOutput(0.3, 0.3);
+			this->lastLeft = 0.3;
+			this->lastRight = 0.3;
+			this->lastDirection = STRAIGHT;
 		}
 	}
+	
+	//We are on the path so return true
+	return true;
 }
+
 
 bool Drivetrain::followLineUntilCoin(int density, int position, float yaw) 
 {
@@ -363,12 +454,15 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	}
 	
 	//Output to the motors
+	/*
 	Serial.print("LEFT: ");
 	Serial.print(left);
 	Serial.print("\t");
 	Serial.print("RIGHT: ");
 	Serial.println(right);
-	
+	*/
+	globalLeft = left;
+	globalRight = right;
 	BasicDrive::setOutput(-left, right);
 }
 
@@ -384,6 +478,16 @@ bool Drivetrain::searchForward(int density, float yaw)
 	{
 		return true;
 	}
+}
+
+float Drivetrain::getLeftOutput()
+{
+	return globalLeft;
+}
+
+float Drivetrain::getRightOutput()
+{
+	return globalRight;
 }
 
 void Drivetrain::followLineGyro()

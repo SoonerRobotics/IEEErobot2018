@@ -37,8 +37,14 @@ class Drivetrain : public BasicDrive
 		float getPositionSpark();
 		float getTurnSpeed();
 		
+		bool pathFollower(int density, int raw);
+		
 		void driveIndefinitely(float speed, float targetAngle, float inputYaw, bool reinitialize);
 
+		
+		float getLeftOutput();
+		float getRightOutput();
+		
 	private:
 		DigitalDevice metDetector;
 		
@@ -90,6 +96,19 @@ class Drivetrain : public BasicDrive
 		float lastTurnSpeed;
 		
 		String step = "";
+		
+		enum Direction{LEFT, RIGHT, STRAIGHT, NONE};
+		Direction lastDirection;
+		float lastLeft;
+		float lastRight;
+	
+		float globalLeft;
+		float globalRight;
+		
+		float angleTicks;
+		
+		float lastRaw;
+	
 };
 
 
