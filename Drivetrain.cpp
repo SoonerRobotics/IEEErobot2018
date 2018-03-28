@@ -187,14 +187,14 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		}
 
 		//Output to the motors
-		/*
+		
 		Serial.print("X: ");
 		Serial.print(X);
 		Serial.print("\t");
 		Serial.print("Y: ");
 		Serial.println(Y);
 		Serial.print("\t");
-		*/
+		
 		//Set the robot output
 		arcadeDrive(Y, X);
 		
@@ -222,54 +222,42 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 }
 
 
-void Drivetrain::followLine(int density, int raw, float yaw)
+void Drivetrain::followLine(int density, int position, float yaw)
 {	
-
-	Serial.print("RAW: ");
-	Serial.print(raw);
-	Serial.print("\t");
-	Serial.print("Density: ");
-	Serial.println(density);
-
 	//No sensors see a line
-	if (raw == 0)
+	if (density == 8)
 	{
 		//Drive forward until line is seen
-		driveIndefinitely(.2, 0, yaw, true);
-		
+		driveIndefinitely(.3, 0, yaw, true);
 	}
 	//A line is seen somewhere
-	else if(density > 0)
+	else if(density < 8)
 	{
 		//Line is to the right
-		if(raw >= 16)
+		if(position > 0)
 		{
-			driveIndefinitely(.2, 20, yaw, true);
+			driveIndefinitely(.3, 10, yaw, true);
 			
-			lastDirection = "RIGHT";
-			
-			//Moved Left last
-			if(lastDirection.equals("LEFT"))
+			//Line is far to the right
+			if(position > 20)
 			{
-				driveIndefinitely(.2, 40, yaw, true);
+				driveIndefinitely(.3, 20, yaw, true);
 			}
 		}
 		//line is to the left
-		else if(raw <= 8)
+		else if(position < 0)
 		{
-			driveIndefinitely(.2, -20, yaw, true);
+			driveIndefinitely(.3, -10, yaw, true);
 			
-			lastDirection = "LEFT";
-			
-			//Moved Right lasr
-			if(lastDirection.equals("RIGHT"))
+			//Line far is to the left
+			if(position < -20)
 			{
-				driveIndefinitely(.2, -40, yaw, true);
+				driveIndefinitely(.3, -20, yaw, true);
 			}
 		}
 		else
 		{
-			driveIndefinitely(.2, 0, yaw, true);
+			driveIndefinitely(.3, 0, yaw, true);
 		}
 	}
 }

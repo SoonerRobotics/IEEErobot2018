@@ -55,8 +55,6 @@ class Drivetrain : public BasicDrive
 		
 		void makeDecision();
 		
-		String lastDirection;
-		
 		//drive() specific private vars
 		float Y;
 		float X;
