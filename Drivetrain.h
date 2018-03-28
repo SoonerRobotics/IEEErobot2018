@@ -30,6 +30,8 @@ class Drivetrain : public BasicDrive
 		
 		bool followLineUntilCoin(int density, int position, float yaw);
 		
+		bool pathFollower(int density, int raw);
+		
 		bool searchForward(int density, float yaw);
 		
 		void followLineGyro();
@@ -90,6 +92,11 @@ class Drivetrain : public BasicDrive
 		
 		//Line following vars
 		float lastTurnSpeed;
+		
+		enum Direction{LEFT, RIGHT, STRAIGHT, NONE};
+		Direction lastDirection;
+		float lastLeft;
+		float lastRight;
 		
 		String step = "";
 };

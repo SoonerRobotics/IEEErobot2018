@@ -2,7 +2,9 @@
 
 Drivetrain::Drivetrain()
 {
-	
+	this->lastLeft = 0;
+	this->lastRight = 0;
+	this->lastDirection = NONE;
 }
 
 void Drivetrain::begin(Motor& leftMot, Motor& rightMot, Encoder& leftEnc, Encoder& rightEnc, DigitalDevice& mDetector)
@@ -287,6 +289,85 @@ bool Drivetrain::followLineUntilCoin(int density, int position, float yaw)
 	{
 		return true;
 	}
+}
+
+bool Drivetrain::pathFollower(int density, int raw)
+{
+	if(density > 3)
+	{
+		if(this->lastDirection != NONE)
+		{
+			//If we turned too far left
+			if(this->lastDirection == LEFT)
+			{
+				//Turn right
+				BasicDrive::setOutput(0.3, 0);
+				this->lastLeft = 0.3;
+				this->lastRight = 0;
+				this->lastDirection = RIGHT;
+				
+				//Wait a bit to escape the 4 IR case
+				delay(20);
+				
+				return true;
+			}
+			//If we turned too far right
+			else if(this->lastDirection == RIGHT)
+			{
+				//Turn left
+				BasicDrive::setOutput(0, 0.3);
+				this->lastLeft = 0;
+				this->lastRight = 0.3;
+				this->lastDirection = LEFT;
+				
+				//Wait a bit to escape the 4 IR case
+				delay(20);
+				
+				return true;
+			}
+			
+			//Otherwise we have encountered a 90 degree turn, so we need to handle this by 
+			//returning false, indicating we are off the continuous path.
+			return false;
+		}
+		
+		//We are off the path, return false;
+		return false;
+	}
+	else if(density == 0)
+	{
+		BasicDrive::setOutput(lastLeft, lastRight);
+	}
+	else 
+	{
+		//If the value is less than the left-center, turn right
+		if(raw <= 7)
+		{
+			BasicDrive::setOutput(0.3, 0);
+			this->lastLeft = 0.3;
+			this->lastRight = 0;
+			this->lastDirection = RIGHT;
+		}
+		//If the value is less than the right-center plus the left center, turn left
+		else if(raw > 24)
+		{
+			BasicDrive::setOutput(0, 0.3);
+			this->lastLeft = 0;
+			this->lastRight = 0.3;
+			this->lastDirection = LEFT;
+		}
+		//Otherwise we are centered and should go straight
+		else
+		{
+			BasicDrive::setOutput(0.3, 0.3);
+			this->lastLeft = 0.3;
+			this->lastRight = 0.3;
+			this->lastDirection = STRAIGHT;
+		}
+	}
+	
+	//We are on the path so return true
+	return true;
 }
 
 void Drivetrain::driveIndefinitely(float speed, float targetAngle, float inputYaw, bool reinitialize)
