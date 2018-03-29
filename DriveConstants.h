@@ -5,9 +5,9 @@
 
 #define stopSpeedThreshold 0.4 //Max speed for robot to be considered stopped at setpoint
 
-#define distanceThreshold .5 //Window for robot to be in range of distance setpoint.
+#define distanceThreshold 1 //Window for robot to be in range of distance setpoint.
 
-#define angleThreshold 3 //Window for robot to be in range of angle setpoint.
+#define angleThreshold 5 //Window for robot to be in range of angle setpoint.
 
 #define lineFollowSpeed .175//Speed to drive when line following
 

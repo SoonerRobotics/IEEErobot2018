@@ -84,6 +84,8 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//Calculate Distance
 		this->distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
 		
+		Serial.print(distance);
+		
 		//Calculate Gyro Error
 		gyroError = targetAngle - inputYaw;
 		
@@ -212,14 +214,61 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		arcadeDrive(0, 0);
 	}
 	
-	if(millis() >= driveTimeout)
-	{
-		return true;
-	}
+	//if(millis() >= driveTimeout)
+	//{
+	//	return true;
+	//}
 	
 	return movementComplete;
 }
-
+/*
+bool Drivetrain::turn(float targetAngle, float inputyaw, bool reinitialize)
+{
+	if(reinitialize)
+	{	
+		//Set the 'in-range' and 'complete' flags to false
+		angleInRange = false;
+		driveComplete = false;
+		turnComplete = false;
+		
+		this->targetAngle = targetAngle;
+	}
+	
+	if(!turnComplete)
+	{		
+		//Calculate Gyro Error
+		gyroError = targetAngle - inputYaw;
+		
+		//Wrap the gyro error to [-180, 180]
+		if(gyroError > 180)
+		{
+			gyroError = -(360 - gyroError);
+		}
+				
+		X = -turnPID.getOutput2(inputYaw, targetAngle);
+		if (X >= highT) 
+		{ 
+			X = highT; 
+		}
+		else if (X <= lowT) 
+		{
+			X = lowT;
+		}
+		
+		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
+		{
+			turnComplete = true;
+		}
+	}
+	
+	if(turnComplete)
+	{
+		arcadeDrive(0, 0);
+	}
+	
+	
+}
+*/
 void Drivetrain::followLine(int density, int raw, float yaw)
 {	
 	//No sensors see a line
@@ -243,32 +292,17 @@ void Drivetrain::followLine(int density, int raw, float yaw)
 	else
 	{
 		//Line is to the right
-		if(raw > 12)
+		if(raw < 12) //Flipped due to flipped sensor bar
 		{
 			driveIndefinitely(.2, 5, yaw, true);
 			lastDirection = RIGHT;
-			
-			if (lastRaw > raw)
-			{
-				driveIndefinitely(.2, -5, yaw, true);
-			}
 		}
 		//line is to the left
-		else if(raw < 12)
+		else if(raw > 12) //Flipped due to flipped sensor bar
 		{
 			driveIndefinitely(.2, -5, yaw, true);
 			lastDirection = LEFT;
-			
-			if (lastRaw < raw)
-			{
-				driveIndefinitely(.2, 5, yaw, true);
-			}
 		}
-	}
-	
-	if (raw != 0)
-	{
-		lastRaw = raw;
 	}
 
 }
@@ -471,11 +505,12 @@ bool Drivetrain::searchForward(int density, float yaw)
 	Serial.println(density);
 	if(density < 3)
 	{
-		drive(1, 0 , yaw, true);
+		driveIndefinitely(.23, 0 , yaw, true);
 		return false;
 	}
 	else
 	{
+		arcadeDrive(0,0);
 		return true;
 	}
 }

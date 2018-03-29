@@ -66,12 +66,12 @@
 #define TURN_KD 0
 
 //Turn in place PID
-#define IN_PLACE_KP .003
+#define IN_PLACE_KP .004
 #define IN_PLACE_KI 0
 #define IN_PLACE_KD 0
 
 //Distance PID
-#define DIST_KP .027
+#define DIST_KP .03
 #define DIST_KI .00001
 #define DIST_KD 0
 
@@ -79,7 +79,7 @@
 #define pinGoButton 39//Set Later
 
 #define distMetalDetectToIntake 5.5
-#define distIntakeToMatrix 3.75
+#define distIntakeToMatrix -3.75
 
 /*
 //Colors
