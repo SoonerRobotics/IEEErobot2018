@@ -52,7 +52,7 @@
 //Intake Motor Pins
 #define pinIntakeMot1 22
 #define pinIntakeMot2 23
-#define pinIntakeMotEnb 13
+#define pinIntakeMotEnb 12
 
 //Stepper Motor Pins
 #define pinStepperMotStep 49
@@ -80,6 +80,10 @@
 
 #define distMetalDetectToIntake 5.5
 #define distIntakeToMatrix 3.75
+
+#define METAL_DETECTOR_TO_INTAKE 5.5
+#define IR_ARRAY_TO_INTAKE 3.75
+#define SCOOT_FORWARD 2
 
 /*
 //Colors

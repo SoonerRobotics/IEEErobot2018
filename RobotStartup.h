@@ -5,6 +5,19 @@
 Drivetrain drivetrain;
 Intake intake;
 
+//Line follower
+SensorBar lineFollower(0x3E);
+
+//Drive Status Flag
+bool driveComplete = false;
+bool resetDrive = true;
+
+//Distance to coin dynamic tracker
+float distanceToCoin = 0;
+
+
+
+
 //Global variables that aren't supposed to be global, but have to be for setup to work
 //--Drivetrain
 Motor leftMot;
@@ -25,8 +38,7 @@ Motor iMotor;
 Turntable turntable;
 StepperMotor stepperMot;
 
-//Line follower
-SensorBar lineFollower(0x3E);
+
 
 //Encoder Masking
 void encLeftInterrupt() 
@@ -47,6 +59,14 @@ void encIntakeInterrupt()
 void intakeLowLimit()
 {
 	intake.bottomLimit();
+}
+
+void commandTransition()
+{
+	drivetrain.setOutput(0, 0);
+	resetDrive = true;
+	driveComplete = false;
+	delay(500);
 }
 
 //Setup Function
@@ -149,10 +169,6 @@ void robotSetup()
 bool colorScanned = false;
 void sitStillPickup() 
 {
-	
-	//drive from metal detector to magnet
-	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
-	
 	while(intake.getIntakeReturn() != 2) 
 	{
 		updateColorSensor();
@@ -172,9 +188,6 @@ void sitStillPickup()
 			delay(50);
 		}
 	}
-	
-	//drive from magnet to metal detector (or to sensor bar)
-	drivetrain.drive(distIntakeToMatrix, 0, yaw, true);
 }
 
 bool doneDrive = false;

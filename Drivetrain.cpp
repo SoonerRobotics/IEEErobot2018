@@ -281,81 +281,15 @@ bool Drivetrain::followLineUntilCoin(int density, int position, float yaw)
 
 bool Drivetrain::pathFollower(int density, int raw)
 {
-	if(density > 3)
+	if(density < 3)
 	{
-		if(this->lastDirection != NONE)
-		{
-			//If we turned too far left
-			if(this->lastDirection == LEFT)
-			{
-				//Turn right
-				BasicDrive::setOutput(0.3, 0);
-				this->lastLeft = 0.3;
-				this->lastRight = 0;
-				this->lastDirection = RIGHT;
-				
-				//Wait a bit to escape the 4 IR case
-				delay(20);
-				
-				return true;
-			}
-			//If we turned too far right
-			else if(this->lastDirection == RIGHT)
-			{
-				//Turn left
-				BasicDrive::setOutput(0, 0.3);
-				this->lastLeft = 0;
-				this->lastRight = 0.3;
-				this->lastDirection = LEFT;
-				
-				//Wait a bit to escape the 4 IR case
-				delay(20);
-				
-				return true;
-			}
-			
-			//Otherwise we have encountered a 90 degree turn, so we need to handle this by 
-			//returning false, indicating we are off the continuous path.
-			return false;
-		}
+		float turnConstant = rawToIDAverage(raw) / 4;
 		
-		//We are off the path, return false;
-		return false;
+		float turnSpeed = PATH_FOLLOW_TURN_MAX  * turnConstant;
+		float driveSpeed = turnConstant <= 0 ? PATH_FOLLOW_SPEED : 0;
+		
+		arcadeDrive(driveSpeed, turnSpeed);
 	}
-	else if(density == 0)
-	{
-		BasicDrive::setOutput(lastLeft, lastRight);
-	}
-	else 
-	{
-		//If the value is less than the left-center, turn right
-		if(raw <= 7)
-		{
-			BasicDrive::setOutput(0.3, 0);
-			this->lastLeft = 0.3;
-			this->lastRight = 0;
-			this->lastDirection = RIGHT;
-		}
-		//If the value is less than the right-center plus the left center, turn left
-		else if(raw > 24)
-		{
-			BasicDrive::setOutput(0, 0.3);
-			this->lastLeft = 0;
-			this->lastRight = 0.3;
-			this->lastDirection = LEFT;
-		}
-		//Otherwise we are centered and should go straight
-		else
-		{
-			BasicDrive::setOutput(0.3, 0.3);
-			this->lastLeft = 0.3;
-			this->lastRight = 0.3;
-			this->lastDirection = STRAIGHT;
-		}
-	}
-	
-	//We are on the path so return true
-	return true;
 }
 
 void Drivetrain::driveIndefinitely(float speed, float targetAngle, float inputYaw, bool reinitialize)
@@ -470,4 +404,36 @@ bool Drivetrain::searchForward(int density, float yaw)
 void Drivetrain::followLineGyro()
 {	
 	
+}
+
+float Drivetrain::rawToIDAverage(int raw)
+{
+	//IR Configuration
+	//Left: -4  -3  -2  -1   1   2   3   4 :Right
+	//Binary:
+	// MSB: Right, LSB: Left
+	
+	float total = 0.0, avg = 0.0;
+	int counter = 0, i = -4;
+	
+	while(raw > 0)
+	{
+		if(raw & 1)
+		{
+			counter++;
+			total += i;
+		}
+		
+		i++;
+		if(i == 0)
+		{
+			i = 1;
+		}
+		
+		raw = raw >> 1;
+	}
+	
+	avg = total / counter;
+	
+	return avg;
 }

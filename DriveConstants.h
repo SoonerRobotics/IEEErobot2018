@@ -15,4 +15,7 @@
 
 #define lineFollowP 0.5
 
+#define PATH_FOLLOW_SPEED 0.25
+#define PATH_FOLLOW_TURN_MAX 0.8
+
 #endif

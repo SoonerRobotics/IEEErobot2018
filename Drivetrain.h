@@ -57,6 +57,8 @@ class Drivetrain : public BasicDrive
 		
 		void makeDecision();
 		
+		float rawToIDAverage(int raw);
+		
 		//drive() specific private vars
 		float Y;
 		float X;

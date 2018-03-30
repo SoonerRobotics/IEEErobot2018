@@ -107,6 +107,7 @@ Color::Color(String color) {
 	else
 	{
 		this->angle = 0;
+		this->colorName = "n/a";
 	}
 	
 	//this->color = color;
