@@ -2,6 +2,7 @@
 
 Drivetrain::Drivetrain()
 {
+	angleTicks = 0;
 	this->lastLeft = 0;
 	this->lastRight = 0;
 	this->lastDirection = NONE;
@@ -82,6 +83,8 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 	{
 		//Calculate Distance
 		this->distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
+		
+		Serial.print(distance);
 		
 		//Calculate Gyro Error
 		gyroError = targetAngle - inputYaw;
@@ -188,15 +191,6 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			angleTimer = millis();
 		}
 
-		//Output to the motors
-		
-		Serial.print("X: ");
-		Serial.print(X);
-		Serial.print("\t");
-		Serial.print("Y: ");
-		Serial.println(Y);
-		Serial.print("\t");
-		
 		//Set the robot output
 		arcadeDrive(Y, X);
 		
@@ -220,49 +214,112 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		arcadeDrive(0, 0);
 	}
 	
+	//if(millis() >= driveTimeout)
+	//{
+	//	return true;
+	//}
+	
 	return movementComplete;
 }
-
-
-void Drivetrain::followLine(int density, int position, float yaw)
+/*
+bool Drivetrain::turn(float targetAngle, float inputyaw, bool reinitialize)
+{
+	if(reinitialize)
+	{	
+		//Set the 'in-range' and 'complete' flags to false
+		angleInRange = false;
+		driveComplete = false;
+		turnComplete = false;
+		
+		this->targetAngle = targetAngle;
+	}
+	
+	if(!turnComplete)
+	{		
+		//Calculate Gyro Error
+		gyroError = targetAngle - inputYaw;
+		
+		//Wrap the gyro error to [-180, 180]
+		if(gyroError > 180)
+		{
+			gyroError = -(360 - gyroError);
+		}
+				
+		X = -turnPID.getOutput2(inputYaw, targetAngle);
+		if (X >= highT) 
+		{ 
+			X = highT; 
+		}
+		else if (X <= lowT) 
+		{
+			X = lowT;
+		}
+		
+		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
+		{
+			turnComplete = true;
+		}
+	}
+	
+	if(turnComplete)
+	{
+		arcadeDrive(0, 0);
+	}
+	
+	
+}
+*/
+void Drivetrain::followLine(int density, int raw, float yaw)
 {	
 	//No sensors see a line
-	if (density == 8)
+	if (raw == 0)
 	{
-		//Drive forward until line is seen
-		driveIndefinitely(.3, 0, yaw, true);
+		if (lastDirection == NONE)
+		{
+			//Drive forward until line is seen
+			driveIndefinitely(.2, 0, yaw, true);
+		}
+		else if (lastDirection == RIGHT)
+		{
+			driveIndefinitely(.2, 5, yaw, true);
+		}
+		else if (lastDirection == LEFT)
+		{
+			driveIndefinitely(.2, -5, yaw, true);
+		}
 	}
 	//A line is seen somewhere
-	else if(density < 8)
+	else
 	{
 		//Line is to the right
-		if(position > 0)
+		if(raw < 12) //Flipped due to flipped sensor bar
 		{
-			driveIndefinitely(.3, 10, yaw, true);
-			
-			//Line is far to the right
-			if(position > 20)
-			{
-				driveIndefinitely(.3, 20, yaw, true);
-			}
+			driveIndefinitely(.2, 5, yaw, true);
+			lastDirection = RIGHT;
 		}
 		//line is to the left
-		else if(position < 0)
+		else if(raw > 12) //Flipped due to flipped sensor bar
 		{
-			driveIndefinitely(.3, -10, yaw, true);
-			
-			//Line far is to the left
-			if(position < -20)
-			{
-				driveIndefinitely(.3, -20, yaw, true);
-			}
-		}
-		else
-		{
-			driveIndefinitely(.3, 0, yaw, true);
+			driveIndefinitely(.2, -5, yaw, true);
+			lastDirection = LEFT;
 		}
 	}
+
 }
+
+bool Drivetrain::pathFollower(int density, int raw)
+{
+	if(density < 3)
+	{
+		float turnConstant = rawToIDAverage(raw) / 4;
+		
+		float turnSpeed = PATH_FOLLOW_TURN_MAX  * turnConstant;
+		float driveSpeed = turnConstant <= 0 ? PATH_FOLLOW_SPEED : 0;
+		
+		arcadeDrive(driveSpeed, turnSpeed);
+	}
+}
+
 
 bool Drivetrain::followLineUntilCoin(int density, int position, float yaw) 
 {
@@ -276,19 +333,6 @@ bool Drivetrain::followLineUntilCoin(int density, int position, float yaw)
 	else if(metDetector.read() == HIGH)
 	{
 		return true;
-	}
-}
-
-bool Drivetrain::pathFollower(int density, int raw)
-{
-	if(density < 3)
-	{
-		float turnConstant = rawToIDAverage(raw) / 4;
-		
-		float turnSpeed = PATH_FOLLOW_TURN_MAX  * turnConstant;
-		float driveSpeed = turnConstant <= 0 ? PATH_FOLLOW_SPEED : 0;
-		
-		arcadeDrive(driveSpeed, turnSpeed);
 	}
 }
 
@@ -378,12 +422,15 @@ void Drivetrain::arcadeDrive(float Y, float X)
 	}
 	
 	//Output to the motors
+	/*
 	Serial.print("LEFT: ");
 	Serial.print(left);
 	Serial.print("\t");
 	Serial.print("RIGHT: ");
 	Serial.println(right);
-	
+	*/
+	globalLeft = left;
+	globalRight = right;
 	BasicDrive::setOutput(-left, right);
 }
 
@@ -392,13 +439,24 @@ bool Drivetrain::searchForward(int density, float yaw)
 	Serial.println(density);
 	if(density < 3)
 	{
-		drive(1, 0 , yaw, true);
+		driveIndefinitely(.23, 0 , yaw, true);
 		return false;
 	}
 	else
 	{
+		arcadeDrive(0,0);
 		return true;
 	}
+}
+
+float Drivetrain::getLeftOutput()
+{
+	return globalLeft;
+}
+
+float Drivetrain::getRightOutput()
+{
+	return globalRight;
 }
 
 void Drivetrain::followLineGyro()

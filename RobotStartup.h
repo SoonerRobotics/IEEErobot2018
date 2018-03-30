@@ -120,7 +120,7 @@ void robotSetup()
 	
 	//Setup PID
 	drivetrain.initializeTurnPID(TURN_KP, TURN_KI, TURN_KD, 0.3, -0.3);
-	drivetrain.initializeDistancePID(DIST_KP, DIST_KI, DIST_KD, 0.4, -0.4);
+	drivetrain.initializeDistancePID(DIST_KP, DIST_KI, DIST_KD, 0.3, -0.3);
 	
 	Serial.print(" -Drive Has Begun- \n");
 	
@@ -167,40 +167,20 @@ void robotSetup()
 }
 
 bool colorScanned = false;
-void sitStillPickup() 
+bool doneDrive = false;
+bool doneResetDrive1 = false;
+bool doneResetDrive2 = false;
+bool doneTurn = false;
+bool finishedPickingUp = false;
+bool resetDriveHere = true;
+
+bool sitStillPickup() 
 {
 	while(intake.getIntakeReturn() != 2) 
 	{
 		updateColorSensor();
 		
-		intake.pickUpSequence(currentColor, colorScanned);
-		
-		if(intake.getIntakeReturn() == 2)
-		{
-			colorScanned = false;
-		}
-		else if (intake.getIntakeReturn() == 1)
-		{
-			colorScanned = true;
-		}
-		else
-		{
-			delay(50);
-		}
-	}
-}
-
-bool doneDrive = false;
-void pickUpDrive() 
-{	
-	//drive from metal detector to magnet
-	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
-
-	while(intake.getIntakeReturn() !=2 && !doneDrive)
-	{
-		updateColorSensor();
-		
-		if(intake.getIntakeReturn() !=2)
+		if(!finishedPickingUp)
 		{
 			intake.pickUpSequence(currentColor, colorScanned);
 		}
@@ -208,10 +188,67 @@ void pickUpDrive()
 		if(intake.getIntakeReturn() == 2)
 		{
 			colorScanned = false;
+			finishedPickingUp = true;
 		}
 		else if(intake.getIntakeReturn() == 1)
 		{
-			colorScanned=true;
+			colorScanned = true;
+		}
+		else
+		{
+			delay(50);
+		}
+		
+		if (!doneResetDrive2 && intake.getIntakeReturn() != 0)
+		{	
+			//drive from magnet to sensor bar
+			doneResetDrive2 = drivetrain.drive(distIntakeToMatrix, 0, yaw, resetDriveHere);
+			resetDriveHere = false;
+			if (doneResetDrive2) 
+			{
+				resetDriveHere = true;
+			}
+			return doneResetDrive2;
+		}
+		else 
+		{
+			return false;
+		}
+		
+		return false;
+	}
+}
+
+bool pickUpDrive() 
+{	
+	if (!doneResetDrive1)
+	{	
+		//drive from metal detector to magnet
+		doneResetDrive1 = drivetrain.drive(distMetalDetectToIntake, 0, yaw, resetDriveHere);
+		resetDriveHere = false;
+		if (doneResetDrive1) 
+		{
+			resetDriveHere = true;
+		}
+		return false;
+	}
+	else //(!intake.coinDetected() && intake.getIntakeReturn() != 2)
+	{
+		updateColorSensor();
+		
+		if(!finishedPickingUp)
+		{
+			intake.pickUpSequence(currentColor, colorScanned);
+		}
+		
+		if(intake.getIntakeReturn() == 2)
+		{
+			colorScanned = false;
+			finishedPickingUp = true;
+		}
+		else if(intake.getIntakeReturn() == 1)
+		{
+			colorScanned = true;
 		}
 		else
 		{
@@ -220,24 +257,44 @@ void pickUpDrive()
 		
 		if(!doneDrive && intake.getIntakeReturn() != 0)
 		{
-			//drive from magnet to metal detector (or to sensor bar)
-			drivetrain.drive(distIntakeToMatrix, 0, yaw, true);
-			doneDrive = drivetrain.followLineUntilCoin(lineFollower.getDensity(), lineFollower.getPosition(), yaw);
+			doneDrive = drivetrain.followLineUntilCoin(lineFollower.getDensity(), lineFollower.getRaw(), yaw);
+			
+			if (doneDrive) 
+			{
+				colorScanned = false;
+				doneDrive = false;
+				doneResetDrive1 = false;
+				doneResetDrive2 = false;
+				doneTurn = false;
+				finishedPickingUp = false;
+				resetDriveHere = true;
+			}
+			
+			return doneDrive;
 		}
+		
+		return false;
 	}
 }
 
-bool doneTurn = false;
-void pickUpTurnDrive(int turnAngle) 
+bool pickUpTurnDrive(int turnAngle) 
 {
-	//drive from metal detector to magnet
-	drivetrain.drive(distMetalDetectToIntake, 0, yaw, true);
-	
-	while(!intake.coinDetected() && intake.getIntakeReturn() != 2)
+	if (!doneResetDrive1)
+	{	
+		//drive from metal detector to magnet
+		doneResetDrive1 = drivetrain.drive(distMetalDetectToIntake, 0, yaw, resetDriveHere);
+		resetDriveHere = false;
+		if (doneResetDrive1) 
+		{
+			resetDriveHere = true;
+		}
+		return false;
+	}
+	else //(!intake.coinDetected() && intake.getIntakeReturn() != 2)
 	{
 		updateColorSensor();
 		
-		if(intake.getIntakeReturn() !=2)
+		if(!finishedPickingUp)
 		{
 			intake.pickUpSequence(currentColor, colorScanned);
 		}
@@ -245,6 +302,7 @@ void pickUpTurnDrive(int turnAngle)
 		if(intake.getIntakeReturn() == 2)
 		{
 			colorScanned = false;
+			finishedPickingUp = true;
 		}
 		else if(intake.getIntakeReturn() == 1)
 		{
@@ -257,15 +315,47 @@ void pickUpTurnDrive(int turnAngle)
 		
 		if(!doneTurn && intake.getIntakeReturn() != 0)
 		{
-			//drive from magnet to metal detector (or to sensor bar)
-			drivetrain.drive(distIntakeToMatrix, 0, yaw, true);
-			doneTurn = drivetrain.drive(0, turnAngle, yaw, true);
+			if (!doneResetDrive2)
+			{
+				//drive from magnet to metal detector (or to sensor bar)
+				doneResetDrive2 = drivetrain.drive(distIntakeToMatrix, 0, yaw, resetDriveHere);
+				resetDriveHere = false;
+				if (doneResetDrive2)
+				{
+					resetDriveHere = true;
+				}
+				return false;
+			}
+			else 
+			{
+				doneTurn = drivetrain.drive(0, turnAngle, yaw, resetDriveHere);
+				resetDriveHere = false;
+				if (doneTurn)
+				{
+					resetDriveHere = true;
+				}
+				return false;
+			}
 		}
 		else if(doneTurn && !doneDrive && intake.getIntakeReturn() != 0)
 		{
-			doneDrive = drivetrain.followLineUntilCoin(lineFollower.getDensity(), lineFollower.getPosition(), yaw);
+			doneDrive = drivetrain.followLineUntilCoin(lineFollower.getDensity(), lineFollower.getRaw(), yaw);
+			
+			if (doneDrive) 
+			{
+				colorScanned = false;
+				doneDrive = false;
+				doneResetDrive1 = false;
+				doneResetDrive2 = false;
+				doneTurn = false;
+				finishedPickingUp = false;
+				resetDriveHere = true;
+			}
+			
+			return doneDrive;
 		}
 		
+		return false;
 	}
 }
 

@@ -30,8 +30,6 @@ class Drivetrain : public BasicDrive
 		
 		bool followLineUntilCoin(int density, int position, float yaw);
 		
-		bool pathFollower(int density, int raw);
-		
 		bool searchForward(int density, float yaw);
 		
 		void followLineGyro();
@@ -39,8 +37,14 @@ class Drivetrain : public BasicDrive
 		float getPositionSpark();
 		float getTurnSpeed();
 		
+		bool pathFollower(int density, int raw);
+		
 		void driveIndefinitely(float speed, float targetAngle, float inputYaw, bool reinitialize);
 
+		
+		float getLeftOutput();
+		float getRightOutput();
+		
 	private:
 		DigitalDevice metDetector;
 		
@@ -93,12 +97,20 @@ class Drivetrain : public BasicDrive
 		//Line following vars
 		float lastTurnSpeed;
 		
+		String step = "";
+		
 		enum Direction{LEFT, RIGHT, STRAIGHT, NONE};
 		Direction lastDirection;
 		float lastLeft;
 		float lastRight;
+	
+		float globalLeft;
+		float globalRight;
 		
-		String step = "";
+		float angleTicks;
+		
+		float lastRaw;
+	
 };
 
 
