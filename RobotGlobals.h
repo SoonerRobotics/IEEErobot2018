@@ -7,13 +7,13 @@
  */
 
  //Left Drivetrain Motor
-#define pinLeftMot1 15
-#define pinLeftMot2 16
+#define pinLeftMot1 16
+#define pinLeftMot2 15
 #define pinLeftMotEnb 11
 
 //Right Drivetrain Motor
-#define pinRightMot1 24
-#define pinRightMot2 25
+#define pinRightMot1 25
+#define pinRightMot2 24
 #define pinRightMotEnb 10
 
 //I2C addresses for Gyro and Color Sensor
@@ -23,14 +23,14 @@
 #define pinGyro2 0
 
 //Left Drivetrain Encoder
-#define pinLeftEnc1 5
-#define pinLeftEnc2 2
-#define leftEncoderConstant 0.0093986//-0.0242797
+#define pinLeftEnc1 2
+#define pinLeftEnc2 5
+#define leftEncoderConstant -0.0093986
 
 //Right Drivetrain Encoder
-#define pinRightEnc1 3
-#define pinRightEnc2 4
-#define rightEncoderConstant 0.0093986
+#define pinRightEnc1 4
+#define pinRightEnc2 3
+#define rightEncoderConstant -0.0093986
 
 //Intake Encoder
 #define pinIntakeEnc1 28
@@ -66,8 +66,8 @@
 #define TURN_KD 0
 
 //Turn in place PID
-#define IN_PLACE_KP .004
-#define IN_PLACE_KI 0
+#define IN_PLACE_KP 0.005
+#define IN_PLACE_KI 0.0001
 #define IN_PLACE_KD 0
 
 //Distance PID

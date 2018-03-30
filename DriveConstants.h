@@ -15,8 +15,10 @@
 
 #define lineFollowP 0.5
 
-#define PATH_FOLLOW_SPEED 0.25
-#define PATH_FOLLOW_TURN_MAX 0.8
+#define PATH_FOLLOW_SPEED 0.175
+#define PATH_FOLLOW_TURN_MAX 0.4
+
+#define RIGHT_MOTOR_POWER_OFFSET 0.05
 
 
 #define driveTimeout 4

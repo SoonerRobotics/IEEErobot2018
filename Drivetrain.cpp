@@ -84,8 +84,6 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 		//Calculate Distance
 		this->distance = (BasicDrive::getLeftEncoder().getValue() + BasicDrive::getRightEncoder().getValue()) / 2;
 		
-		Serial.print(distance);
-		
 		//Calculate Gyro Error
 		gyroError = targetAngle - inputYaw;
 		
@@ -307,14 +305,21 @@ void Drivetrain::followLine(int density, int raw, float yaw)
 
 }
 
-bool Drivetrain::pathFollower(int density, int raw)
+void Drivetrain::pathFollower(int density, int raw)
 {
 	if(density < 3)
 	{
 		float turnConstant = rawToIDAverage(raw) / 4;
 		
+		Serial.print("\tDensity: ");
+		Serial.print(density);
+		Serial.print("\tRaw:");
+		Serial.print(raw);
+		Serial.print("\tTC: ");
+		Serial.println(turnConstant);
+		
 		float turnSpeed = PATH_FOLLOW_TURN_MAX  * turnConstant;
-		float driveSpeed = turnConstant <= 0 ? PATH_FOLLOW_SPEED : 0;
+		float driveSpeed = abs(turnConstant) <= 0 ? PATH_FOLLOW_SPEED : 0;
 		
 		arcadeDrive(driveSpeed, turnSpeed);
 	}
@@ -421,14 +426,43 @@ void Drivetrain::arcadeDrive(float Y, float X)
 		}
 	}
 	
-	//Output to the motors
-	/*
-	Serial.print("LEFT: ");
-	Serial.print(left);
-	Serial.print("\t");
-	Serial.print("RIGHT: ");
-	Serial.println(right);
-	*/
+	globalLeft = left;
+	globalRight = right;
+	BasicDrive::setOutput(-left, right);
+}
+
+void Drivetrain::boostedArcadeDrive(float Y, float X)
+{
+	float right, left;
+	
+	//Calculate motor output
+	if(Y > 0)
+	{
+		if(X > 0)
+		{
+			right = Y - X - RIGHT_MOTOR_POWER_OFFSET;
+			left = max(Y, X);
+		}
+		else
+		{
+			right = max(Y, -X) + RIGHT_MOTOR_POWER_OFFSET;
+			left = Y + X;
+		}
+	}
+	else
+	{
+		if(X > 0)
+		{
+			right = (-1) * max(-Y, X) - RIGHT_MOTOR_POWER_OFFSET;
+			left = Y + X;
+		}
+		else
+		{
+			right = Y - X + RIGHT_MOTOR_POWER_OFFSET;
+			left = (-1) * max(-X, -Y);
+		}
+	}
+	
 	globalLeft = left;
 	globalRight = right;
 	BasicDrive::setOutput(-left, right);
@@ -469,10 +503,10 @@ float Drivetrain::rawToIDAverage(int raw)
 	//IR Configuration
 	//Left: -4  -3  -2  -1   1   2   3   4 :Right
 	//Binary:
-	// MSB: Right, LSB: Left
+	// MSB: Left, LSB: Right
 	
 	float total = 0.0, avg = 0.0;
-	int counter = 0, i = -4;
+	int counter = 0, i = 4, maxHole = 0, currentHole = -10;
 	
 	while(raw > 0)
 	{
@@ -480,9 +514,21 @@ float Drivetrain::rawToIDAverage(int raw)
 		{
 			counter++;
 			total += i;
+			
+			//Prevent weird outer readings or diagonals
+			//from screwing up the line following 
+			if(maxHole < currentHole)
+			{
+				maxHole = currentHole;
+			}
+			currentHole = 0;
+		}
+		else
+		{
+			currentHole++;
 		}
 		
-		i++;
+		i--;
 		if(i == 0)
 		{
 			i = 1;
@@ -491,7 +537,19 @@ float Drivetrain::rawToIDAverage(int raw)
 		raw = raw >> 1;
 	}
 	
-	avg = total / counter;
 	
-	return avg;
+	Serial.print("MaxHole: ");
+	Serial.print(maxHole);
+	
+	//As long as there were readings and no big holes,
+	//we can actually turn
+	if(counter > 0 && maxHole < 1)
+	{
+		avg = total / counter;
+	
+		return -avg;
+	}
+	
+	//Otherwise don't turn
+	return 0;
 }

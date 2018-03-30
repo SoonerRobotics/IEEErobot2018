@@ -99,15 +99,13 @@ void robotSetup()
 	Serial.println("Connecting to Color Sensor");
 	
 	//Setup line follower
-	lineFollower.clearBarStrobe();
+	lineFollower.setBarStrobe();
 	lineFollower.clearInvertBits();
 	if(!lineFollower.begin())
 	{
 		Serial.println("Sensor bar connection error");
 	}
 	Serial.println("Connecting to Sensor bar");
-	
-	
 	
 	//Set the encoder constants
 	leftEnc.setConstant(leftEncoderConstant);
@@ -174,15 +172,17 @@ bool doneTurn = false;
 bool finishedPickingUp = false;
 bool resetDriveHere = true;
 
-bool sitStillPickup() 
+void sitStillPickup() 
 {
+	int status = 0;
+	
 	while(intake.getIntakeReturn() != 2) 
 	{
 		updateColorSensor();
 		
-		if(!finishedPickingUp)
+		if(!finishedPickingUp && status != 2)
 		{
-			intake.pickUpSequence(currentColor, colorScanned);
+			status = intake.pickUpSequence(currentColor, colorScanned);
 		}
 		
 		if(intake.getIntakeReturn() == 2)
@@ -198,24 +198,6 @@ bool sitStillPickup()
 		{
 			delay(50);
 		}
-		
-		if (!doneResetDrive2 && intake.getIntakeReturn() != 0)
-		{	
-			//drive from magnet to sensor bar
-			doneResetDrive2 = drivetrain.drive(distIntakeToMatrix, 0, yaw, resetDriveHere);
-			resetDriveHere = false;
-			if (doneResetDrive2) 
-			{
-				resetDriveHere = true;
-			}
-			return doneResetDrive2;
-		}
-		else 
-		{
-			return false;
-		}
-		
-		return false;
 	}
 }
 

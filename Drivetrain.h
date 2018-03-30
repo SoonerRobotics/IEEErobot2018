@@ -37,7 +37,7 @@ class Drivetrain : public BasicDrive
 		float getPositionSpark();
 		float getTurnSpeed();
 		
-		bool pathFollower(int density, int raw);
+		void pathFollower(int density, int raw);
 		
 		void driveIndefinitely(float speed, float targetAngle, float inputYaw, bool reinitialize);
 
@@ -58,6 +58,7 @@ class Drivetrain : public BasicDrive
 		//PID distancePID_v1(distance, distancePIDOutput, 0, DIST_KP, DIST_KI, DIST_KD, 0);
 		
 		void arcadeDrive(float Y, float X);
+		void boostedArcadeDrive(float Y, float X);
 		
 		void makeDecision();
 		
