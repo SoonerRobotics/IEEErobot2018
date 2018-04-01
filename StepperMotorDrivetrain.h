@@ -21,6 +21,8 @@ class StepperMotorDrivetrain
 		
 		int getCurrentSteps();
 		
+		int convertInchesToSteps();
+		
 	private:
 		int STEP1;
 		int STEP2

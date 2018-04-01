@@ -2,12 +2,16 @@
 
 StepperMotor::StepperMotorDrivetrain()
 {
-	this->STEP = NULL;
-	this->DIR = NULL;
-	this->enable = NULL;
+	this->STEP1 = NULL;
+	this->DIR1 = NULL;
+	this->enable1 = NULL;
+	
+	this->STEP2 = NULL;
+	this->DIR2 = NULL;
+	this->enable2 = NULL;
 }
 
-void StepperMotorDrivetrain::operator=(const StepperMotor& motor, const StepperMotor& motor)
+void StepperMotorDrivetrain::operator=(const StepperMotor& motor1, const StepperMotor& motor2)
 {
 	this->STEP1 = motor1.STEP;
 	this->DIR1 = motor1.DIR;
@@ -17,7 +21,8 @@ void StepperMotorDrivetrain::operator=(const StepperMotor& motor, const StepperM
 	this->DIR2 = motor2.DIR;
 	this->enable2 = motor2.enable;
 	
-	this->rpm = motor.rpm;
+	this->rpm1 = motor1.rpm;
+	this->rpm2 = motor2.rpm;
 	this->currentSteps = motor.currentSteps;
 	this->stepsPerRotation = motor.stepsPerRotation;
 }
@@ -36,54 +41,85 @@ void StepperMotorDrivetrain::begin(int step1, int step2, int dir1, int dir2, int
 	pinMode(STEP, OUTPUT);
 	pinMode(DIR, OUTPUT);
 	
-	if(enable != -1)
+	if(enable1 != -1)
 	{
-		pinMode(enable, OUTPUT);
-		digitalWrite(enable, HIGH);
+		pinMode(enable1, OUTPUT);
+		digitalWrite(enable1, HIGH);
+	}
+	if(enable2 != -1)
+	{
+		pinMode(enable2, OUTPUT);
+		digitalWrite(enable2, HIGH);
 	}
 }
 
-void StepperMotorDrivetrain::setRPM(float speed)
+void StepperMotorDrivetrain::setRPM1(float speed)
 {
 	this->rpm = abs(speed);
 }
 
-void StepperMotorDrivetrain::step(int steps)
+void StepperMotorDrivetrain::setRPM2(float speed)
+{
+	this->rpm2 = abs(speed);
+}
+
+void StepperMotorDrivetrain::step(int steps1, int steps2)
 {
 	//Enable the motor for movement
-	if(this->enable != -1)
+	if(this->enable1 != -1)
 	{
-		digitalWrite(this->enable, LOW);
+		digitalWrite(this->enable1, LOW);
+	}
+	if(this->enable2 != -1)
+	{
+		digitalWrite(this->enable2, LOW);
 	}
 	
 	int direction = 0;
 	bool millisecond_interval = true;
 	
-	if(steps < 0)
+	if(steps1 < 0 && steps2 < 0)
 	{
-		digitalWrite(this->DIR, LOW);
+		digitalWrite(this->DIR1, LOW);
+		digitalWrite(this->DIR2, LOW);
 		direction = -1;
+	}
+	else if(steps1 > 0 && steps2 > 0)
+	{
+		digitalWrite(this->DIR1, HIGH);
+		digitalWrite(this->DIR2, HIGH);
+		direction = 1;
+	}
+	else if(steps1 < 0 && steps2 > 0)
+	{
+		digitalWrite(this->DIR1, LOW);
+		digitalWrite(this->DIR2, HIGH);
+		direction = 0;
 	}
 	else
 	{
-		digitalWrite(this->DIR, HIGH);
-		direction = 1;
+		digitalWrite(this->DIR1, HIGH);
+		digitalWrite(this->DIR2, LOW);
+		direction = 0;
 	}
 	
 	//Determine how many microseconds we want to wait, and convert to an integer
-	double totalTime = (static_cast<double>(steps) / this->stepsPerRotation) / this->rpm * 60.0 * 1000.0; 	
-	double T = (totalTime / steps) / 2;
+	
+	//Probably want to change this if there are different steps for left and right motors
+	//because this is all based on left motor right now (I'm assuming we're turning in place)
+	double totalTime1 = (static_cast<double>(steps1) / this->stepsPerRotation) / this->rpm1 * 60.0 * 1000.0;
+	double T1 = (totalTime1 / steps1) / 2;
 	
 	//Convert to microseconds if delay would be 0.
-	if(T < 1)
+	if(T1 < 1)
 	{
-		T*=1000;
+		T1*=1000;
 		millisecond_interval = false;
 	}
 	
-	unsigned long stepWait = static_cast<int>(T);
+	unsigned long stepWait = static_cast<int>(T1);
 	
-	for(int i = 0; i < abs(steps); ++i)
+	for(int i = 0; i < abs(steps1); ++i)
 	{
 		if(millisecond_interval)
 		{
@@ -94,7 +130,8 @@ void StepperMotorDrivetrain::step(int steps)
 			singleStep_us(stepWait);
 		}
 		
-		this->currentSteps += direction;
+		this->currentSteps1 += direction1;
+		this->currentSteps2 += direction2;
 	}
 	
 	//Disable the motor to let it cool off
@@ -118,7 +155,10 @@ int StepperMotorDrivetrain::getCurrentSteps2()
 	return this->currentSteps2;
 }
 
-
+int StepperMotorDrivetrain::convertInchesToSteps(float inches)
+{
+	//return (numberOfStepsInMotor/circumferenceOfWheelInInches)*inches
+}
 //Private Functions
 
 void StepperMotorDrivetrain::singleStep(unsigned int stepWait)
