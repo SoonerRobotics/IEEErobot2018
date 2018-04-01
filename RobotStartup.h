@@ -38,7 +38,8 @@ Motor iMotor;
 Turntable turntable;
 StepperMotor stepperMot;
 
-
+//StepperMotorDrivetrain
+StepperMotorDrivetrain stepDrive;
 
 //Encoder Masking
 void encLeftInterrupt() 

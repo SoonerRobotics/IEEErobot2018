@@ -10,18 +10,20 @@ class StepperMotorDrivetrain
 {
 	public:
 		StepperMotorDrivetrain();
-		
-		void operator=(const StepperMotorDrivetrain& motor1, const StepperMotorDrivetrain& motor2);
-		
-		void begin(int step, int dir, int enable = -1, int stepsPerRotation = 200);
+				
+		void begin(int step1, int step2, int dir1, int dir2, int enable1 = -1, int enable2, int stepsPerRotation = 200);
 		
 		void step(int steps1, int steps2);
 		
-		void setRPM(float speed);
+		void setRPM1(float speed);
 		
-		int getCurrentSteps();
+		void setRPM2(float speed);
 		
-		int convertInchesToSteps();
+		int getCurrentSteps1();
+		
+		int getCurrentSteps2();
+		
+		int convertInchesToSteps(float inches);
 		
 	private:
 		int STEP1;
