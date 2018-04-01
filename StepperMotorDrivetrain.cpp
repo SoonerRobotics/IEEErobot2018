@@ -1,126 +1,110 @@
 #include "StepperMotorDrivetrain.h"
 
-StepperMotor::StepperMotorDrivetrain()
+StepperMotorDrivetrain::StepperMotorDrivetrain()
 {
-	this->STEP1 = NULL;
-	this->DIR1 = NULL;
-	this->enable1 = NULL;
+	this->leftSteps = 0;
+	this->leftCounter = 0;
 	
-	this->STEP2 = NULL;
-	this->DIR2 = NULL;
-	this->enable2 = NULL;
+	this->rightSteps = 0;
+	this->rightCounter = 0;
+	
+	//Set this to a medium speed
+	this->rpm = 25;
 }
 
-void StepperMotorDrivetrain::operator=(const StepperMotor& motor1, const StepperMotor& motor2)
+void StepperMotorDrivetrain::operator=(const StepperMotorDrivetrain& drivetrain)
 {
-	this->STEP1 = motor1.STEP;
-	this->DIR1 = motor1.DIR;
-	this->enable1 = motor1.enable;
+	this->leftIN1 = drivetrain.leftIN1;
+	this->leftIN2 = drivetrain.leftIN2;
+	this->leftIN3 = drivetrain.leftIN3;
+	this->leftIN4 = drivetrain.leftIN4;
 	
-	this->STEP2 = motor2.STEP;
-	this->DIR2 = motor2.DIR;
-	this->enable2 = motor2.enable;
+	this->rightIN1 = drivetrain.rightIN1;
+	this->rightIN2 = drivetrain.rightIN2;
+	this->rightIN3 = drivetrain.rightIN3;
+	this->rightIN4 = drivetrain.rightIN4;
 	
-	this->rpm1 = motor1.rpm;
-	this->rpm2 = motor2.rpm;
-	this->currentSteps = motor.currentSteps;
-	this->stepsPerRotation = motor.stepsPerRotation;
+	this->rpm = drivetrain.rpm;
+	
+	this->leftSteps = drivetrain.leftSteps;
+	this->rightSteps = drivetrain.rightSteps;
+	
+	this->leftCounter = drivetrain.leftCounter;
+	this->rightCounter = drivetrain.rightCounter;
 }
 
 
-void StepperMotorDrivetrain::begin(int step1, int step2, int dir1, int dir2, int enable1, int enable2, int stepsPerRotation)
+void StepperMotorDrivetrain::initLeft(int in1, int in2, int in3, int in4)
 {
-	this->STEP1 = step1;
-	this->STEP2 = step2;
-	this->DIR1 = dir1;
-	this->DIR2 = dir2;
-	this->enable1 = enable1;
-	htis->enable2 = enable2;
-	this->stepsPerRotation = stepsPerRotation;
+	this->leftIN1 = in1;
+	this->leftIN2 = in2;
+	this->leftIN3 = in3;
+	this->leftIN4 = in4;
 	
-	pinMode(STEP, OUTPUT);
-	pinMode(DIR, OUTPUT);
-	
-	if(enable1 != -1)
-	{
-		pinMode(enable1, OUTPUT);
-		digitalWrite(enable1, HIGH);
-	}
-	if(enable2 != -1)
-	{
-		pinMode(enable2, OUTPUT);
-		digitalWrite(enable2, HIGH);
-	}
+	pinMode(in1, OUTPUT);
+	pinMode(in2, OUTPUT);
+	pinMode(in3, OUTPUT);
+	pinMode(in4, OUTPUT);
 }
 
-void StepperMotorDrivetrain::setRPM1(float speed)
+void StepperMotorDrivetrain::initRight(int in1, int in2, int in3, int in4)
+{
+	this->rightIN1 = in1;
+	this->rightIN2 = in2;
+	this->rightIN3 = in3;
+	this->rightIN4 = in4;
+	
+	pinMode(in1, OUTPUT);
+	pinMode(in2, OUTPUT);
+	pinMode(in3, OUTPUT);
+	pinMode(in4, OUTPUT);
+}
+
+void StepperMotorDrivetrain::setRPM(float speed)
 {
 	this->rpm = abs(speed);
 }
 
-void StepperMotorDrivetrain::setRPM2(float speed)
+void StepperMotorDrivetrain::step(int left, int right)
 {
-	this->rpm2 = abs(speed);
-}
-
-void StepperMotorDrivetrain::step(int steps1, int steps2)
-{
-	//Enable the motor for movement
-	if(this->enable1 != -1)
-	{
-		digitalWrite(this->enable1, LOW);
-	}
-	if(this->enable2 != -1)
-	{
-		digitalWrite(this->enable2, LOW);
-	}
+	bool millisecond_interval = false;
 	
-	int direction = 0;
-	bool millisecond_interval = true;
+	//We basically force left and right to be equal here, because they should be.
+	//NO CURVE TURNS ALLOWED (Down with tank steer)
+	int steps = min(abs(left), abs(right));
 	
-	if(steps1 < 0 && steps2 < 0)
-	{
-		digitalWrite(this->DIR1, LOW);
-		digitalWrite(this->DIR2, LOW);
-		direction = -1;
-	}
-	else if(steps1 > 0 && steps2 > 0)
-	{
-		digitalWrite(this->DIR1, HIGH);
-		digitalWrite(this->DIR2, HIGH);
-		direction = 1;
-	}
-	else if(steps1 < 0 && steps2 > 0)
-	{
-		digitalWrite(this->DIR1, LOW);
-		digitalWrite(this->DIR2, HIGH);
-		direction = 0;
-	}
-	else
-	{
-		digitalWrite(this->DIR1, HIGH);
-		digitalWrite(this->DIR2, LOW);
-		direction = 0;
-	}
+	int leftDirection = left < 0 ? -1 : 1;
+	int rightDirection = right < 0 ? -1 : 1;
 	
 	//Determine how many microseconds we want to wait, and convert to an integer
+	double totalTime = (static_cast<double>(steps) / STEPS_PER_REVOLUTION) / this->rpm * 60.0 * 1000.0 * 1000.0;
+	double T = (totalTime / steps) / 2;
 	
-	//Probably want to change this if there are different steps for left and right motors
-	//because this is all based on left motor right now (I'm assuming we're turning in place)
-	double totalTime1 = (static_cast<double>(steps1) / this->stepsPerRotation) / this->rpm1 * 60.0 * 1000.0;
-	double T1 = (totalTime1 / steps1) / 2;
-	
-	//Convert to microseconds if delay would be 0.
-	if(T1 < 1)
+	//Convert to milliseconds if delay would be greater than 5,000 us.
+	if(T > 5000)
 	{
-		T1*=1000;
-		millisecond_interval = false;
+		T /= 1000;
+		millisecond_interval = true;
 	}
 	
-	unsigned long stepWait = static_cast<int>(T1);
+	unsigned long stepWait = static_cast<int>(T);
 	
-	for(int i = 0; i < abs(steps1); ++i)
+	for(int i = 0; i < steps; ++i)
 	{
+		this->leftSteps += leftDirection;
+		this->rightSteps += rightDirection;
+		
+		this->leftCounter += leftDirection;
+		this->rightCounter += rightDirection;
+		
+		//Constrain the counters to the step boundaries
+		//Left
+		this->leftCounter = this->leftCounter < 0 ? STEPS_PER_REVOLUTION - 1 : this->leftCounter;
+		this->leftCounter = this->leftCounter >= STEPS_PER_REVOLUTION ? 0 : this->leftCounter;
+		//Right
+		this->rightCounter = this->rightCounter < 0 ? STEPS_PER_REVOLUTION - 1 : this->rightCounter;
+		this->rightCounter = this->rightCounter >= STEPS_PER_REVOLUTION ? 0 : this->rightCounter;
+
 		if(millisecond_interval)
 		{
 			singleStep(stepWait);
@@ -129,55 +113,102 @@ void StepperMotorDrivetrain::step(int steps1, int steps2)
 		{
 			singleStep_us(stepWait);
 		}
-		
-		this->currentSteps1 += direction1;
-		this->currentSteps2 += direction2;
-	}
-	
-	//Disable the motor to let it cool off
-	if(this->enable1 != -1)
-	{
-		digitalWrite(this->enable1, HIGH);
-	}
-	if(this->enable2 != -1)
-	{
-		digitalWrite(this->enable2, HIGH);
 	}
 }
 
-int StepperMotorDrivetrain::getCurrentSteps1()
+void StepperMotorDrivetrain::resetStepCounter()
 {
-	return this->currentSteps1;
+	leftSteps = 0;
+	rightSteps = 0;
 }
 
-int StepperMotorDrivetrain::getCurrentSteps2()
+long StepperMotorDrivetrain::getLeftSteps()
 {
-	return this->currentSteps2;
+	return this->leftSteps;
+}
+
+long StepperMotorDrivetrain::getRightSteps()
+{
+	return this->rightSteps;
 }
 
 int StepperMotorDrivetrain::convertInchesToSteps(float inches)
 {
 	//number of steps / circumference of wheel = ratio
-	return (200/(2.875*3.14))*inches;
+	return static_cast<int>((STEPS_PER_REVOLUTION/(2.875*3.141592653589))*inches);
 }
 //Private Functions
 
 void StepperMotorDrivetrain::singleStep(unsigned int stepWait)
 {
-	digitalWrite(this->STEP1, HIGH); // Output high
-	digitalWrite(this->STEP2, HIGH);
-    delay(stepWait); // Wait
-    digitalWrite(this->STEP1, LOW); // Output low
-	digitalWrite(this->STEP2, LOW);
+	sendStepSignalToLeft(leftCounter % 4);
+	sendStepSignalToRight(rightCounter % 4);
     delay(stepWait); // Wait
 }
 
 void StepperMotorDrivetrain::singleStep_us(unsigned int stepWait)
 {
-	digitalWrite(this->STEP1, HIGH); // Output high
-	digitalWrite(this->STEP2, HIGH);
+	sendStepSignalToLeft(leftCounter % 4);
+	sendStepSignalToRight(rightCounter % 4);
     delayMicroseconds(stepWait); // Wait
-    digitalWrite(this->STEP1, LOW); // Output low
-	digitalWrite(this->STEP2, LOW);
-    delayMicroseconds(stepWait); // Wait
+}
+
+void StepperMotorDrivetrain::sendStepSignalToLeft(int stepID)
+{
+	switch (stepID) {
+		case 0:  // 1010
+			digitalWrite(leftIN1, HIGH);
+			digitalWrite(leftIN2, LOW);
+			digitalWrite(leftIN3, HIGH);
+			digitalWrite(leftIN4, LOW);
+			break;
+		case 1:  // 0110
+			digitalWrite(leftIN1, LOW);
+			digitalWrite(leftIN2, HIGH);
+			digitalWrite(leftIN3, HIGH);
+			digitalWrite(leftIN4, LOW);
+			break;
+		case 2:  //0101
+			digitalWrite(leftIN1, LOW);
+			digitalWrite(leftIN2, HIGH);
+			digitalWrite(leftIN3, LOW);
+			digitalWrite(leftIN4, HIGH);
+			break;
+		case 3:  //1001
+			digitalWrite(leftIN1, HIGH);
+			digitalWrite(leftIN2, LOW);
+			digitalWrite(leftIN3, LOW);
+			digitalWrite(leftIN4, HIGH);
+			break;
+    }
+}
+
+void StepperMotorDrivetrain::sendStepSignalToRight(int stepID)
+{
+	switch (stepID) {
+		case 0:  // 1010
+			digitalWrite(rightIN1, HIGH);
+			digitalWrite(rightIN2, LOW);
+			digitalWrite(rightIN3, HIGH);
+			digitalWrite(rightIN4, LOW);
+			break;
+		case 1:  // 0110
+			digitalWrite(rightIN1, LOW);
+			digitalWrite(rightIN2, HIGH);
+			digitalWrite(rightIN3, HIGH);
+			digitalWrite(rightIN4, LOW);
+			break;
+		case 2:  //0101
+			digitalWrite(rightIN1, LOW);
+			digitalWrite(rightIN2, HIGH);
+			digitalWrite(rightIN3, LOW);
+			digitalWrite(rightIN4, HIGH);
+			break;
+		case 3:  //1001
+			digitalWrite(rightIN1, HIGH);
+			digitalWrite(rightIN2, LOW);
+			digitalWrite(rightIN3, LOW);
+			digitalWrite(rightIN4, HIGH);
+			break;
+    }
 }

@@ -21,6 +21,7 @@
 #include "Drivetrain.h"
 #include "DriveConstants.h"
 #include "Intake.h"
+#include "StepperMotorDrivetrain.h"
 #include "RobotGlobals.h"
 #include "SpecialSensors.h"
 #include "RobotStartup.h"

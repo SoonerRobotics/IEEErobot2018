@@ -6,6 +6,9 @@
  * with one include statement.
  */
 
+ /*
+ Regular motors are for the weak, use stepper motors instead
+ 
  //Left Drivetrain Motor
 #define pinLeftMot1 16
 #define pinLeftMot2 15
@@ -15,6 +18,22 @@
 #define pinRightMot1 25
 #define pinRightMot2 24
 #define pinRightMotEnb 10
+*/
+
+//Left Drivetrain Motor pins
+#define LEFT_IN_1 16
+#define LEFT_IN_2 15
+#define LEFT_IN_3 25
+#define LEFT_IN_4 24
+
+//Right Drivetrain Motor pins
+#define RIGHT_IN_1 10
+#define RIGHT_IN_2 11
+#define RIGHT_IN_3 8
+#define RIGHT_IN_4 7
+
+//Drivetrain starting RPM
+#define DRIVE_RPM 60
 
 //I2C addresses for Gyro and Color Sensor
 #define pinColor1 0		//should have same pin on i2c chain
@@ -38,7 +57,7 @@
 #define intakeEncoderConstant -0.002302351
 
 //Metal Detector, Electromagnet, Limit Switch (Intake DIO)
-#define pinMetDet 52 //make sure it's giving an output
+#define pinMetDet 9 //make sure it's giving an output
 #define pinElecMag 17 //make sure it's giving an output
 #define pinLowLimSwitch 19
 #define pinHighLimSwitch 29
