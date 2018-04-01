@@ -34,7 +34,6 @@ Motor iMotor;
 Turntable turntable;
 StepperMotor stepperMot;
 
-
 void encIntakeInterrupt() 
 {  
 	intake.getRackAndPinionEncoder().process(); 

@@ -20,7 +20,9 @@ class StepperMotorDrivetrain
 {
 	public:
 		StepperMotorDrivetrain();
-		
+				
+		void begin(int step1, int step2, int dir1, int dir2, int enable1 = -1, int enable2, int stepsPerRotation = 200);
+
 		void operator=(const StepperMotorDrivetrain& drivetrain);
 		
 		void initLeft(int in1, int in2, int in3, int in4);
