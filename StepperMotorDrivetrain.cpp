@@ -157,7 +157,8 @@ int StepperMotorDrivetrain::getCurrentSteps2()
 
 int StepperMotorDrivetrain::convertInchesToSteps(float inches)
 {
-	//return (numberOfStepsInMotor/circumferenceOfWheelInInches)*inches
+	//number of steps / circumference of wheel = ratio
+	return (200/(2.875*3.14))*inches;
 }
 //Private Functions
 
