@@ -33,7 +33,18 @@
 #define RIGHT_IN_4 7
 
 //Drivetrain starting RPM
-#define DRIVE_RPM 60
+#define DRIVE_RPM 30
+
+//Drivetrain distance ratio
+#define DIST_RATIO 18/18
+
+//Drivetrain turn ratio
+#define TURN_RATIO .65
+#define NINETY_DEG 2.875*3.141592653589*0.65
+#define ONE_THIRTY_FIVE_DEG 1.5*2.875*3.141592653589*0.65
+
+//Move delay
+#define MOVE_DELAY 1000
 
 //I2C addresses for Gyro and Color Sensor
 #define pinColor1 0		//should have same pin on i2c chain
@@ -77,7 +88,7 @@
 #define pinStepperMotStep 49
 #define pinStepperMotDir 50
 #define pinStepperEnable 32
-#define stepperMotRPM 50
+#define stepperMotRPM 60
 
 //Turn PID while driving forward
 #define TURN_KP .009 //.004
