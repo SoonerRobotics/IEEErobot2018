@@ -39,7 +39,9 @@
 #define DIST_RATIO 18/18
 
 //Drivetrain turn ratio
-#define TURN_RATIO .65
+#define TURN_RATIO 0.65
+
+//Turning angles with turn ratio
 #define NINETY_DEG 2.875*3.141592653589*0.65
 #define ONE_THIRTY_FIVE_DEG 1.5*2.875*3.141592653589*0.65
 
