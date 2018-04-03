@@ -104,6 +104,9 @@
 #define IR_ARRAY_TO_INTAKE 3.75
 #define SCOOT_FORWARD 2
 
+//Distances
+#define DIAGONAL_DISTANCE sqrt(2) * 6
+
 /*
 //Colors
 Color blue("blue");
