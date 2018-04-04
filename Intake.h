@@ -33,7 +33,7 @@ class Intake
 		String getStateString();
 		void setColorServoIdle();
 		
-		void resetRack();
+		bool getLowSwitch();
 		
 		void bottomLimit();
 		void topLimit();

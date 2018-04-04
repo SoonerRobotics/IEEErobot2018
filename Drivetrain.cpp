@@ -164,7 +164,7 @@ bool Drivetrain::drive(float targetDistance, float targetAngle, float inputYaw, 
 			driveComplete = true;
 		}
 		//Check to see if the angle is 'in-range' and if the turn is completed
-		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
+		if(abs(gyroError) < ANGLETHRESHOLD && abs(Y) < stopSpeedThreshold)
 		{
 			//If this is the first time we have been at the angle goal, reset the timer
 			if(!angleInRange)
@@ -253,7 +253,7 @@ bool Drivetrain::turn(float targetAngle, float inputyaw, bool reinitialize)
 			X = lowT;
 		}
 		
-		if(abs(gyroError) < angleThreshold && abs(Y) < stopSpeedThreshold)
+		if(abs(gyroError) < ANGLETHRESHOLD && abs(Y) < stopSpeedThreshold)
 		{
 			turnComplete = true;
 		}

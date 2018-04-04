@@ -74,9 +74,9 @@ void StepperMotorDrivetrain::step(int left, int right)
 	//NO CURVE TURNS ALLOWED (Down with tank steer)
 	int steps = min(abs(left), abs(right));
 	
-	int leftDirection = -left < 0 ? -1 : 1;
 	int rightDirection = -right < 0 ? -1 : 1;
-	
+	int leftDirection = -left < 0 ? -1 : 1;
+		
 	//Determine how many microseconds we want to wait, and convert to an integer
 	double totalTime = (static_cast<double>(steps) / STEPS_PER_REVOLUTION) / this->rpm * 60.0 * 1000.0 * 1000.0;
 	double T = (totalTime / steps) / 2;
@@ -99,12 +99,14 @@ void StepperMotorDrivetrain::step(int left, int right)
 		this->rightCounter += rightDirection;
 		
 		//Constrain the counters to the step boundaries
-		//Left
-		this->leftCounter = this->leftCounter < 0 ? STEPS_PER_REVOLUTION - 1 : this->leftCounter;
-		this->leftCounter = this->leftCounter >= STEPS_PER_REVOLUTION ? 0 : this->leftCounter;
 		//Right
 		this->rightCounter = this->rightCounter < 0 ? STEPS_PER_REVOLUTION - 1 : this->rightCounter;
 		this->rightCounter = this->rightCounter >= STEPS_PER_REVOLUTION ? 0 : this->rightCounter;
+		
+		//Left
+		this->leftCounter = this->leftCounter < 0 ? STEPS_PER_REVOLUTION - 1 : this->leftCounter;
+		this->leftCounter = this->leftCounter >= STEPS_PER_REVOLUTION ? 0 : this->leftCounter;
+		
 
 		if(millisecond_interval)
 		{
@@ -115,6 +117,39 @@ void StepperMotorDrivetrain::step(int left, int right)
 			singleStep_us(stepWait);
 		}
 	}
+}
+
+bool StepperMotorDrivetrain::stepToAngle(float target, float current)
+{
+	
+	if (target > 0)
+	{
+		if (inRange(target, current, ANGLETHRESHOLD))
+		{
+			step(0, 0);
+			return true;
+		}
+		else //(current < target)
+		{
+			step(1, -1);
+			return false;
+		}
+
+	}
+	else //(target < 0)
+	{
+		if (inRange(target, current, ANGLETHRESHOLD))
+		{
+			step(0, 0);
+			return true;
+		}
+		else //(abs(current) < abs(target))
+		{
+			step(-1, 1);
+			return false;
+		}
+	}
+	
 }
 
 void StepperMotorDrivetrain::resetStepCounter()
@@ -142,15 +177,15 @@ int StepperMotorDrivetrain::convertInchesToSteps(float inches)
 
 void StepperMotorDrivetrain::singleStep(unsigned int stepWait)
 {
-	sendStepSignalToLeft(leftCounter % 4);
 	sendStepSignalToRight(rightCounter % 4);
+	sendStepSignalToLeft(leftCounter % 4);	
     delay(stepWait); // Wait
 }
 
 void StepperMotorDrivetrain::singleStep_us(unsigned int stepWait)
 {
-	sendStepSignalToLeft(leftCounter % 4);
 	sendStepSignalToRight(rightCounter % 4);
+	sendStepSignalToLeft(leftCounter % 4);
     delayMicroseconds(stepWait); // Wait
 }
 
@@ -212,4 +247,17 @@ void StepperMotorDrivetrain::sendStepSignalToRight(int stepID)
 			digitalWrite(rightIN4, HIGH);
 			break;
     }
+	
+}
+
+bool StepperMotorDrivetrain::inRange(float variable, float constant, float range)
+{
+	if (abs(variable - constant) < range )
+	{
+		return true;
+	}
+	else 
+	{
+		return false;
+	}	
 }

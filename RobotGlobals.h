@@ -47,7 +47,7 @@
 //#define ONE_THIRTY_FIVE_DEG 1.5*2.875*3.141592653589*0.65
 
 #define NINETY_DEG 2.875*3.141592653589*0.61
-#define ONE_THIRTY_FIVE_DEG 1.5*2.875*3.141592653589*0.61
+#define ONE_THIRTY_FIVE_DEG 1.5*2.875*3.141592653589*0.60
 
 //Move delay
 #define MOVE_DELAY 500
@@ -122,15 +122,7 @@
 #define IR_ARRAY_TO_INTAKE 3.75
 #define SCOOT_FORWARD 2
 
-/*
-//Colors
-Color blue("blue");
-Color green("green");
-Color red("red");	
-Color cyan("cyan");
-Color magenta("magenta");
-Color yellow("yellow");
-Color gray("gray");
-*/
+//Distances
+#define DIAGONAL_DISTANCE sqrt(2) * 6
 
 #endif

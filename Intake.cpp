@@ -23,7 +23,7 @@ Intake::Intake()
 	this->currentMotorOutput = 0;
 	this->numColorSamples = 0;
 	this->trashedSamples = 0;
-	
+	this->state = "IDLE";
 	intakePID.initialize(0, intakeKp, intakeKi, intakeKd);
 }
 
@@ -37,7 +37,7 @@ void Intake::begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector,
 	this->highLimitSwitch = hiLimitSwitch;
 	this->electromagnet = electromagnet;
 	this->turnTable = turnTable;
-	
+	this->state = "IDLE";
 	this->pickUpState = IDLE;
 	this->dropOffState = IDLEd;
 	
@@ -469,13 +469,9 @@ String Intake::getStateString()
 	return this->state;
 }
 
-void Intake::resetRack()
+bool Intake::getLowSwitch()
 {
-	while(this->lowLimitSwitch.read() != HIGH) // This MUST bottom out!
-	{
-		//Output <0 to go down
-		this->intakeMotor.output(currentMotorOutput);
-	}
+	return this->lowLimitSwitch.read() == HIGH; // This MUST bottom out!
 }
 
 int Intake::getIntakeReturn()

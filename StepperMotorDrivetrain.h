@@ -2,7 +2,7 @@
 #define STEPPERMOTORDRIVETRAIN_H
 
 #include <Arduino.h>
-
+#include "DriveConstants.h"
 #define STEPS_PER_REVOLUTION 200
 
 /*
@@ -30,6 +30,8 @@ class StepperMotorDrivetrain
 		
 		void step(int left, int right);
 		
+		bool stepToAngle(float target, float current);
+		
 		void setRPM(float speed);
 		void resetStepCounter();
 		
@@ -37,6 +39,8 @@ class StepperMotorDrivetrain
 		long getRightSteps();
 		
 		int convertInchesToSteps(float inches);
+		
+		bool inRange(float variable, float constant, float range);
 		
 	private:
 		//Left Motor

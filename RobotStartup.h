@@ -15,13 +15,9 @@ bool resetDrive = true;
 //Distance to coin dynamic tracker
 float distanceToCoin = 0;
 
-
-
-
 //Global variables that aren't supposed to be global, but have to be for setup to work
 //--Drivetrain
 DigitalDevice metalDetector(pinMetDet, INPUT);
-//IRMatrix mat(pinIRMatrix1, pinIRMatrix2, pinIRMatrix3, pinIRMatrix4, pinIRMatrix5, pinIRMatrix6, pinIRMatrix7, pinIRMatrix8, pinIRMatrixLED);
 DigitalDevice goButton(pinGoButton,INPUT);
 
 Encoder tEncoder(pinIntakeEnc1, pinIntakeEnc2);
@@ -46,6 +42,7 @@ void intakeLowLimit()
 
 void commandTransition()
 {
+	resetGyro();
 	delay(500);
 }
 
