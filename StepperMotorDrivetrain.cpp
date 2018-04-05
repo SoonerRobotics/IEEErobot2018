@@ -131,7 +131,7 @@ bool StepperMotorDrivetrain::stepToAngle(float target, float current)
 		}
 		else //(current < target)
 		{
-			step(1, -1);
+			step(-1, 1);
 			return false;
 		}
 
@@ -145,7 +145,7 @@ bool StepperMotorDrivetrain::stepToAngle(float target, float current)
 		}
 		else //(abs(current) < abs(target))
 		{
-			step(-1, 1);
+			step(1, -1);
 			return false;
 		}
 	}
