@@ -30,6 +30,8 @@ class Intake
 		
 		Turntable turnTable;
 		
+		void resetIntakeReturn();
+		
 		String getStateString();
 		void setColorServoIdle();
 		

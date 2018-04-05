@@ -4,7 +4,7 @@
 #define idleHeight 0.0
 #define pickUpHeight 0.0
 #define topHeight 3
-#define scanHeight 2
+#define scanHeight 2.3
 
 //Important heights in the dropoff sequence
 //Use idleHeight
@@ -26,8 +26,8 @@
 
 //TODO: Add more speeds to optimize the process
 //Time delays in the pickup sequence
-#define magnetWaitTime 200
-#define turnTableWaitMax 150
+#define magnetWaitTime 1000
+#define turnTableWaitMax 1000
 #define colorServoDeployDelay 1500
 #define colorServoRetractDelay 200
 

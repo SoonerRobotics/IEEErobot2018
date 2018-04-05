@@ -23,6 +23,11 @@ void Turntable::setPosition(Color color)
 	this->stepperMot.step(color.getAngle());
 }
 
+void Turntable::setNegPosition(Color color)
+{	
+	this->stepperMot.step(color.getAngle() * -1);
+}
+
 void Turntable::setPosition(int steps)
 {	
 	this->stepperMot.step(steps);

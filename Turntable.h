@@ -22,7 +22,8 @@ public:
 	void setPosition(Color color);
 	void setPosition(int angle);
 	void setPosition();
-
+	void setNegPosition(Color color);
+	
 private:
 	StepperMotor stepperMot;
 	 

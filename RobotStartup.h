@@ -42,7 +42,7 @@ void intakeLowLimit()
 
 void commandTransition()
 {
-	resetGyro();
+	//resetGyro();
 	delay(500);
 }
 
@@ -118,7 +118,7 @@ void robotSetup()
 	
 	//Set the turntable and color sensor to idle
 	//intake.turntable.setPosition();
-	//intake.setColorServoIdle();
+	intake.setColorServoIdle();
 	
 	//Reset the intake to start
 	//intake.reset();

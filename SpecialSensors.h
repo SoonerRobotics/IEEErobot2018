@@ -36,17 +36,20 @@ void updateGyro()
 	yaw = euler.x() - yawOffset;
 	
 	//Map yaw to (-180, 180]
+	
 	if(yaw > 180)
 	{
 		yaw = -(360 - yaw);
 	}
+	
 }
 
 void resetGyro()
 {
+	Serial.println("UPDATING");
 	rollOffset = roll;
 	pitchOffset = pitch;
-	yawOffset = yaw;
+	yawOffset += yaw;
 }
 
 void updateColorSensor()
