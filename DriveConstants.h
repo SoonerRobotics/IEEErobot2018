@@ -7,7 +7,7 @@
 
 #define distanceThreshold 1 //Window for robot to be in range of distance setpoint.
 
-#define ANGLETHRESHOLD 2 //Window for robot to be in range of angle setpoint.
+#define ANGLETHRESHOLD .2 //Window for robot to be in range of angle setpoint.
 
 #define lineFollowSpeed .175//Speed to drive when line following
 

@@ -34,7 +34,7 @@
 
 //Drivetrain starting RPM
 #define DRIVE_RPM 30
-#define TURN_RPM 15
+#define TURN_RPM 10
 
 //Drivetrain distance ratio
 #define DIST_RATIO 18/18

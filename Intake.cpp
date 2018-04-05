@@ -47,11 +47,14 @@ void Intake::begin(Motor& motor, Encoder& encoder, DigitalDevice& metalDetector,
 	
 	this->lastHeight = idleHeight;
 	this->intakeEncoder.reset();
+	
+	setColorServoIdle();
 }
 
 
 int Intake::pickUpSequence(Color color, bool colorScanned)
 {	
+	lastColor.setColor("blue");
 	switch(this->pickUpState)
 	{
 		case IDLE:
@@ -72,7 +75,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				this->pickUpState = GRAB;
 			}
 			this->intakeReturn = 0;
-			return 0;
+			return this->intakeReturn;
 			
 		case GRAB:
 			this->intakeEncoder.reset();
@@ -92,7 +95,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			
 			//Process not complete yet
 			this->intakeReturn = 0;
-			return 0;
+			return this->intakeReturn;
 			
 		case SCAN:
 			this->state = "SCAN";
@@ -179,7 +182,7 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				}
 			}
 			this->intakeReturn = 1;
-			return 1;
+			return this->intakeReturn;
 			
 		case RAISE:
 			this->state = "RAISE";
@@ -204,14 +207,15 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 			
 			//Process unfinished
 			this->intakeReturn = 1;
-			return 1;
+			return this->intakeReturn;
 			
 		case STORE:
 			this->state = "STORE";
 			
-			if(this->electromagnet.hasCoin())
-			{
+			//if(this->electromagnet.hasCoin())
+			//{
 				//Turn the turntable so it is ready to receive the coin
+				Serial.println("Turning the Turntable");
 				this->turnTable.setPosition(lastColor);
 				delay(turnTableWaitMax);
 				
@@ -222,15 +226,27 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 				delay(magnetWaitTime);
 				
 				//Tell the turntable to go back to its idle state
-				this->turnTable.setPosition();
+				this->turnTable.setNegPosition(lastColor);
 				delay(turnTableWaitMax);
 				
-				//Process unfinished
+			/*	//Process unfinished
 				this->intakeReturn = 1;
 				return 1;
-			}
+			*/	
+				//Stop driving the motor downwards
+				this->intakeMotor.output(stallSpeed);
+					
+				//set the sequence to idle
+				this->state = "IDLE";
+				this->pickUpState = IDLE;
+					
+				//Pickup complete!
+				this->intakeReturn = 2;
+				return this->intakeReturn;
+				
+			//}
 			//Check to see if the turntable is ready to let the intake drop
-			else if(!this->electromagnet.hasCoin())
+	/*		else if(!this->electromagnet.hasCoin())
 			{
 				//Drive the intake down to the idle height
 				if(this->lowLimitSwitch.read() != HIGH)
@@ -256,12 +272,12 @@ int Intake::pickUpSequence(Color color, bool colorScanned)
 					return 2;
 				}
 			}
-			
+	*/		
 		default:
 			this->state = "IDLE";
 			this->pickUpState = IDLE;
 			this->intakeReturn = 0;
-			return 0;
+			return this->intakeReturn;
 	}
 	
 }
@@ -462,6 +478,11 @@ Color Intake::randColor(){
 		break;
 	}
 	return c;
+}
+
+void Intake::resetIntakeReturn()
+{
+	this->intakeReturn = 0;
 }
 
 String Intake::getStateString()
