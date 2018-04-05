@@ -131,10 +131,6 @@ bool StepperMotorDrivetrain::stepToAngle(float target, float current)
 		}
 		else
 		{
-<<<<<<< HEAD
-			step(-1, 1);
-			return false;
-=======
 			if (current < target) 
 			{
 				step(-1, 1);
@@ -145,7 +141,6 @@ bool StepperMotorDrivetrain::stepToAngle(float target, float current)
 				step(1, -1);
 				return false;
 			}
->>>>>>> 8533d8619f274a2e129dfe0dc15c2fe56fa705c9
 		}
 
 	}
@@ -158,10 +153,6 @@ bool StepperMotorDrivetrain::stepToAngle(float target, float current)
 		}
 		else
 		{
-<<<<<<< HEAD
-			step(1, -1);
-			return false;
-=======
 			if (current > target)
 			{
 				step(1, -1);
@@ -172,7 +163,6 @@ bool StepperMotorDrivetrain::stepToAngle(float target, float current)
 				step(-1, 1);
 				return false;
 			}
->>>>>>> 8533d8619f274a2e129dfe0dc15c2fe56fa705c9
 		}
 	}
 	
